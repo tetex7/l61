@@ -1,0 +1,44 @@
+/*
+ * Copyright (C) 2025  Tetex7
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+//
+// Created by tete on 05/05/2025.
+//
+#pragma once
+#ifndef NATIVEEXTENSION_HPP
+#define NATIVEEXTENSION_HPP
+
+#include "defs.hpp"
+
+class NativeExtension final
+{
+public:
+    using ExtensionEntryPoint_t = int(void*);
+    using ExtensionEntryPointPtr_t = std::add_pointer_t<ExtensionEntryPoint_t>;
+    using ExtensionEntryPointCall_t = std::function<ExtensionEntryPoint_t>;
+private:
+    std::string extensionPath;
+    void* const soHandle;
+    ExtensionEntryPointCall_t extensionEntryPointCall;
+public:
+    explicit NativeExtension(const std::string& path);
+
+    const ExtensionEntryPointCall_t& getExtensionEntryPointCall();
+    const std::string& getExtensionPath() const;
+};
+
+#endif //NATIVEEXTENSION_HPP

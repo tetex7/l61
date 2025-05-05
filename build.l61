@@ -1,0 +1,10 @@
+function main(argc, argv)
+   print(l61.getPwd())
+
+   for _, value in pairs(argv) do
+       print(value.."\n")
+   end
+   return 1
+end
+
+return 0

@@ -1,0 +1,56 @@
+# Ignore build directories
+/build/
+/bin/
+/obj/
+/out/
+
+# Ignore compiled object files
+*.o
+*.c.o
+*.cpp.o
+
+# Ignore shared library files (if they aren't meant to be committed)
+*.so
+*.dll
+*.dylib
+
+# Ignore Visual Studio Code settings
+.vscode/
+
+# Ignore MSYS2 specific files
+*.exe
+*.exe.stackdump
+/msys64/
+
+# Ignore compiler-generated files
+*.a
+*.lib
+
+# Ignore debug files
+*.dSYM/
+*.dwarf
+*.pdb
+*.ilk
+*.idb
+
+# Ignore temporary files
+*.tmp
+*.swp
+*~
+
+# Ignore editor specific files
+*.log
+*.bak
+
+# Ignore CMake generated files (if you ever use CMake)
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles/
+
+# Ignore test results (if you add a testing framework)
+*.gcno
+*.gcda
+
+
+*.pkg.tar.zst
+/pkg
