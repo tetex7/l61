@@ -16,7 +16,7 @@
 #
 
 # Maintainer: tete <tetex7@outlook.com>
-pkgname=libsafetynet
+pkgname=l61
 pkgver=1.0.0
 pkgrel=1
 pkgdesc='Passive garbage collector for C and C++'
@@ -37,6 +37,7 @@ make clean
 
 build () {
     cd ..
+    echo $PWD
     make DEBUG=1 VER=${pkgver}
 }
 
@@ -44,10 +45,7 @@ package() {
     cd ..
     minverN=$(echo "${pkgver}" | head -c 1)
     eminverN=$(echo "${pkgver}" | head -c 3)
-    install -Dm755 ./build/libsafetynet.so "${pkgdir}/usr/lib/libsafetynet.so.${pkgver}"
-    install -Dm644 "./include/libsafetynet.h" "${pkgdir}/usr/include/libsafetynet.h"
-    ln -s "/usr/lib/${pkgname}.so.${pkgver}" "${pkgdir}/usr/lib/${pkgname}.so"
-    ln -s "/usr/lib/${pkgname}.so.${pkgver}" "${pkgdir}/usr/lib/${pkgname}.so.${minverN}"
-    ln -s "/usr/lib/${pkgname}.so.${pkgver}" "${pkgdir}/usr/lib/${pkgname}.so.${eminverN}"
-    
+    cp -rv ./deploymentFileSystem "${pkgdir}/opt/l61"
+    install -Dm755 ./build/l61.out "${pkgdir}/opt/l61/bin/l61"
+
 }

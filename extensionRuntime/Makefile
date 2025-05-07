@@ -17,12 +17,11 @@
 
 DEBUG ?= 1
 
-RVER ?= "dev"
-
 # Compiler and flags
 CC = gcc
 CXX = g++
-GCCFLAG = -D__L61__FV_VER__="\"${RVER}\"" -Wall -Wextra -fno-strict-aliasing -DSOL_ALL_SAFETIES_ON  # -fPIC for Position Independent Code
+AR = ar
+GCCFLAG = -Wall -Wextra -fno-strict-aliasing -DSOL_ALL_SAFETIES_ON  # -fPIC for Position Independent Code
 
 ifeq ($(DEBUG),1)
   GCCFLAGS += -g -O0
@@ -36,13 +35,11 @@ LDFLAGS =  # Link as a shared object
 LDLIBS = -llua -lreadline -lboost_program_options
 
 
-
-
 # Directories
 SRC_DIR = src
 BIN_DIR = build
 OBJ_DIR = ${BIN_DIR}
-INCLUDE_DIR = ./include
+INCLUDE_DIR = -I./include -I../include
 
 # Source files and object files
 C_SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
@@ -54,7 +51,7 @@ CPP_OBJ_FILES = $(CPP_SRC_FILES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.cpp.o)
 
 # All object files
 OBJ_FILES = $(C_OBJ_FILES) $(CPP_OBJ_FILES)
-TARGET = $(BIN_DIR)/l61.out
+TARGET = $(BIN_DIR)/l61_extension_rt.a
 
 # Default rule: build the target
 all: $(TARGET)
@@ -62,16 +59,16 @@ all: $(TARGET)
 # Rule to link object files into the shared library
 $(TARGET): $(OBJ_FILES)
 	@mkdir -p $(BIN_DIR)
-	$(CXX) $(LDFLAGS) $(OBJ_FILES) -o $(TARGET) $(LDLIBS)
+	$(AR) rcs $(TARGET) $(OBJ_FILES)
 
 # Rule to compile source files into object files
 $(OBJ_DIR)/%.c.o: $(SRC_DIR)/%.c
 	@mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -c $< -o $(OBJ_DIR)/$*.c.o
+	$(CC) $(CFLAGS) $(INCLUDE_DIR) -c $< -o $(OBJ_DIR)/$*.c.o
 
 $(OBJ_DIR)/%.cpp.o: $(SRC_DIR)/%.cpp
 	@mkdir -p $(OBJ_DIR)
-	$(CXX) $(CPPFLAGS) -I$(INCLUDE_DIR) -c $< -o $(OBJ_DIR)/$*.cpp.o
+	$(CXX) $(CPPFLAGS) $(INCLUDE_DIR) -c $< -o $(OBJ_DIR)/$*.cpp.o
 
 # Rule for cleaning up build artifacts
 clean:

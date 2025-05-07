@@ -4,6 +4,10 @@ function main(argc, argv)
    for _, value in pairs(argv) do
        print(value.."\n")
    end
+
+   for _, value in pairs(spaths) do
+          print(value.."\n")
+   end
    return 1
 end
 

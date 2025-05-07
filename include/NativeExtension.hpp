@@ -23,11 +23,12 @@
 #define NATIVEEXTENSION_HPP
 
 #include "defs.hpp"
+#include <optional>
 
 class NativeExtension final
 {
 public:
-    using ExtensionEntryPoint_t = int(void*);
+    using ExtensionEntryPoint_t = int(l61_api_extension_t*);
     using ExtensionEntryPointPtr_t = std::add_pointer_t<ExtensionEntryPoint_t>;
     using ExtensionEntryPointCall_t = std::function<ExtensionEntryPoint_t>;
 private:
@@ -35,10 +36,19 @@ private:
     void* const soHandle;
     ExtensionEntryPointCall_t extensionEntryPointCall;
 public:
+    static int safeExtensionLoad(const std::optional<NativeExtension>& extension, l61_api_extension_t* api, bool required = true);
+    static std::optional<NativeExtension> extensionLookUp(const std::string& exName);
+
     explicit NativeExtension(const std::string& path);
 
-    const ExtensionEntryPointCall_t& getExtensionEntryPointCall();
+    [[nodiscard]]
+    const ExtensionEntryPointCall_t& getExtensionEntryPointCall() const;
+    [[nodiscard]]
     const std::string& getExtensionPath() const;
+
+    ~NativeExtension();
+    NativeExtension(NativeExtension& nativeExtension) = delete;
+    NativeExtension(NativeExtension&& nativeExtension) = delete;
 };
 
 #endif //NATIVEEXTENSION_HPP

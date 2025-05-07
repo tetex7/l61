@@ -21,11 +21,37 @@
 
 #include "NativeExtension.hpp"
 #include <dlfcn.h>
+#include "defs.hpp"
+
+int NativeExtension::safeExtensionLoad(const std::optional<NativeExtension>& extension, l61_api_extension_t* api, bool required)
+{
+    if (!extension.has_value())
+    {
+        if (!required)
+        {
+            return 1;
+        }
+        throw std::runtime_error("Extension does not exist");
+    }
+    return extension->getExtensionEntryPointCall()(api);
+}
+
+std::optional<NativeExtension> NativeExtension::extensionLookUp(const std::string& exName)
+{
+    for (const std::string& _path : mstat.spaths)
+    {
+        std::string path = _path + "/native/"s + exName;
+        if (fs::exists(path))
+        {
+            return std::make_optional<NativeExtension>(path);
+        }
+    }
+    return {};
+}
 
 NativeExtension::NativeExtension(const std::string& path)
 : extensionPath(path), soHandle(dlopen(extensionPath.c_str(), RTLD_LAZY))
 {
-    char *error;
     if (!soHandle)
     {
         throw std::runtime_error(dlerror());
@@ -34,14 +60,14 @@ NativeExtension::NativeExtension(const std::string& path)
 
     this->extensionEntryPointCall = reinterpret_cast<ExtensionEntryPointPtr_t>(dlsym(soHandle, "__l61_rt_ex_init__"));
 
-    error = dlerror();
-    if (error != NULL) {
-        fprintf(stderr, "%s\n", error);
-        exit(EXIT_FAILURE);
+    char* error = dlerror();
+    if (error != nullptr)
+    {
+        throw std::runtime_error(std::string(error));
     }
 }
 
-const NativeExtension::ExtensionEntryPointCall_t& NativeExtension::getExtensionEntryPointCall()
+const NativeExtension::ExtensionEntryPointCall_t& NativeExtension::getExtensionEntryPointCall() const
 {
     return this->extensionEntryPointCall;
 }
@@ -49,6 +75,11 @@ const NativeExtension::ExtensionEntryPointCall_t& NativeExtension::getExtensionE
 const std::string& NativeExtension::getExtensionPath() const
 {
     return extensionPath;
+}
+
+NativeExtension::~NativeExtension()
+{
+    dlclose(soHandle);
 }
 
 bool operator==(const NativeExtension& lhs, const NativeExtension& rhs) {

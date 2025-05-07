@@ -58,6 +58,11 @@ int ScriptEnvironment::standardMainEntryPoint(const std::vector<std::string>& ar
     return 1;
 }
 
+sol::table ScriptEnvironment::makeTable(const std::string& name)
+{
+    return getLuaCtx().create_named_table(name);
+}
+
 int ScriptEnvironment::scriptRun(const std::vector<std::string>& args)
 {
     lib61_setup();

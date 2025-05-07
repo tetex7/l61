@@ -22,10 +22,14 @@
 #include "BuildScript.hpp"
 #include "ShellScript.hpp"
 #include "defs.hpp"
-#include "argh.h"
 #include <boost/program_options.hpp>
 
+#include "NativeExtension.hpp"
+
 namespace po = boost::program_options;
+
+
+std::HashMap<std::string, NativeExtension> extensionMap = {};
 
 std::unique_ptr<ScriptEnvironment> shEnv;
 
@@ -45,10 +49,11 @@ l61_stat mstat = {
     std::getenv("USER"),
     std::getenv("HOME"),
     std::vector {
-        (get_exe_str() + "/lib"),
+        (fs::path(get_exe_str()).parent_path().string() + "/lib"),
         (std::string(std::getenv("HOME")) + "/l61_lib"),
         (fs::current_path().string() + "/scripts")
     },
+    __L61__FV_VER__,
     ProgramStatus {
         ScriptMode::UndefMode
     }
@@ -58,25 +63,25 @@ l61_stat mstat = {
 void help(po::options_description& desc)
 {
     cout_print("Usage: l61 [options] [PATH_TO_FILE]\n");
-    /*cout_print("l61 HELP:\n",
-        "--mode, -m, = [\"build\", \"shall\"]       : The script mode defaults to build\n",
-        "--help,    -h                          : you'r reading it lol\n"
-    );*/
     cout_print(desc);
-
     cout_print("\n\n");
-    //cout_print(FV_VER, '\n');
+    cout_print("version: ", mstat.version, '\n');
     cout_print(REP_BUG_TEXT, '\n');
     //exit(ecode);
 }
 
-int main(int argc, const char* argv[])
+l61_api_extension_t exdata = {
+    mstat,
+    shEnv
+};
+
+int l61_main(int argc, const char* argv[])
 {
     po::options_description desc("l61 options"s);
     desc.add_options()
     ("help,h", "produce help message")
-    ("script,s", po::value<std::string>()->value_name("path"), "path to script file")
-    ("mode,m", po::value<std::string>()->value_name("{\"shell\" or \"build\"}"s), "Every mode is specialized to what they're used for");
+    ("script,s", po::value<std::string>()->value_name("path"s), "path to script file")
+    ("mode,m", po::value<std::string>()->value_name(R"({"shell" or "build"})"s), "Every mode is specialized to what they're used for");
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -109,15 +114,17 @@ int main(int argc, const char* argv[])
         return 1;
     }
 
-    cout_print("loading file ", mstat.make_file_path, " in ", scrModeToStr(mstat.procStat.runMode), '\n');
+    std::println("loading file {} in {}", mstat.make_file_path, scrModeToStr(mstat.procStat.runMode));
 
     switch (mstat.procStat.runMode)
     {
     case ScriptMode::BuildScriptMode:
         shEnv = std::make_unique<BuildScript>(mstat.make_file_path, mstat);
+        NativeExtension::safeExtensionLoad(NativeExtension::extensionLookUp("build.lex61"s), &exdata, false);
         break;
     case ScriptMode::ShellScriptMode:
         shEnv = std::make_unique<ShellScript>(mstat.make_file_path, mstat);
+        NativeExtension::safeExtensionLoad(NativeExtension::extensionLookUp("script.lex61"s), &exdata, false);
         break;
     default:
         shEnv = std::make_unique<BuildScript>(mstat.make_file_path, mstat);
@@ -131,5 +138,22 @@ int main(int argc, const char* argv[])
         lua_arg_vector.emplace_back(argv[i]);
     }
 
+    NativeExtension::safeExtensionLoad(NativeExtension::extensionLookUp("base.lex61"s), &exdata, false);
+
+    shEnv->addValue("spaths"s, mstat.spaths);
+
     return shEnv->scriptRun(lua_arg_vector);
+}
+
+int main(int argc, const char* argv[])
+{
+    try
+    {
+        return l61_main(argc, argv);
+    }
+    catch (std::exception& e)
+    {
+        std::println(std::cerr, "error: {}", e.what());
+        exit(1);
+    }
 }

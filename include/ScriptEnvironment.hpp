@@ -44,16 +44,16 @@ protected:
 
     explicit ScriptEnvironment(const std::string& scriptFilePath, l61_stat& scriptCtx);
 
-    void addTable(std::string& key, sol::table& table);
-
     int standardMainEntryPoint(const std::vector<std::string>& args);
 
-    template<class T>
-    void addValue(std::string& key, T value)
-    {
-        getLuaCtx()[key] = value;
-    }
 public:
+    template<class T>
+    void addValue(const std::string& key, T&& value)
+    {
+        auto var = getLuaCtx()[key] = std::forward<T>(value);
+    }
+
+    sol::table makeTable(const std::string& name);
 
     int scriptRun(const std::vector<std::string>& args);
 

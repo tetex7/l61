@@ -4,6 +4,8 @@
 /obj/
 /out/
 
+**/build/
+
 # Ignore compiled object files
 *.o
 *.c.o

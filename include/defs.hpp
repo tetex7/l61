@@ -85,7 +85,7 @@ __inline ScriptMode toScriptMode(const std::string& str)
 
 
 template<typename... vT>
-__inline void cout_print(const vT&... vals)
+[[__gnu__::__always_inline__]] __inline void cout_print(const vT&... vals)
 {
     (std::cout << ... << vals);
 }
@@ -103,9 +103,19 @@ struct l61_stat
     std::string user_name;
     std::string user_home;
     std::vector<std::string> spaths;
+    const std::string version;
     ProgramStatus procStat;
 };
 
+class ScriptEnvironment;
+
+struct l61_api_extension_t
+{
+    l61_stat& l61Ctx;
+    std::unique_ptr<ScriptEnvironment>& scriptCtx;
+};
+
+extern std::unique_ptr<ScriptEnvironment> shEnv;
 extern l61_stat mstat;
 
 #endif //DEFS_HPP
