@@ -88,7 +88,10 @@ int l61_main(int argc, const char* argv[])
     desc.add_options()
     ("help,h", "produce help message")
     ("script,s", po::value<std::string>()->value_name("path"s), "path to script file")
-    ("mode,m", po::value<std::string>()->value_name(R"({"shell" or "build"})"s), "Every mode is specialized to what they're used for");
+    ("mode,m", po::value<std::string>()->value_name(R"({"shell" or "build"})"s), "Every mode is specialized to what they're used for")
+    ("cd,C", po::value<std::string>()->value_name("path"s), "Falsifies the current directory")
+    ("spaths,", "Dumps the built-in spaths")
+    ("add-to-spaths,p", po::value<std::vector<std::string>>()->composing(), "Add values to the spaths");
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -100,6 +103,21 @@ int l61_main(int argc, const char* argv[])
         return 1;
     }
 
+    if (vm.contains("add-to-spaths"s))
+    {
+        for (const std::string& path : vm["add-to-spaths"s].as<std::vector<std::string>>())
+        {
+            mstat.spaths.push_back(path);
+        }
+    }
+
+    if (vm.contains("cd"s))
+    {
+        mstat.work_path = vm["cd"s].as<std::string>();
+        mstat.make_file_path = mstat.work_path + "/build.l61";
+        mstat.spaths[2] = mstat.work_path + "/scripts";
+    }
+
     if (vm.contains("mode"s))
     {
         mstat.procStat.runMode = toScriptMode(vm["mode"s].as<std::string>());
@@ -107,6 +125,15 @@ int l61_main(int argc, const char* argv[])
     else
     {
         mstat.procStat.runMode = ScriptMode::BuildScriptMode;
+    }
+
+    if (vm.contains("spaths"s))
+    {
+        for (std::size_t i = 0; i < mstat.spaths.size(); i++)
+        {
+            cout_print("[", i, "] = \"", mstat.spaths[i] + "\"\n");
+        }
+        return 0;
     }
 
     if (vm.contains("script"s))
