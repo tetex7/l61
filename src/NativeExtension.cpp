@@ -23,7 +23,20 @@
 #include <dlfcn.h>
 #include "defs.hpp"
 
-int NativeExtension::safeExtensionLoad(const std::optional<NativeExtension>& extension, l61_api_extension_t* api, bool required)
+void* NativeExtension::blindSymbolLookup(const std::string& symStr) const
+{
+    dlerror();
+    void* ptr = dlsym(soHandle, symStr.c_str());
+
+    char* error = dlerror();
+    if (error != NULL)
+    {
+        throw std::runtime_error(std::string(error));
+    }
+    return ptr;
+}
+
+int NativeExtension::safeExtensionLoad(const std::optional<NativeExtension>& extension, l61_api_extension_ptr api, bool required)
 {
     if (!extension.has_value())
     {
@@ -58,13 +71,8 @@ NativeExtension::NativeExtension(const std::string& path)
     }
     dlerror();
 
-    this->extensionEntryPointCall = reinterpret_cast<ExtensionEntryPointPtr_t>(dlsym(soHandle, "__l61_rt_ex_init__"));
-
-    char* error = dlerror();
-    if (error != nullptr)
-    {
-        throw std::runtime_error(std::string(error));
-    }
+    this->extensionEntryPointCall = reinterpret_cast<ExtensionEntryPointPtr_t>(blindSymbolLookup("__l61_rt_ex_init__"));
+    std::println("loaded NativeExtension on path: \"{}\"", path);
 }
 
 const NativeExtension::ExtensionEntryPointCall_t& NativeExtension::getExtensionEntryPointCall() const

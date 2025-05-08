@@ -32,7 +32,7 @@ endif
 CFLAGS = ${GCCFLAG} -std=gnu99
 CPPFLAGS = ${GCCFLAG} -std=gnu++23
 LDFLAGS =  -shared # Link as a shared object
-LDLIBS = -llua -lreadline -lboost_program_options
+LDLIBS = -fPIC -llua -lreadline -lboost_program_options
 
 
 # Directories

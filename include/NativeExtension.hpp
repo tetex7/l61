@@ -28,15 +28,17 @@
 class NativeExtension final
 {
 public:
-    using ExtensionEntryPoint_t = int(l61_api_extension_t*);
+    using ExtensionEntryPoint_t = int(l61_api_extension_ptr);
     using ExtensionEntryPointPtr_t = std::add_pointer_t<ExtensionEntryPoint_t>;
     using ExtensionEntryPointCall_t = std::function<ExtensionEntryPoint_t>;
 private:
     std::string extensionPath;
     void* const soHandle;
     ExtensionEntryPointCall_t extensionEntryPointCall;
+
+    void* blindSymbolLookup(const std::string& symStr) const;
 public:
-    static int safeExtensionLoad(const std::optional<NativeExtension>& extension, l61_api_extension_t* api, bool required = true);
+    static int safeExtensionLoad(const std::optional<NativeExtension>& extension, l61_api_extension_ptr api, bool required = true);
     static std::optional<NativeExtension> extensionLookUp(const std::string& exName);
 
     explicit NativeExtension(const std::string& path);
@@ -45,6 +47,12 @@ public:
     const ExtensionEntryPointCall_t& getExtensionEntryPointCall() const;
     [[nodiscard]]
     const std::string& getExtensionPath() const;
+
+    template<typename T>
+    std::add_pointer_t<std::type_identity_t<T>> extensionSymbolLookup(const std::string& symStr) const
+    {
+        return reinterpret_cast<std::add_pointer_t<T>>(blindSymbolLookup(symStr));
+    }
 
     ~NativeExtension();
     NativeExtension(NativeExtension& nativeExtension) = delete;

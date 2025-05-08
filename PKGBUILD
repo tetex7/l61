@@ -20,32 +20,35 @@ pkgname=l61
 pkgver=1.0.0
 pkgrel=1
 pkgdesc='Passive garbage collector for C and C++'
-url='www.github.com/tetex7/libsafetynet'
-provides=()
+url='www.github.com/tetex7/l61'
+provides=("l61" "sh61")
 arch=('x86_64')
-PACKAGER="TRS"
+#PACKAGER="TRS"
 license=('GPL3')
 makedepends=()
 depends=('glibc')
 options=('!strip' 'docs' 'libtool' 'staticlibs' 'emptydirs' 'zipman' '!purge' '!debug' '!lto')
 
 prepare() {
-cd ..
-echo $PWD
-make clean
+    cd ..
+    echo $PWD
+    ./full_build.sh clean
 }
 
 build () {
     cd ..
     echo $PWD
-    make DEBUG=1 VER=${pkgver}
+    make DEBUG=1 RVER=${pkgver}
+    ./full_build.sh
 }
 
 package() {
     cd ..
     minverN=$(echo "${pkgver}" | head -c 1)
     eminverN=$(echo "${pkgver}" | head -c 3)
+    mkdir -p "${pkgdir}/opt/l61"
     cp -rv ./deploymentFileSystem "${pkgdir}/opt/l61"
     install -Dm755 ./build/l61.out "${pkgdir}/opt/l61/bin/l61"
+    mkdir -p "${pkgdir}/opt/l61/lib/native"
 
 }

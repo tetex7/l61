@@ -35,6 +35,7 @@ private:
 
     void lib61_setup();
 protected:
+
     l61_stat& getScriptCtx();
     sol::state& getLuaCtx();
     const std::string& getScriptFilePath() const;
@@ -45,6 +46,8 @@ protected:
     explicit ScriptEnvironment(const std::string& scriptFilePath, l61_stat& scriptCtx);
 
     int standardMainEntryPoint(const std::vector<std::string>& args);
+
+    static sol::table lua_mountLib(const std::string& libraryName, sol::this_state state);
 
 public:
     template<class T>

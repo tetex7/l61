@@ -21,7 +21,7 @@ DEBUG ?= 1
 CC = gcc
 CXX = g++
 AR = ar
-GCCFLAG = -Wall -Wextra -fno-strict-aliasing -DSOL_ALL_SAFETIES_ON  # -fPIC for Position Independent Code
+GCCFLAG = -fPIC -rdynamic -Wall -Wextra -fno-strict-aliasing -DSOL_ALL_SAFETIES_ON  # -fPIC for Position Independent Code
 
 ifeq ($(DEBUG),1)
   GCCFLAGS += -g -O0
@@ -51,7 +51,7 @@ CPP_OBJ_FILES = $(CPP_SRC_FILES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.cpp.o)
 
 # All object files
 OBJ_FILES = $(C_OBJ_FILES) $(CPP_OBJ_FILES)
-TARGET = $(BIN_DIR)/l61_extension_rt.a
+TARGET = $(BIN_DIR)/libl61_extension_rt.a
 
 # Default rule: build the target
 all: $(TARGET)

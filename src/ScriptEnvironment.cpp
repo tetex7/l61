@@ -49,6 +49,7 @@ ScriptEnvironment::ScriptEnvironment(const std::string& scriptFilePath, l61_stat
 
 int ScriptEnvironment::standardMainEntryPoint(const std::vector<std::string>& args)
 {
+    addValue("mountLib"s, lua_mountLib);
     getLuaCtx().do_file(getScriptFilePath());
     if (getLuaCtx()["main"].is<sol::function>())
     {
@@ -56,6 +57,27 @@ int ScriptEnvironment::standardMainEntryPoint(const std::vector<std::string>& ar
         return  sh_main(args.size(), args).get<int>();
     }
     return 1;
+}
+
+sol::table ScriptEnvironment::lua_mountLib(const std::string& libraryName, sol::this_state state)
+{
+    sol::state_view view = {state};
+    for (const std::string& path : mstat.spaths)
+    {
+        if (fs::exists(path + '/' + libraryName + ".lua"))
+        {
+            auto lib_ret = view.do_file(path + '/' + libraryName + ".lua");
+            if ((lib_ret.return_count() == 1) && (lib_ret[0].is<sol::table>()))
+            {
+                return lib_ret[0].as<sol::table>();
+            }
+            else
+            {
+                return sol::nil;
+            }
+        }
+    }
+    return sol::nil;
 }
 
 sol::table ScriptEnvironment::makeTable(const std::string& name)

@@ -1,6 +1,10 @@
 function main(argc, argv)
    print(l61.getPwd())
 
+   if mountLib("test").test() == "fuck" then
+        print(mountLib("test").test())
+   end
+
    for _, value in pairs(argv) do
        print(value.."\n")
    end
@@ -8,6 +12,7 @@ function main(argc, argv)
    for _, value in pairs(spaths) do
           print(value.."\n")
    end
+   --print(bash.."\n")
    return 1
 end
 

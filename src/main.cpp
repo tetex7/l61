@@ -28,9 +28,6 @@
 
 namespace po = boost::program_options;
 
-
-std::HashMap<std::string, NativeExtension> extensionMap = {};
-
 std::unique_ptr<ScriptEnvironment> shEnv;
 
 std::string get_exe_str()
@@ -42,6 +39,15 @@ std::string get_exe_str()
     return std::string(out_buff.get());
 }
 
+/*ConfigRecord getConfg()
+{
+    if (fs::exists("/etc/l61.lua"))
+    {
+        return ConfigEnvironment("/etc/l61.lua", mstat).getConfig();
+    }
+    return  {{},{}};
+}*/
+
 l61_stat mstat = {
     fs::current_path().string(),
     fs::current_path().string() + "/build.l61",
@@ -49,15 +55,17 @@ l61_stat mstat = {
     std::getenv("USER"),
     std::getenv("HOME"),
     std::vector {
-        (fs::path(get_exe_str()).parent_path().string() + "/lib"),
+        (fs::path(get_exe_str()).parent_path().parent_path().string() + "/lib"),
         (std::string(std::getenv("HOME")) + "/l61_lib"),
         (fs::current_path().string() + "/scripts")
     },
     __L61__FV_VER__,
     ProgramStatus {
-        ScriptMode::UndefMode
+        ScriptMode::UndefMode,
     }
 };
+
+
 
 #define REP_BUG_TEXT "Copyright (C) 2025  Tetex7.\nFor Docs and bug reporting\nplease see: <https://github.com/tetex7/l61>."
 void help(po::options_description& desc)
@@ -67,7 +75,6 @@ void help(po::options_description& desc)
     cout_print("\n\n");
     cout_print("version: ", mstat.version, '\n');
     cout_print(REP_BUG_TEXT, '\n');
-    //exit(ecode);
 }
 
 l61_api_extension_t exdata = {

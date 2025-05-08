@@ -22,7 +22,7 @@ RVER ?= "dev"
 # Compiler and flags
 CC = gcc
 CXX = g++
-GCCFLAG = -D__L61__FV_VER__="\"${RVER}\"" -Wall -Wextra -fno-strict-aliasing -DSOL_ALL_SAFETIES_ON  # -fPIC for Position Independent Code
+GCCFLAG = -D__L61__FV_VER__="\"${RVER}\"" -rdynamic -Wall -Wextra -fno-strict-aliasing -DSOL_ALL_SAFETIES_ON  # -fPIC for Position Independent Code
 
 ifeq ($(DEBUG),1)
   GCCFLAGS += -g -O0
@@ -33,7 +33,7 @@ endif
 CFLAGS = ${GCCFLAG} -std=gnu99
 CPPFLAGS = ${GCCFLAG} -std=gnu++23
 LDFLAGS =  # Link as a shared object
-LDLIBS = -llua -lreadline -lboost_program_options
+LDLIBS = -rdynamic -llua -lreadline -lboost_program_options
 
 
 

@@ -90,6 +90,15 @@ template<typename... vT>
     (std::cout << ... << vals);
 }
 
+class ConfigRecord final
+{
+    std::vector<std::string> forceMount;
+    std::vector<std::string> extension;
+    inline ConfigRecord(){}
+    inline ConfigRecord(std::vector<std::string>&& forceMount, std::vector<std::string>&& extension)
+    : forceMount(std::forward<std::vector<std::string>>(forceMount)), extension(std::forward<std::vector<std::string>>(extension)){}
+};
+
 struct ProgramStatus
 {
     ScriptMode runMode;
@@ -114,6 +123,8 @@ struct l61_api_extension_t
     l61_stat& l61Ctx;
     std::unique_ptr<ScriptEnvironment>& scriptCtx;
 };
+
+using l61_api_extension_ptr = l61_api_extension_t*;
 
 extern std::unique_ptr<ScriptEnvironment> shEnv;
 extern l61_stat mstat;

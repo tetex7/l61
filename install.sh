@@ -16,25 +16,12 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-if [[ "$1" == "clean" ]]; then
-    make -C ./extensionRuntime clean
-    make clean
-    for i in $(ls ./baseExtensions); do
-        EX="${i##*.}"
-        if [[ "${EX}" != "mk" ]]; then
-            make -C ./baseExtensions/${i} clean
-        fi
-    done
-    rm -rfv ./pkg
-    rm -rfv ./l61-*-pak
+if [ -e "/usr/bin/doas" ] ; then
+    DOAS=doas
 else
-    make -C ./extensionRuntime
-    make -j $(nproc)
-    for i in $(ls ./baseExtensions); do
-        EX="${i##*.}"
-        if [[ "${EX}" != "mk" ]]; then
-            make -C ./baseExtensions/${i}
-        fi
-    done
+    DOAS=sudo
 fi
 
+yes | ${DOAS} pacman -R l61
+makepkg -f
+yes | ${DOAS} pacman -U ./l61-*-1-x86_64.pkg.tar.zst

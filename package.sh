@@ -1,4 +1,3 @@
-#!/usr/bin/env bash
 #
 # Copyright (C) 2025  Tetex7
 #
@@ -16,25 +15,19 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-if [[ "$1" == "clean" ]]; then
-    make -C ./extensionRuntime clean
-    make clean
-    for i in $(ls ./baseExtensions); do
-        EX="${i##*.}"
-        if [[ "${EX}" != "mk" ]]; then
-            make -C ./baseExtensions/${i} clean
-        fi
-    done
-    rm -rfv ./pkg
-    rm -rfv ./l61-*-pak
-else
-    make -C ./extensionRuntime
-    make -j $(nproc)
-    for i in $(ls ./baseExtensions); do
-        EX="${i##*.}"
-        if [[ "${EX}" != "mk" ]]; then
-            make -C ./baseExtensions/${i}
-        fi
-    done
-fi
+min=0
+max=99999
+ra=$((min + RANDOM % $((max-min))))
 
+PAK_NAME="l61-${ra}-pak"
+
+cp -rv ./deploymentFileSystem ./${PAK_NAME}
+cp -v ./build/l61.out ./${PAK_NAME}/bin/l61
+mkdir -p "${PAK_NAME}/lib/native"
+
+for i in $(ls ./baseExtensions); do
+        EX="${i##*.}"
+        if [[ "${EX}" != "mk" ]]; then
+            cp -v "./baseExtensions/${i}/${i}.lex61" "./${PAK_NAME}/lib/native"
+        fi
+done
