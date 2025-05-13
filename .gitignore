@@ -58,3 +58,5 @@ CMakeFiles/
 
 *.pkg.tar.zst
 /pkg
+./cache
+compile_commands.json
