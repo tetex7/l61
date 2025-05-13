@@ -99,9 +99,12 @@ class ConfigRecord final
     : forceMount(std::forward<std::vector<std::string>>(forceMount)), extension(std::forward<std::vector<std::string>>(extension)){}
 };
 
+class ExtensionManager;
+
 struct ProgramStatus
 {
     ScriptMode runMode;
+    std::unique_ptr<ExtensionManager> extension_manager;
 };
 
 struct l61_stat

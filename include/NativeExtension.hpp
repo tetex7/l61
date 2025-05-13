@@ -33,13 +33,17 @@ public:
     using ExtensionEntryPointCall_t = std::function<ExtensionEntryPoint_t>;
 private:
     std::string extensionPath;
-    void* const soHandle;
+    void* soHandle;
     ExtensionEntryPointCall_t extensionEntryPointCall;
 
-    void* blindSymbolLookup(const std::string& symStr) const;
+    [[nodiscard]] void* blindSymbolLookup(const std::string& symStr) const;
+
+    void isGoodExtension() const;
 public:
     static int safeExtensionLoad(const std::optional<NativeExtension>& extension, l61_api_extension_ptr api, bool required = true);
     static std::optional<NativeExtension> extensionLookUp(const std::string& exName);
+
+    [[nodiscard]] bool isValid() const;
 
     explicit NativeExtension(const std::string& path);
 
@@ -56,7 +60,7 @@ public:
 
     ~NativeExtension();
     NativeExtension(NativeExtension& nativeExtension) = delete;
-    NativeExtension(NativeExtension&& nativeExtension) = delete;
+    NativeExtension(NativeExtension&& nativeExtension) noexcept;
 };
 
 #endif //NATIVEEXTENSION_HPP

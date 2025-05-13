@@ -24,6 +24,7 @@
 #include "defs.hpp"
 #include <boost/program_options.hpp>
 
+#include "ExtensionManager.hpp"
 #include "NativeExtension.hpp"
 
 namespace po = boost::program_options;
@@ -62,6 +63,7 @@ l61_stat mstat = {
     __L61__FV_VER__,
     ProgramStatus {
         ScriptMode::UndefMode,
+        std::make_unique<ExtensionManager>()
     }
 };
 

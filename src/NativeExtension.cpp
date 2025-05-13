@@ -36,6 +36,14 @@ void* NativeExtension::blindSymbolLookup(const std::string& symStr) const
     return ptr;
 }
 
+void NativeExtension::isGoodExtension() const
+{
+    if (!this->isValid())
+    {
+        throw std::runtime_error("Invalid extension access");
+    }
+}
+
 int NativeExtension::safeExtensionLoad(const std::optional<NativeExtension>& extension, l61_api_extension_ptr api, bool required)
 {
     if (!extension.has_value())
@@ -62,6 +70,11 @@ std::optional<NativeExtension> NativeExtension::extensionLookUp(const std::strin
     return {};
 }
 
+bool NativeExtension::isValid() const
+{
+    return !soHandle ? false : true;
+}
+
 NativeExtension::NativeExtension(const std::string& path)
 : extensionPath(path), soHandle(dlopen(extensionPath.c_str(), RTLD_LAZY))
 {
@@ -77,17 +90,28 @@ NativeExtension::NativeExtension(const std::string& path)
 
 const NativeExtension::ExtensionEntryPointCall_t& NativeExtension::getExtensionEntryPointCall() const
 {
+    isGoodExtension();
     return this->extensionEntryPointCall;
 }
 
 const std::string& NativeExtension::getExtensionPath() const
 {
+    isGoodExtension();
     return extensionPath;
 }
 
 NativeExtension::~NativeExtension()
 {
-    dlclose(soHandle);
+    if (soHandle != NULL)
+    {
+        dlclose(soHandle);
+    }
+}
+
+NativeExtension::NativeExtension(NativeExtension&& nativeExtension) noexcept
+: extensionPath(std::move(nativeExtension.extensionPath)), soHandle(nativeExtension.soHandle), extensionEntryPointCall(std::move(nativeExtension.extensionEntryPointCall))
+{
+    nativeExtension.soHandle = NULL;
 }
 
 bool operator==(const NativeExtension& lhs, const NativeExtension& rhs) {
