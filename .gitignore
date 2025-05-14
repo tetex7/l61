@@ -50,6 +50,10 @@ l61-*-pak/
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles/
+cmake_install.cmake
+#Makefile
+CTestTestfile.cmake
+install_manifest.txt
 
 # Ignore test results (if you add a testing framework)
 *.gcno
@@ -58,5 +62,11 @@ CMakeFiles/
 
 *.pkg.tar.zst
 /pkg
-./cache
 compile_commands.json
+
+# Clangd junk
+.cache/
+.clangd/
+.clang-tidy
+
+.idea

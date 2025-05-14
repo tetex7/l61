@@ -25,7 +25,9 @@
 #include "defs.hpp"
 #include <optional>
 
-class NativeExtension final
+#include "l61Object.hpp"
+
+class NativeExtension final : public l61Object
 {
 public:
     using ExtensionEntryPoint_t = int(l61_api_extension_ptr);
@@ -52,13 +54,15 @@ public:
     [[nodiscard]]
     const std::string& getExtensionPath() const;
 
+    const std::string toString() const override;
+
     template<typename T>
     std::add_pointer_t<std::type_identity_t<T>> extensionSymbolLookup(const std::string& symStr) const
     {
         return reinterpret_cast<std::add_pointer_t<T>>(blindSymbolLookup(symStr));
     }
 
-    ~NativeExtension();
+    ~NativeExtension() override;
     NativeExtension(NativeExtension& nativeExtension) = delete;
     NativeExtension(NativeExtension&& nativeExtension) noexcept;
 };

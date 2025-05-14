@@ -23,10 +23,11 @@
 #ifndef SCRIPTENVIRONMENT_HPP
 #define SCRIPTENVIRONMENT_HPP
 #include "defs.hpp"
+#include "l61Object.hpp"
 /**
  * @brief  sds
  */
-/*abstract*/ class ScriptEnvironment
+/*abstract*/ class ScriptEnvironment : public l61Object
 {
 private:
     const std::string scriptFilePath;
@@ -60,7 +61,9 @@ public:
 
     int scriptRun(const std::vector<std::string>& args);
 
-    virtual ~ScriptEnvironment();
+    const std::string toString() const override;
+
+    ~ScriptEnvironment() override;
 };
 
 

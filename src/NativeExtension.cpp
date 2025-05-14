@@ -100,6 +100,11 @@ const std::string& NativeExtension::getExtensionPath() const
     return extensionPath;
 }
 
+const std::string NativeExtension::toString() const
+{
+    return this->getExtensionPath();
+}
+
 NativeExtension::~NativeExtension()
 {
     if (soHandle != NULL)

@@ -30,7 +30,7 @@ const NativeExtension& ExtensionManager::lookupAndLoadExtension(const std::strin
     auto exOpt = NativeExtension::extensionLookUp(extensionPath);
     if (exOpt.has_value())
     {
-        this->extension_map.emplace(extensionPath, std::move(exOpt.value()));
+        this->extension_map.emplace(extensionPath, std::make_unique<NativeExtension>(std::move(exOpt.value())));
         exOpt.value().getExtensionEntryPointCall()(api);
     }
     throw std::runtime_error("No extension found during lookup for "s + extensionPath);
@@ -38,5 +38,5 @@ const NativeExtension& ExtensionManager::lookupAndLoadExtension(const std::strin
 
 const NativeExtension& ExtensionManager::operator[](const std::string& exName)
 {
-    return extension_map[exName];
+    return *extension_map[exName];
 }

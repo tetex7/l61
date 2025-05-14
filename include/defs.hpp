@@ -94,8 +94,8 @@ class ConfigRecord final
 {
     std::vector<std::string> forceMount;
     std::vector<std::string> extension;
-    inline ConfigRecord(){}
-    inline ConfigRecord(std::vector<std::string>&& forceMount, std::vector<std::string>&& extension)
+    __inline ConfigRecord(){}
+    __inline ConfigRecord(std::vector<std::string>&& forceMount, std::vector<std::string>&& extension)
     : forceMount(std::forward<std::vector<std::string>>(forceMount)), extension(std::forward<std::vector<std::string>>(extension)){}
 };
 

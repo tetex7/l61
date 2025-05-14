@@ -16,30 +16,21 @@
  */
 
 //
-// Created by tete on 05/08/2025.
+// Created by tete on 05/13/2025.
 //
-#pragma once
-#ifndef EXTENSIONMANAGER_HPP
-#define EXTENSIONMANAGER_HPP
 
-#include "defs.hpp"
-#include "NativeExtension.hpp"
-class ExtensionManager final
+#include "l61Object.hpp"
+#include <typeinfo>
+using std::literals::operator ""s;
+
+l61Object::~l61Object() = default;
+
+const std::string l61Object::toString() const
 {
-private:
-    std::HashMap<std::string, std::unique_ptr<NativeExtension>> extension_map;
-public:
-    explicit ExtensionManager();
-    ~ExtensionManager();
+    return typeid(*this).name();
+}
 
-    const NativeExtension& lookupAndLoadExtension(const std::string& extensionPath, l61_api_extension_ptr api);
-
-    const NativeExtension& operator[](const std::string& exName);
-
-    ExtensionManager(ExtensionManager&) = delete;
-    ExtensionManager(ExtensionManager&&) = delete;
-};
-
-
-
-#endif //EXTENSIONMANAGER_HPP
+const std::size_t l61Object::hashCode() const
+{
+    return typeid(*this).hash_code();
+}

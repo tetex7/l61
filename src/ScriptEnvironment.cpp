@@ -92,4 +92,9 @@ int ScriptEnvironment::scriptRun(const std::vector<std::string>& args)
     return this->run(args);
 }
 
+const std::string ScriptEnvironment::toString() const
+{
+    return this->getScriptFilePath();
+}
+
 ScriptEnvironment::~ScriptEnvironment() = default;

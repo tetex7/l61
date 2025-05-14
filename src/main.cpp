@@ -25,7 +25,9 @@
 #include <boost/program_options.hpp>
 
 #include "ExtensionManager.hpp"
+#include "Logger.hpp"
 #include "NativeExtension.hpp"
+
 
 namespace po = boost::program_options;
 
@@ -150,7 +152,7 @@ int l61_main(int argc, const char* argv[])
         return 1;
     }
 
-    std::println("loading file {} in {}", mstat.make_file_path, scrModeToStr(mstat.procStat.runMode));
+    toLogger(LogLevel::INFO, "loading file {} in {}", mstat.make_file_path, scrModeToStr(mstat.procStat.runMode));
 
     switch (mstat.procStat.runMode)
     {
@@ -169,12 +171,12 @@ int l61_main(int argc, const char* argv[])
 
     std::vector<std::string> lua_arg_vector = {};
 
-    for (std::size_t i = 0; i < argc; i++)
+    for (std::size_t i = 0; i < static_cast<std::size_t>(argc); i++)
     {
         lua_arg_vector.emplace_back(argv[i]);
     }
 
-    NativeExtension::safeExtensionLoad(NativeExtension::extensionLookUp("base.lex61"s), &exdata, false);
+    //NativeExtension::safeExtensionLoad(NativeExtension::extensionLookUp("base.lex61"s), &exdata, false);
 
     shEnv->addValue("spaths"s, mstat.spaths);
 
