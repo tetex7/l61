@@ -24,6 +24,7 @@
 #include <defs.hpp>
 #include <chrono>
 #include <ctime>
+#include <format>
 
 
 enum class LogLevel : std::uint8_t
@@ -62,7 +63,17 @@ void toLogger(LogLevel level, std::format_string<Ty...> fmt, Ty&&... v_ty)
 
     // Convert to tm structure for broken-down time
     std::tm* now_tm = std::localtime(&now_time_t);
-    std::println("[{}:{}:{}][{}][{}]: {}",
+
+    decltype(std::cout)* v = &std::cout;
+
+    if (static_cast<std::uint8_t>(LogLevel::ERROR) <= static_cast<std::uint8_t>(level))
+    {
+        v = &std::cerr;
+    }
+
+    std::println(
+        *v,
+        "[{}:{}:{}][{}][{}]: {}",
         now_tm->tm_hour,
         now_tm->tm_min,
         now_tm->tm_sec,

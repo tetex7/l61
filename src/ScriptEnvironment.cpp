@@ -20,11 +20,12 @@
 //
 
 #include "ScriptEnvironment.hpp"
+#include "Logger.hpp"
 
 void ScriptEnvironment::lib61_setup()
 {
     auto lb = getLuaCtx().create_named_table("l61");
-    lb.set_function("getPwd", []() {
+    lb.set_function("getPwd", []() -> std::string {
         return mstat.work_path;
     });
 }
@@ -92,7 +93,7 @@ int ScriptEnvironment::scriptRun(const std::vector<std::string>& args)
     return this->run(args);
 }
 
-const std::string ScriptEnvironment::toString() const
+std::string ScriptEnvironment::toString() const
 {
     return this->getScriptFilePath();
 }

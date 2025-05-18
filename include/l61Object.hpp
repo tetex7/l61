@@ -29,8 +29,8 @@ class l61Object
 public:
     virtual ~l61Object();
 
-    virtual const std::string toString() const;
-    virtual const std::size_t hashCode() const;
+    virtual std::string toString() const;
+    virtual std::size_t hashCode() const;
 };
 
 

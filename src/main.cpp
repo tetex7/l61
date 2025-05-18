@@ -177,12 +177,20 @@ int l61_main(int argc, const char* argv[])
     }
 
     //NativeExtension::safeExtensionLoad(NativeExtension::extensionLookUp("base.lex61"s), &exdata, false);
+    mstat.procStat.extension_manager->lookupAndLoadExtension("base.lex61", &exdata);
 
     shEnv->addValue("spaths"s, mstat.spaths);
 
     return shEnv->scriptRun(lua_arg_vector);
 }
 
+
+/**
+ * @brief A slim main for exception handling
+ * @param argc Number of arguments
+ * @param argv A pointer to the ray of arguments
+ * @return Exit code
+ */
 int main(int argc, const char* argv[])
 {
     try

@@ -22,6 +22,34 @@
 #include "NativeExtension.hpp"
 #include <dlfcn.h>
 #include "defs.hpp"
+#include "Logger.hpp"
+
+int NativeExtension::safeExtensionLoad(const std::expected<NativeExtension, std::string>& extension, l61_api_extension_ptr api, bool required)
+{
+    if (!extension.has_value())
+    {
+        if (!required)
+        {
+            toLogger(LogLevel::ERROR, "{}", extension.error());
+            return 1;
+        }
+        throw std::runtime_error(extension.error());
+    }
+    return extension->getExtensionEntryPointCall()(api);
+}
+
+std::expected<NativeExtension, std::string> NativeExtension::extensionLookUp(const std::string& exName)
+{
+    for (const std::string& _path : mstat.spaths)
+    {
+        std::string path = (fs::path(_path) / "native" / exName).string();
+        if (fs::exists(path))
+        {
+            return NativeExtension(path);
+        }
+    }
+    return std::unexpected(std::format("Extension '{}' does not exist", exName));
+}
 
 void* NativeExtension::blindSymbolLookup(const std::string& symStr) const
 {
@@ -44,32 +72,6 @@ void NativeExtension::isGoodExtension() const
     }
 }
 
-int NativeExtension::safeExtensionLoad(const std::optional<NativeExtension>& extension, l61_api_extension_ptr api, bool required)
-{
-    if (!extension.has_value())
-    {
-        if (!required)
-        {
-            return 1;
-        }
-        throw std::runtime_error("Extension does not exist");
-    }
-    return extension->getExtensionEntryPointCall()(api);
-}
-
-std::optional<NativeExtension> NativeExtension::extensionLookUp(const std::string& exName)
-{
-    for (const std::string& _path : mstat.spaths)
-    {
-        std::string path = _path + "/native/"s + exName;
-        if (fs::exists(path))
-        {
-            return std::make_optional<NativeExtension>(path);
-        }
-    }
-    return {};
-}
-
 bool NativeExtension::isValid() const
 {
     return !soHandle ? false : true;
@@ -85,7 +87,7 @@ NativeExtension::NativeExtension(const std::string& path)
     dlerror();
 
     this->extensionEntryPointCall = reinterpret_cast<ExtensionEntryPointPtr_t>(blindSymbolLookup("__l61_rt_ex_init__"));
-    std::println("loaded NativeExtension on path: \"{}\"", path);
+    toLogger(LogLevel::INFO, "loaded NativeExtension on path: \"{}\"", path);
 }
 
 const NativeExtension::ExtensionEntryPointCall_t& NativeExtension::getExtensionEntryPointCall() const
@@ -100,7 +102,7 @@ const std::string& NativeExtension::getExtensionPath() const
     return extensionPath;
 }
 
-const std::string NativeExtension::toString() const
+std::string NativeExtension::toString() const
 {
     return this->getExtensionPath();
 }

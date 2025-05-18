@@ -59,9 +59,9 @@ public:
 
     sol::table makeTable(const std::string& name);
 
-    int scriptRun(const std::vector<std::string>& args);
+    virtual int scriptRun(const std::vector<std::string>& args);
 
-    const std::string toString() const override;
+    std::string toString() const override;
 
     ~ScriptEnvironment() override;
 };

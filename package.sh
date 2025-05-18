@@ -31,3 +31,5 @@ for i in $(ls ./baseExtensions); do
             cp -v "./baseExtensions/${i}/${i}.lex61" "./${PAK_NAME}/lib/native"
         fi
 done
+
+cp -rv ./include ./${PAK_NAME}/l61_include

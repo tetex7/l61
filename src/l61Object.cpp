@@ -25,12 +25,12 @@ using std::literals::operator ""s;
 
 l61Object::~l61Object() = default;
 
-const std::string l61Object::toString() const
+std::string l61Object::toString() const
 {
     return typeid(*this).name();
 }
 
-const std::size_t l61Object::hashCode() const
+std::size_t l61Object::hashCode() const
 {
     return typeid(*this).hash_code();
 }

@@ -23,7 +23,7 @@
 #define NATIVEEXTENSION_HPP
 
 #include "defs.hpp"
-#include <optional>
+#include <expected>
 
 #include "l61Object.hpp"
 
@@ -42,8 +42,8 @@ private:
 
     void isGoodExtension() const;
 public:
-    static int safeExtensionLoad(const std::optional<NativeExtension>& extension, l61_api_extension_ptr api, bool required = true);
-    static std::optional<NativeExtension> extensionLookUp(const std::string& exName);
+    static int safeExtensionLoad(const std::expected<NativeExtension, std::string>& extension, l61_api_extension_ptr api, bool required = true);
+    static std::expected<NativeExtension, std::string> extensionLookUp(const std::string& exName);
 
     [[nodiscard]] bool isValid() const;
 
@@ -54,7 +54,7 @@ public:
     [[nodiscard]]
     const std::string& getExtensionPath() const;
 
-    const std::string toString() const override;
+    std::string toString() const override;
 
     template<typename T>
     std::add_pointer_t<std::type_identity_t<T>> extensionSymbolLookup(const std::string& symStr) const
