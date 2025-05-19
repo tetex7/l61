@@ -36,6 +36,9 @@
 #include <print>
 
 #define C_CALL extern "C"
+#ifndef LEX61_SYM_LOOKUP_COMPAT
+#   define LEX61_SYM_LOOKUP_COMPAT extern "C"
+#endif
 
 namespace fs = std::filesystem;
 
@@ -125,6 +128,13 @@ struct l61_api_extension_t
 {
     l61_stat& l61Ctx;
     std::unique_ptr<ScriptEnvironment>& scriptCtx;
+};
+
+struct lex61_header_t
+{
+    const std::string name;
+    const std::vector<std::string> authors;
+    const std::string known_compat_version;
 };
 
 using l61_api_extension_ptr = l61_api_extension_t*;

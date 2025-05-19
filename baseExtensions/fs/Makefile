@@ -54,7 +54,7 @@ CPP_OBJ_FILES += $(RT_OBJ_DIR)
 
 # All object files
 OBJ_FILES = $(C_OBJ_FILES) $(CPP_OBJ_FILES)
-TARGET = base.lex61
+TARGET = fs.lex61
 
 # Default rule: build the target
 all: $(TARGET)

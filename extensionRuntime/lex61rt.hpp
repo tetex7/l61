@@ -15,37 +15,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-//
-// Created by tete on 05/13/2025.
-//
+#pragma once
+#ifndef LEX61RT_HPP
+#define LEX61RT_HPP
 
-#ifndef L61OBJECT_HPP
-#define L61OBJECT_HPP
+#define LEX61_SYM_LOOKUP_COMPAT extern "C"
 
-#include <string>
-#include <type_traits>
-#include <utility>
+#include "defs.hpp"
 
-class l61Object;
-
-template<class T>
-concept l61Obj = std::is_base_of<l61Object, T>::value;
-
-
-class l61Object
+namespace lex61rt 
 {
-public:
-    virtual ~l61Object();
-
-    virtual std::string toString() const;
-    virtual std::size_t hashCode() const;
-};
-
-
-template<l61Obj T>
-constexpr l61Object& toL61Obj(T&& v)
-{
-    return std::forward<l61Object&>(v);
+    using lex61_header_t = const ::lex61_header_t;
+    extern l61_api_extension_ptr getApiData();
 }
 
-#endif //L61OBJECT_HPP
+#define LEX61RT_MAKE_HEADER(...) \
+LEX61_SYM_LOOKUP_COMPAT lex61rt::lex61_header_t __lex61_header__ = { \
+    __VA_ARGS__ \
+}
+
+LEX61_SYM_LOOKUP_COMPAT {
+    extern lex61rt::lex61_header_t __lex61_header__;
+}
+
+#endif

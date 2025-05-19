@@ -16,36 +16,25 @@
  */
 
 //
-// Created by tete on 05/13/2025.
+// Created by tete on 05/05/2025.
 //
 
-#ifndef L61OBJECT_HPP
-#define L61OBJECT_HPP
+#include "defs.hpp"
 
-#include <string>
-#include <type_traits>
-#include <utility>
+static l61_api_extension_t* raw = nullptr;
 
-class l61Object;
-
-template<class T>
-concept l61Obj = std::is_base_of<l61Object, T>::value;
-
-
-class l61Object
-{
-public:
-    virtual ~l61Object();
-
-    virtual std::string toString() const;
-    virtual std::size_t hashCode() const;
-};
-
-
-template<l61Obj T>
-constexpr l61Object& toL61Obj(T&& v)
-{
-    return std::forward<l61Object&>(v);
+namespace lex61rt
+{ 
+    l61_api_extension_ptr getApiData()
+    {
+        return raw;
+    }
 }
 
-#endif //L61OBJECT_HPP
+extern int l61_extension_init();
+
+C_CALL int __l61_rt_ex_init__(l61_api_extension_t* api) // NOLINT(*-reserved-identifier)
+{
+    raw = api;
+    return l61_extension_init();
+}

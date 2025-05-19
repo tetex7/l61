@@ -19,6 +19,8 @@
 // Created by tete on 05/05/2025.
 //
 #pragma once
+#include <stdexcept>
+#include <type_traits>
 #ifndef NATIVEEXTENSION_HPP
 #define NATIVEEXTENSION_HPP
 
@@ -30,6 +32,10 @@
 class NativeExtension final : public l61Object
 {
 public:
+    static constexpr const char* entryPointSymbolName = "__l61_rt_ex_init__";
+
+    static constexpr const char* headerSymbolName = "__lex61_header__";
+
     using ExtensionEntryPoint_t = int(l61_api_extension_ptr);
     using ExtensionEntryPointPtr_t = std::add_pointer_t<ExtensionEntryPoint_t>;
     using ExtensionEntryPointCall_t = std::function<ExtensionEntryPoint_t>;
@@ -57,9 +63,24 @@ public:
     std::string toString() const override;
 
     template<typename T>
-    std::add_pointer_t<std::type_identity_t<T>> extensionSymbolLookup(const std::string& symStr) const
+    std::expected<std::add_pointer_t<std::type_identity_t<T>>, std::string> extensionSymbolLookup(const std::string& symStr) const
     {
-        return reinterpret_cast<std::add_pointer_t<T>>(blindSymbolLookup(symStr));
+        try
+        {
+            return reinterpret_cast<std::add_pointer_t<T>>(blindSymbolLookup(symStr));
+        }
+        catch (std::runtime_error& e)
+        {
+            return std::unexpected(e.what());
+        }
+        
+    }
+
+    const lex61_header_t* getExtensionHeader() const;
+
+    inline const lex61_header_t& getExtensionHeaderAsRef() const
+    {
+        return *getExtensionHeader();
     }
 
     ~NativeExtension() override;

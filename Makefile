@@ -42,7 +42,7 @@ LDLIBS = -rdynamic -llua -lreadline -lboost_program_options
 SRC_DIR = src
 BIN_DIR = build
 OBJ_DIR = ${BIN_DIR}
-INCLUDE_DIR = ./include
+INCLUDE_DIR = -I./include -I./src
 
 # Source files and object files
 C_SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
@@ -67,11 +67,11 @@ $(TARGET): $(OBJ_FILES)
 # Rule to compile source files into object files
 $(OBJ_DIR)/%.c.o: $(SRC_DIR)/%.c
 	@mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) -I$(INCLUDE_DIR) -c $< -o $(OBJ_DIR)/$*.c.o
+	$(CC) $(CFLAGS) $(INCLUDE_DIR) -c $< -o $(OBJ_DIR)/$*.c.o
 
 $(OBJ_DIR)/%.cpp.o: $(SRC_DIR)/%.cpp
 	@mkdir -p $(OBJ_DIR)
-	$(CXX) $(CPPFLAGS) -I$(INCLUDE_DIR) -c $< -o $(OBJ_DIR)/$*.cpp.o
+	$(CXX) $(CPPFLAGS) $(INCLUDE_DIR) -c $< -o $(OBJ_DIR)/$*.cpp.o
 
 # Rule for cleaning up build artifacts
 clean:

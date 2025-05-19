@@ -20,6 +20,9 @@
 //
 #pragma once
 
+#include "sol/sol.hpp"
+#include <optional>
+#include <stdexcept>
 #ifndef SCRIPTENVIRONMENT_HPP
 #define SCRIPTENVIRONMENT_HPP
 #include "defs.hpp"
@@ -38,7 +41,7 @@ private:
 protected:
 
     l61_stat& getScriptCtx();
-    sol::state& getLuaCtx();
+
     const std::string& getScriptFilePath() const;
 
     virtual int run(const std::vector<std::string>& args) = 0;
@@ -56,6 +59,35 @@ public:
     {
         auto var = getLuaCtx()[key] = std::forward<T>(value);
     }
+
+
+    template<class T>
+    T getValue(const std::string& key)
+    {
+        auto temp = getLuaCtx()[key];
+        if ((temp != sol::nil))
+        {
+            if (temp.is<T>())
+            {
+                return temp.get<T>();
+            }
+        }
+        throw std::runtime_error(std::format("Value not exst {}", key));
+    }
+
+    template<class T>
+    void setValue(const std::string& key, const T& value)
+    {
+        auto temp = getLuaCtx()[key];
+        if (temp.is<T>())
+        {
+            return temp.set(value);
+        }
+    }
+
+    bool has(const std::string& key);
+
+    sol::state& getLuaCtx();
 
     sol::table makeTable(const std::string& name);
 

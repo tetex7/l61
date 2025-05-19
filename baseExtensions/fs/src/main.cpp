@@ -15,17 +15,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-//
-// Created by tete on 05/05/2025.
-//
-
-#include <memory>
 #include "defs.hpp"
 #include "ScriptEnvironment.hpp"
+#include "sol/sol.hpp"
+#include "lex61rt.hpp"
+#include "ExtensionManager.hpp"
 
-extern int l61_extension_init(l61_api_extension_t* api);
+LEX61RT_MAKE_HEADER(
+    "fs",
+    { "Tetex7" },
+    "1.0.0"
+);
 
-C_CALL int __l61_rt_ex_init__(l61_api_extension_t* api) // NOLINT(*-reserved-identifier)
+int l61_extension_init()
+{
+    return 0;
+}
+
+/*C_CALL int __l61_rt_ex_init__(l61_api_extension_t* api) // NOLINT(*-reserved-identifier)
 {
     return l61_extension_init(api);
-}
+}*/

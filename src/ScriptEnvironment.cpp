@@ -21,10 +21,11 @@
 
 #include "ScriptEnvironment.hpp"
 #include "Logger.hpp"
+#include "sol/sol.hpp"
 
 void ScriptEnvironment::lib61_setup()
 {
-    auto lb = getLuaCtx().create_named_table("l61");
+    auto lb = has("l61") ? getValue<sol::table>("l61") : getLuaCtx().create_named_table("l61");
     lb.set_function("getPwd", []() -> std::string {
         return mstat.work_path;
     });
@@ -96,6 +97,11 @@ int ScriptEnvironment::scriptRun(const std::vector<std::string>& args)
 std::string ScriptEnvironment::toString() const
 {
     return this->getScriptFilePath();
+}
+
+bool ScriptEnvironment::has(const std::string& key)
+{
+    return getLuaCtx()[key] != sol::nil;
 }
 
 ScriptEnvironment::~ScriptEnvironment() = default;

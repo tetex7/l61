@@ -21,6 +21,7 @@
 
 #include "NativeExtension.hpp"
 #include <dlfcn.h>
+#include <stdexcept>
 #include "defs.hpp"
 #include "Logger.hpp"
 
@@ -68,7 +69,7 @@ void NativeExtension::isGoodExtension() const
 {
     if (!this->isValid())
     {
-        throw std::runtime_error("Invalid extension access");
+        throw std::runtime_error("Invalid extension access (exmove)");
     }
 }
 
@@ -86,7 +87,7 @@ NativeExtension::NativeExtension(const std::string& path)
     }
     dlerror();
 
-    this->extensionEntryPointCall = reinterpret_cast<ExtensionEntryPointPtr_t>(blindSymbolLookup("__l61_rt_ex_init__"));
+    this->extensionEntryPointCall = reinterpret_cast<ExtensionEntryPointPtr_t>(blindSymbolLookup(entryPointSymbolName));
     toLogger(LogLevel::INFO, "loaded NativeExtension on path: \"{}\"", path);
 }
 
@@ -100,6 +101,16 @@ const std::string& NativeExtension::getExtensionPath() const
 {
     isGoodExtension();
     return extensionPath;
+}
+
+const lex61_header_t* NativeExtension::getExtensionHeader() const
+{
+    auto header = this->extensionSymbolLookup<const lex61_header_t>(headerSymbolName);
+    if (header.has_value())
+    {
+        return header.value();
+    }
+    throw std::runtime_error(std::format("'{}' has no header", this->getExtensionPath()));
 }
 
 std::string NativeExtension::toString() const

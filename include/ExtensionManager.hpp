@@ -32,11 +32,12 @@ public:
     explicit ExtensionManager();
     ~ExtensionManager();
 
-    std::optional<const NativeExtension&> lookupAndLoadExtension(const std::string& extensionPath, l61_api_extension_ptr api, bool require = true);
+    NativeExtension& lookupAndLoadExtension(const std::string& extensionPath, l61_api_extension_ptr api);
 
     bool has(const std::string& exName) const;
 
-    const NativeExtension& operator[](const std::string& exName);
+    const NativeExtension& get(const std::string& exName) const;
+    const NativeExtension& operator[](const std::string& exName) const;
 
     ExtensionManager(ExtensionManager&) = delete;
     ExtensionManager(ExtensionManager&&) = delete;

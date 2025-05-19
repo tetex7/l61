@@ -31,60 +31,18 @@ endif
 
 CFLAGS = ${GCCFLAG} -std=gnu99
 CPPFLAGS = ${GCCFLAG} -std=gnu++23
-LDFLAGS =  # Link as a shared object
-LDLIBS = -llua -lreadline -lboost_program_options
 
-
-# Directories
 SRC_DIR = src
-BIN_DIR = build
-OBJ_DIR = ${BIN_DIR}
+
 INCLUDE_DIR = -I./include -I../include
 
-# Source files and object files
-C_SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
-CPP_SRC_FILES = $(wildcard $(SRC_DIR)/*.cpp)
+RT_OBJ = l61_extension_rt.o
 
-# Object files for C and C++ sources
-C_OBJ_FILES = $(C_SRC_FILES:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.c.o)
-CPP_OBJ_FILES = $(CPP_SRC_FILES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.cpp.o)
-
-# All object files
-OBJ_FILES = $(C_OBJ_FILES) $(CPP_OBJ_FILES)
-TARGET = $(BIN_DIR)/libl61_extension_rt.a
-
-# Default rule: build the target
-all: $(TARGET)
-
-# Rule to link object files into the shared library
-$(TARGET): $(OBJ_FILES)
-	@mkdir -p $(BIN_DIR)
-	$(AR) rcs $(TARGET) $(OBJ_FILES)
-
-# Rule to compile source files into object files
-$(OBJ_DIR)/%.c.o: $(SRC_DIR)/%.c
-	@mkdir -p $(OBJ_DIR)
-	$(CC) $(CFLAGS) $(INCLUDE_DIR) -c $< -o $(OBJ_DIR)/$*.c.o
-
-$(OBJ_DIR)/%.cpp.o: $(SRC_DIR)/%.cpp
-	@mkdir -p $(OBJ_DIR)
-	$(CXX) $(CPPFLAGS) $(INCLUDE_DIR) -c $< -o $(OBJ_DIR)/$*.cpp.o
+$(RT_OBJ): rt_main.cpp
+	$(CXX) $(CPPFLAGS) $(INCLUDE_DIR) -c $< -o $(RT_OBJ)
 
 # Rule for cleaning up build artifacts
 clean:
-	rm -rf $(OBJ_DIR) $(BIN_DIR)
-
-# Rule to remove only object files
-clean-obj:
-	rm -rf $(OBJ_DIR)/*.c.o
-
-# Rule to remove only the shared library
-clean-bin:
-	rm -rf $(BIN_DIR)/$(notdir $(TARGET))
-
-# Rule to build and run tests (if you add tests in the future)
-test: $(TARGET)
-	./$(TARGET)
-
+	rm -f ./${RT_OBJ}
 # Phony targets (not actual files)
 .PHONY: all clean clean-obj clean-bin test
