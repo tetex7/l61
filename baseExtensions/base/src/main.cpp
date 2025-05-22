@@ -49,17 +49,17 @@ int l61_extension_init()
     {
         try
         {
-        auto& ex = extension_manager.lookupAndLoadExtension(str, lex61rt::getApiData(), false);
-        if (ex.getExtensionHeader()->authors[0] != "Tetex7"s)
-        {
-            std::println("no good header for {}", str);
-            std::exit(1);
-        }
-        else
-        {
-            int rt = ex.getExtensionEntryPointCall()(lex61rt::getApiData());
-            if (rt != 0) return rt; 
-        }
+            auto& ex = extension_manager.lookupAndLoadExtension(str, lex61rt::getApiData(), false);
+            if (ex.getExtensionHeader()->authors[0] != "Tetex7"s)
+            {
+                std::println("no good header for {}", str);
+                std::exit(1);
+            }
+            else
+            {
+                int rt = ex.getExtensionEntryPointCall()(lex61rt::getApiData());
+                if (rt != 0) return rt;
+            }
         } 
         catch (std::exception& exception)
         {
