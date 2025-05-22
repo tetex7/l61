@@ -35,22 +35,27 @@
 #include "sol/sol.hpp"
 #include <print>
 
+#include "json.hpp"
+
 #define C_CALL extern "C"
 #ifndef LEX61_SYM_LOOKUP_COMPAT
 #   define LEX61_SYM_LOOKUP_COMPAT extern "C"
 #endif
-
-namespace fs = std::filesystem;
-
-using std::literals::operator ""s;
-
-using FLAG = bool;
 
 namespace std
 {
     template<class K, class V>
     using HashMap = std::unordered_map<K, V>;
 }
+
+namespace fs = std::filesystem;
+
+using std::literals::operator ""s;
+
+namespace l61
+{
+
+using flag_t = bool;
 
 enum class ScriptMode : std::uint8_t
 {
@@ -104,10 +109,19 @@ class ConfigRecord final
 
 class ExtensionManager;
 
+struct config_t
+{
+    std::vector<std::string> spaths;
+    std::vector<std::string> plugins;
+    NLOHMANN_DEFINE_TYPE_INTRUSIVE(config_t, spaths, plugins);
+};
+
 struct ProgramStatus
 {
     ScriptMode runMode;
     std::unique_ptr<ExtensionManager> extension_manager;
+    config_t config;
+    flag_t verbose;
 };
 
 struct l61_stat
@@ -141,5 +155,5 @@ using l61_api_extension_ptr = l61_api_extension_t*;
 
 extern std::unique_ptr<ScriptEnvironment> shEnv;
 extern l61_stat mstat;
-
+}
 #endif //DEFS_HPP

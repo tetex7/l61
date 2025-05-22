@@ -23,6 +23,8 @@
 #define BUILDSCRIPT_HPP
 
 #include "ScriptEnvironment.hpp"
+namespace l61
+{
 
 class BuildScript : public ScriptEnvironment
 {
@@ -34,6 +36,6 @@ public:
     ~BuildScript() override;
 };
 
-
+}
 
 #endif //BUILDSCRIPT_HPP

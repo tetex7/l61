@@ -24,7 +24,8 @@
 #include <stdexcept>
 #include "defs.hpp"
 #include "Logger.hpp"
-
+namespace l61
+{
 int NativeExtension::safeExtensionLoad(const std::expected<NativeExtension, std::string>& extension, l61_api_extension_ptr api, bool required)
 {
     if (!extension.has_value())
@@ -132,10 +133,11 @@ NativeExtension::NativeExtension(NativeExtension&& nativeExtension) noexcept
     nativeExtension.soHandle = NULL;
 }
 
+
 bool operator==(const NativeExtension& lhs, const NativeExtension& rhs) {
     return lhs.getExtensionPath() == rhs.getExtensionPath();
 }
-
+}
 /*namespace std {
     template <>
     struct hash<NativeExtension> {

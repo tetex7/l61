@@ -19,10 +19,18 @@
 // Created by tete on 04/27/2025.
 //
 
+
+#include <boost/program_options.hpp>
+#include <filesystem>
+#include <iterator>
+#include <readline/readline.h>
+#include <array>
+#include <csignal>
+#include <string>
+
 #include "BuildScript.hpp"
 #include "ShellScript.hpp"
 #include "defs.hpp"
-#include <boost/program_options.hpp>
 
 #include "ExtensionManager.hpp"
 #include "Logger.hpp"
@@ -31,48 +39,46 @@
 
 namespace po = boost::program_options;
 
+namespace l61
+{
 std::unique_ptr<ScriptEnvironment> shEnv;
 
-std::string get_exe_str()
-{
-    std::unique_ptr<char[]> exe_buff = std::unique_ptr<char[]>(new char[PATH_MAX]);
-    ssize_t len = readlink("/proc/self/exe", exe_buff.get(), PATH_MAX);
-    std::unique_ptr<char[]> out_buff = std::unique_ptr<char[]>(new char[len+1]);
-    std::strncpy(out_buff.get(), exe_buff.get(), len+1);
-    return std::string(out_buff.get());
-}
-
-/*ConfigRecord getConfg()
-{
-    if (fs::exists("/etc/l61.lua"))
-    {
-        return ConfigEnvironment("/etc/l61.lua", mstat).getConfig();
-    }
-    return  {{},{}};
-}*/
 
 l61_stat mstat = {
     fs::current_path().string(),
     fs::current_path().string() + "/build.l61",
-    get_exe_str(),
+    fs::read_symlink("/proc/self/exe"),
     std::getenv("USER"),
     std::getenv("HOME"),
     std::vector {
-        (fs::path(get_exe_str()).parent_path().parent_path().string() + "/lib"),
+        (fs::read_symlink("/proc/self/exe").parent_path().parent_path().string() + "/lib"),
         (std::string(std::getenv("HOME")) + "/l61_lib"),
         (fs::current_path().string() + "/scripts")
     },
     __L61__FV_VER__,
     ProgramStatus {
         ScriptMode::UndefMode,
-        std::make_unique<ExtensionManager>()
+        std::make_unique<ExtensionManager>(),
+        {},
+        0
     }
 };
+}
+
+using namespace l61;
+
+config_t mkConfig()
+{
+    return {
+        {},
+        {}
+    };
+}
 
 
 
 #define REP_BUG_TEXT "Copyright (C) 2025  Tetex7.\nFor Docs and bug reporting\nplease see: <https://github.com/tetex7/l61>."
-void help(po::options_description& desc)
+static void help(po::options_description& desc)
 {
     cout_print("Usage: l61 [options] [PATH_TO_FILE]\n");
     cout_print(desc);
@@ -86,7 +92,24 @@ l61_api_extension_t exdata = {
     shEnv
 };
 
-int l61_main(int argc, const char* argv[])
+
+static void sighandler_f(int sig)
+{
+    switch (sig)
+    {
+    case SIGINT:
+        {
+            std::string sg = readline("exit?(yes/no): ");
+            if (sg == "yes" || sg == "y")
+            {
+                std::exit(0);
+            }
+            break;
+        }
+    };
+}
+
+static int l61_main(int argc, const char* argv[])
 {
     po::options_description desc("l61 options"s);
     desc.add_options()
@@ -95,16 +118,22 @@ int l61_main(int argc, const char* argv[])
     ("mode,m", po::value<std::string>()->value_name(R"({"shell" or "build"})"s), "Every mode is specialized to what they're used for")
     ("cd,C", po::value<std::string>()->value_name("path"s), "Falsifies the current directory")
     ("spaths,", "Dumps the built-in spaths")
-    ("add-to-spaths,p", po::value<std::vector<std::string>>()->composing(), "Add values to the spaths");
+    ("add-to-spaths,p", po::value<std::vector<std::string>>()->composing(), "Add values to the spaths")
+    ("verbose,v", "more loging");
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
     po::notify(vm);
 
+    if (vm.contains("verbose"s))
+    {
+        mstat.procStat.verbose = 1;
+    }
+
     if (vm.contains("help"s))
     {
         help(desc);
-        return 1;
+        return 0;
     }
 
     if (vm.contains("add-to-spaths"s))
@@ -144,6 +173,10 @@ int l61_main(int argc, const char* argv[])
     {
         mstat.make_file_path = vm["script"s].as<std::string>();
     }
+
+    rl_initialize();
+
+    std::signal(SIGINT, &sighandler_f);
 
     if (!fs::exists(mstat.make_file_path))
     {
@@ -199,7 +232,8 @@ int main(int argc, const char* argv[])
     }
     catch (std::exception& e)
     {
-        std::println(std::cerr, "error: {}", e.what());
+        toLogger(LogLevel::FATAL, "{}", e.what());
+        //std::println(std::cerr, "error: {}", e.what());
         exit(1);
     }
 }

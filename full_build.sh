@@ -16,6 +16,14 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+if [[ "$FVER" == "" ]]; then
+    FVER="dev"
+fi
+
+if [[ "$DEBUG" == "" ]]; then
+    DEBUG=1
+fi
+
 if [[ "$1" == "clean" ]]; then
     make -C ./extensionRuntime clean
     make clean
@@ -27,13 +35,14 @@ if [[ "$1" == "clean" ]]; then
     done
     rm -rfv ./pkg
     rm -rfv ./l61-*-pak
+    rm -fv ./l61-*-x86_64.pkg.tar.zst
 else
-    make -C ./extensionRuntime
-    make -j $(nproc)
+    make -C ./extensionRuntime DEBUG=$DEBUG
+    make -j $(nproc) RVER=${RVER} DEBUG=$DEBUG
     for i in $(ls ./baseExtensions); do
         EX="${i##*.}"
         if [[ "${EX}" != "mk" ]]; then
-            make -C ./baseExtensions/${i}
+            make -C ./baseExtensions/${i} -j $(nproc) DEBUG=$DEBUG
         fi
     done
 fi

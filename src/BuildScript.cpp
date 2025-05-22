@@ -20,6 +20,8 @@
 //
 
 #include "BuildScript.hpp"
+namespace l61
+{
 
 BuildScript::BuildScript(const std::string& scriptFilePath, l61_stat& scriptCtx)
 : ScriptEnvironment(scriptFilePath, scriptCtx)
@@ -46,4 +48,5 @@ void BuildScript::scriptPreInit()
         sol::lib::bit32,
         sol::lib::table
     );
+}
 }

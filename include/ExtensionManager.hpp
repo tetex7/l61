@@ -24,6 +24,9 @@
 
 #include "defs.hpp"
 #include "NativeExtension.hpp"
+
+namespace l61
+{
 class ExtensionManager final
 {
 private:
@@ -32,7 +35,7 @@ public:
     explicit ExtensionManager();
     ~ExtensionManager();
 
-    NativeExtension& lookupAndLoadExtension(const std::string& extensionPath, l61_api_extension_ptr api);
+    NativeExtension& lookupAndLoadExtension(const std::string& extensionPath, l61_api_extension_ptr api, bool loadEntryPoint = true);
 
     bool has(const std::string& exName) const;
 
@@ -42,7 +45,7 @@ public:
     ExtensionManager(ExtensionManager&) = delete;
     ExtensionManager(ExtensionManager&&) = delete;
 };
-
+}
 
 
 #endif //EXTENSIONMANAGER_HPP

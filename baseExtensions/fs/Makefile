@@ -24,14 +24,16 @@ AR = ar
 GCCFLAG = -Wall -Wextra -Werror -pedantic -fno-strict-aliasing -DSOL_ALL_SAFETIES_ON -fPIC #for Position Independent Code
 
 ifeq ($(DEBUG),1)
-  GCCFLAGS += -g -O0
+  DBUG_FLAGS = -g -O0
 else
-  GCCFLAGS += -O2
+  DBUG_FLAGS = -O2 -g
 endif
+
+GCCFLAG += $(DBUG_FLAGS)
 
 CFLAGS = ${GCCFLAG} -std=gnu99
 CPPFLAGS = ${GCCFLAG} -std=gnu++23
-LDFLAGS =  -shared # Link as a shared object
+LDFLAGS = $(DBUG_FLAGS) -shared # Link as a shared object
 LDLIBS = -fPIC -llua -lreadline
 
 

@@ -22,6 +22,8 @@
 #include "l61Object.hpp"
 #include <typeinfo>
 using std::literals::operator ""s;
+namespace l61
+{
 
 l61Object::~l61Object() = default;
 
@@ -33,4 +35,5 @@ std::string l61Object::toString() const
 std::size_t l61Object::hashCode() const
 {
     return typeid(*this).hash_code();
+}
 }

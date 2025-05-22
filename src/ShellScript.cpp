@@ -21,7 +21,8 @@
 
 #include "ShellScript.hpp"
 
-
+namespace l61
+{
 int ShellScript::run(const std::vector<std::string>& args)
 {
     getLuaCtx()["args"] = args;
@@ -40,3 +41,4 @@ void ShellScript::scriptPreInit()
 ShellScript::ShellScript(const std::string& scriptFilePath, l61_stat& scriptCtx): ScriptEnvironment(scriptFilePath, scriptCtx){}
 
 ShellScript::~ShellScript() = default;
+}

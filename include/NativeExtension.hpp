@@ -28,6 +28,8 @@
 #include <expected>
 
 #include "l61Object.hpp"
+namespace l61
+{
 
 class NativeExtension final : public l61Object
 {
@@ -87,5 +89,6 @@ public:
     NativeExtension(NativeExtension& nativeExtension) = delete;
     NativeExtension(NativeExtension&& nativeExtension) noexcept;
 };
+}
 
 #endif //NATIVEEXTENSION_HPP

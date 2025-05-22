@@ -25,6 +25,8 @@
 #include <string>
 #include <type_traits>
 #include <utility>
+namespace l61
+{
 
 class l61Object;
 
@@ -46,6 +48,7 @@ template<l61Obj T>
 constexpr l61Object& toL61Obj(T&& v)
 {
     return std::forward<l61Object&>(v);
+}
 }
 
 #endif //L61OBJECT_HPP

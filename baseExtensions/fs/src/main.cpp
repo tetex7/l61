@@ -15,11 +15,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "ShellScript.hpp"
 #include "defs.hpp"
 #include "ScriptEnvironment.hpp"
 #include "sol/sol.hpp"
 #include "lex61rt.hpp"
 #include "ExtensionManager.hpp"
+#include <filesystem>
+
 
 LEX61RT_MAKE_HEADER(
     "fs",
@@ -29,6 +32,13 @@ LEX61RT_MAKE_HEADER(
 
 int l61_extension_init()
 {
+    auto& script = *lex61rt::getApiData()->scriptCtx;
+    auto fs = l61::makeSubTable("fs", script.getValue<sol::table>("l61"));
+
+    fs.set_function("exists", [](const std::string path) -> bool {
+        return fs::exists(path);
+    });
+
     return 0;
 }
 

@@ -25,8 +25,8 @@
 
 namespace lex61rt 
 {
-    using lex61_header_t = const ::lex61_header_t;
-    extern l61_api_extension_ptr getApiData();
+    using lex61_header_t = const l61::lex61_header_t;
+    extern l61::l61_api_extension_ptr getApiData();
 }
 
 #define LEX61RT_MAKE_HEADER(...) \

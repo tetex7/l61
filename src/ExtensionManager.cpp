@@ -20,18 +20,23 @@
 //
 
 #include "ExtensionManager.hpp"
+namespace l61
+{
 
 ExtensionManager::ExtensionManager() = default;
 
 ExtensionManager::~ExtensionManager() = default;
 
-NativeExtension& ExtensionManager::lookupAndLoadExtension(const std::string& extensionPath, l61_api_extension_ptr api)
+NativeExtension& ExtensionManager::lookupAndLoadExtension(const std::string& extensionPath, l61_api_extension_ptr api, bool loadEntryPoint)
 {
     auto exOpt = NativeExtension::extensionLookUp(extensionPath);
     if (exOpt.has_value())
     {
         this->extension_map.emplace(extensionPath, std::make_unique<NativeExtension>(std::move(exOpt.value())));
-        this->extension_map[extensionPath]->getExtensionEntryPointCall()(api);
+        if (loadEntryPoint)
+        {
+            this->extension_map[extensionPath]->getExtensionEntryPointCall()(api);
+        }
         return *this->extension_map[extensionPath];
     }
     throw std::runtime_error(std::format("No extension found during lookup for {}", extensionPath));
@@ -54,4 +59,5 @@ const NativeExtension& ExtensionManager::operator[](const std::string& exName) c
 const NativeExtension& ExtensionManager::get(const std::string& exName) const
 {
     return (*this)[exName];
+}
 }

@@ -20,16 +20,19 @@
 //
 #pragma once
 
+#ifndef SCRIPTENVIRONMENT_HPP
+#define SCRIPTENVIRONMENT_HPP
+
 #include "sol/sol.hpp"
 #include <optional>
 #include <stdexcept>
-#ifndef SCRIPTENVIRONMENT_HPP
-#define SCRIPTENVIRONMENT_HPP
+
 #include "defs.hpp"
 #include "l61Object.hpp"
-/**
- * @brief  sds
- */
+
+namespace l61
+{
+
 /*abstract*/ class ScriptEnvironment : public l61Object
 {
 private:
@@ -39,7 +42,7 @@ private:
 
     void lib61_setup();
 protected:
-
+    sol::state& getLuaCtx();
     l61_stat& getScriptCtx();
 
     const std::string& getScriptFilePath() const;
@@ -87,8 +90,6 @@ public:
 
     bool has(const std::string& key);
 
-    sol::state& getLuaCtx();
-
     sol::table makeTable(const std::string& name);
 
     virtual int scriptRun(const std::vector<std::string>& args);
@@ -98,6 +99,6 @@ public:
     ~ScriptEnvironment() override;
 };
 
-
+}
 
 #endif //SCRIPTENVIRONMENT_HPP

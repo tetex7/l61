@@ -25,14 +25,15 @@ CXX = g++
 GCCFLAG = -D__L61__FV_VER__="\"${RVER}\"" -rdynamic -Wall -Wextra -Werror -pedantic  -fno-strict-aliasing -DSOL_ALL_SAFETIES_ON  # -fPIC for Position Independent Code
 
 ifeq ($(DEBUG),1)
-  GCCFLAGS += -g -O0
+  DBUG_FLAGS += -g -O0
 else
-  GCCFLAGS += -O2
+  DBUG_FLAGS += -O2 -g
 endif
+GCCFLAG += $(DBUG_FLAGS)
 
 CFLAGS = ${GCCFLAG} -std=gnu99
 CPPFLAGS = ${GCCFLAG} -std=gnu++23
-LDFLAGS =  # Link as a shared object
+LDFLAGS = $(DBUG_FLAGS) # Link as a shared object
 LDLIBS = -rdynamic -llua -lreadline -lboost_program_options
 
 

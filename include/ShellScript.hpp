@@ -19,10 +19,13 @@
 // Created by tete on 05/05/2025.
 //
 #pragma once
+#include "sol/sol.hpp"
 #ifndef SHELLSCRIPT_HPP
 #define SHELLSCRIPT_HPP
 
 #include "ScriptEnvironment.hpp"
+namespace l61
+{
 
 class ShellScript : public ScriptEnvironment
 {
@@ -36,6 +39,14 @@ public:
     ~ShellScript() override;
 };
 
+
+__inline sol::table makeSubTable(const std::string&& name, sol::table table)
+{
+    sol::table x = table.create_with();
+	table.set(std::forward<const std::string>(name), x);
+	return x;
+}
+}
 
 
 #endif //SHELLSCRIPT_HPP

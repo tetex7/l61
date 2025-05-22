@@ -20,7 +20,7 @@
 //
 
 #include "defs.hpp"
-
+using namespace l61;
 static l61_api_extension_t* raw = nullptr;
 
 namespace lex61rt

@@ -15,11 +15,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "Logger.hpp"
+#include "NativeExtension.hpp"
 #include "defs.hpp"
 #include "ScriptEnvironment.hpp"
 #include "sol/sol.hpp"
 #include "lex61rt.hpp"
 #include "ExtensionManager.hpp"
+#include <cstdio>
+#include <exception>
 #include <print>
 
 LEX61RT_MAKE_HEADER(
@@ -43,7 +47,24 @@ int l61_extension_init()
 
     for (const char* const& str : extensionload) 
     {
-        extension_manager.lookupAndLoadExtension(str, lex61rt::getApiData());
+        try
+        {
+        auto& ex = extension_manager.lookupAndLoadExtension(str, lex61rt::getApiData(), false);
+        if (ex.getExtensionHeader()->authors[0] != "Tetex7"s)
+        {
+            std::println("no good header for {}", str);
+            std::exit(1);
+        }
+        else
+        {
+            int rt = ex.getExtensionEntryPointCall()(lex61rt::getApiData());
+            if (rt != 0) return rt; 
+        }
+        } 
+        catch (std::exception& exception)
+        {
+            toLogger(LogLevel::ERROR, "{}", exception.what());
+        }
     }
 
     return 0;

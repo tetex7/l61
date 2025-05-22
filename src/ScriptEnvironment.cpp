@@ -22,7 +22,8 @@
 #include "ScriptEnvironment.hpp"
 #include "Logger.hpp"
 #include "sol/sol.hpp"
-
+namespace l61
+{
 void ScriptEnvironment::lib61_setup()
 {
     auto lb = has("l61") ? getValue<sol::table>("l61") : getLuaCtx().create_named_table("l61");
@@ -105,3 +106,4 @@ bool ScriptEnvironment::has(const std::string& key)
 }
 
 ScriptEnvironment::~ScriptEnvironment() = default;
+}

@@ -33,4 +33,5 @@ for i in $(ls ./baseExtensions); do
 done
 
 cp -rv ./include ./${PAK_NAME}/l61_include
+cp -v ./extensionRuntime/l61_extension_rt.o "./${PAK_NAME}/lib/native"
 cp -v ./extensionRuntime/lex61rt.hpp ./${PAK_NAME}/l61_include/lex61rt.hpp
