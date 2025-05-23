@@ -21,8 +21,10 @@
 
 
 #include <boost/program_options.hpp>
+#include <cstdlib>
 #include <filesystem>
 #include <iterator>
+#include <print>
 #include <readline/readline.h>
 #include <array>
 #include <csignal>
@@ -35,6 +37,7 @@
 #include "ExtensionManager.hpp"
 #include "Logger.hpp"
 #include "NativeExtension.hpp"
+#include "utils.hpp"
 
 
 namespace po = boost::program_options;
@@ -173,8 +176,14 @@ static int l61_main(int argc, const char* argv[])
     {
         mstat.make_file_path = vm["script"s].as<std::string>();
     }
-
+    //std::println("{}", execEx("ls --help"));
     rl_initialize();
+
+    /*rl_bind_key(':', lambdaToFunPtr<rl_command_func_t>([](int, int) -> int {
+        std::println("dd");
+        std::exit(2);
+        return 0;
+    }));*/
 
     std::signal(SIGINT, &sighandler_f);
 

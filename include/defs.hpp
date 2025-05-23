@@ -42,6 +42,15 @@
 #   define LEX61_SYM_LOOKUP_COMPAT extern "C"
 #endif
 
+#define l61_interface struct
+#define l61_interface_call(sig) virtual sig = 0
+
+
+#define l61_abstract_class class
+#define l61_abstract_call(sig) virtual sig = 0
+
+#define l61_virtual_call(sig) virtual sig
+
 namespace std
 {
     template<class K, class V>

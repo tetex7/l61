@@ -13,8 +13,8 @@ function main(argc, argv)
           print(value.."\n")
    end
    --print(bash.."\n")
-   --while true do
-   --end
+   while true do
+   end
    return 1
 end
 

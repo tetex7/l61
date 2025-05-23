@@ -97,6 +97,7 @@ public:
     std::string toString() const override;
 
     ~ScriptEnvironment() override;
+    friend l61_abstract_class AbstractScriptDebugger;
 };
 
 }

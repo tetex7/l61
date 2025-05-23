@@ -16,8 +16,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-if [[ "$FVER" == "" ]]; then
-    FVER="dev"
+if [[ "$RVER" == "" ]]; then
+    RVER="dev"
 fi
 
 if [[ "$DEBUG" == "" ]]; then
