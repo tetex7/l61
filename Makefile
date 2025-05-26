@@ -22,7 +22,7 @@ RVER ?= "dev"
 # Compiler and flags
 CC = gcc
 CXX = g++
-GCCFLAG = -D__L61__FV_VER__="\"${RVER}\"" -rdynamic -Wall -Wextra -Werror -pedantic  -fno-strict-aliasing -DSOL_ALL_SAFETIES_ON  # -fPIC for Position Independent Code
+GCCFLAG = -D__L61__FV_VER__="\"${RVER}\"" -rdynamic -Wall -Wextra -Werror -Wpedantic -pedantic  -fno-strict-aliasing -DSOL_ALL_SAFETIES_ON  # -fPIC for Position Independent Code
 
 ifeq ($(DEBUG),1)
   DBUG_FLAGS += -g -O0

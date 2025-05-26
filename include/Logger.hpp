@@ -25,8 +25,8 @@
 #include <chrono>
 #include <ctime>
 #include <format>
-
-
+namespace l61
+{
 enum class LogLevel : std::uint8_t
 {
     INFO,
@@ -38,7 +38,7 @@ enum class LogLevel : std::uint8_t
 template<typename... Ty>
 void toLogger(LogLevel level, std::format_string<Ty...> fmt, Ty&&... v_ty)
 {
-    if (!l61::mstat.procStat.verbose) return;
+    if (!mstat.procStat.verbose && level == LogLevel::INFO) return; //  && !(static_cast<std::uint8_t>(level) <= static_cast<std::uint8_t>(LogLevel::ERROR))
     std::string le;
     switch (level)
     {
@@ -83,6 +83,6 @@ void toLogger(LogLevel level, std::format_string<Ty...> fmt, Ty&&... v_ty)
     );
 }
 
-
+}
 
 #endif //LOGGER_HPP

@@ -34,6 +34,7 @@ namespace l61
         ScriptEnvironment* getScriptCtx();
         l61_stat& getL61Ctx();
         sol::state& getScriptLuaState();
+        l61_abstract_call(void preRun());
 
         AbstractScriptDebugger(ScriptEnvironment* script, l61_stat& lstat);
     public:

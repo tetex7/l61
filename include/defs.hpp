@@ -162,7 +162,11 @@ struct lex61_header_t
 
 using l61_api_extension_ptr = l61_api_extension_t*;
 
+l61_abstract_class AbstractScriptDebugger;
+
 extern std::unique_ptr<ScriptEnvironment> shEnv;
 extern l61_stat mstat;
+extern std::unique_ptr<AbstractScriptDebugger> luaDugger;
+
 }
 #endif //DEFS_HPP

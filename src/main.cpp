@@ -23,10 +23,9 @@
 #include <boost/program_options.hpp>
 #include <cstdlib>
 #include <filesystem>
-#include <iterator>
+#include <memory>
 #include <print>
 #include <readline/readline.h>
-#include <array>
 #include <csignal>
 #include <string>
 
@@ -38,6 +37,7 @@
 #include "Logger.hpp"
 #include "NativeExtension.hpp"
 #include "utils.hpp"
+#include "AbstractScriptDebugger.hpp"
 
 
 namespace po = boost::program_options;
@@ -45,6 +45,7 @@ namespace po = boost::program_options;
 namespace l61
 {
 std::unique_ptr<ScriptEnvironment> shEnv;
+std::unique_ptr<AbstractScriptDebugger> luaDugger;
 
 
 l61_stat mstat = {
@@ -102,11 +103,12 @@ static void sighandler_f(int sig)
     {
     case SIGINT:
         {
-            std::string sg = readline("exit?(yes/no): ");
-            if (sg == "yes" || sg == "y")
-            {
-                std::exit(0);
-            }
+            //std::string sg = readline("exit?(yes/no): ");
+            //if (sg == "yes" || sg == "y")
+            //{
+            //    std::exit(0);
+            //}
+            std::exit(0);
             break;
         }
     };
@@ -194,8 +196,6 @@ static int l61_main(int argc, const char* argv[])
         return 1;
     }
 
-    toLogger(LogLevel::INFO, "loading file {} in {}", mstat.make_file_path, scrModeToStr(mstat.procStat.runMode));
-
     switch (mstat.procStat.runMode)
     {
     case ScriptMode::BuildScriptMode:
@@ -210,6 +210,8 @@ static int l61_main(int argc, const char* argv[])
         shEnv = std::make_unique<BuildScript>(mstat.make_file_path, mstat);
         break;
     }
+
+    toLogger(LogLevel::INFO, "loaded file {} in {}", static_cast<std::string>(*shEnv), scrModeToStr(mstat.procStat.runMode));
 
     std::vector<std::string> lua_arg_vector = {};
 

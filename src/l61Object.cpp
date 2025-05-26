@@ -36,4 +36,9 @@ std::size_t l61Object::hashCode() const
 {
     return typeid(*this).hash_code();
 }
+
+l61Object::operator std::string() const
+{
+    return this->toString();
+}
 }

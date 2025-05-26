@@ -16,6 +16,7 @@
  */
 
 #pragma once
+#include <type_traits>
 #ifndef UTILS_HPP
 #define UTILS_HPP
 #include "defs.hpp"
@@ -28,9 +29,21 @@ namespace l61
     std::string execEx(const char* cmd);
 
     template<typename T>
-    T* lambdaToFunPtr(std::function<T> lambda)
+    T* lambdaToFunPtr(const std::function<T>& lambda)
     {
         return lambda.template target<T>();
+    }
+
+    template<typename T>
+    T& lambdaToFunRef(const std::function<T>& lambda)
+    {
+        return *lambdaToFunPtr<T>(lambda);
+    }
+
+    template<typename T>
+    T runLambda(const std::function<T()>& lambda)
+    {
+        return lambda();
     }
 }
 

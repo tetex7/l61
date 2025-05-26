@@ -22,6 +22,7 @@
 #include "NativeExtension.hpp"
 #include <dlfcn.h>
 #include <stdexcept>
+#include <string>
 #include "defs.hpp"
 #include "Logger.hpp"
 namespace l61
@@ -44,6 +45,7 @@ std::expected<NativeExtension, std::string> NativeExtension::extensionLookUp(con
 {
     for (const std::string& _path : mstat.spaths)
     {
+        if (_path == mstat.spaths[2]) continue;
         std::string path = (fs::path(_path) / "native" / exName).string();
         if (fs::exists(path))
         {
@@ -84,7 +86,7 @@ NativeExtension::NativeExtension(const std::string& path)
 {
     if (!soHandle)
     {
-        throw std::runtime_error(dlerror());
+        throw std::runtime_error(std::string(dlerror()));
     }
     dlerror();
 

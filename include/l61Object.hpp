@@ -31,7 +31,7 @@ namespace l61
 class l61Object;
 
 template<class T>
-concept l61Obj = std::is_base_of<l61Object, T>::value;
+concept l61Obj = std::is_base_of_v<l61Object, T>;
 
 
 class l61Object
@@ -41,11 +41,13 @@ public:
 
     virtual std::string toString() const;
     virtual std::size_t hashCode() const;
+    explicit operator std::string() const;
 };
 
 
 template<l61Obj T>
-constexpr l61Object& toL61Obj(T&& v)
+[[__gnu__::__always_inline__]]
+consteval inline l61Object& toL61Obj(T&& v)
 {
     return std::forward<l61Object&>(v);
 }

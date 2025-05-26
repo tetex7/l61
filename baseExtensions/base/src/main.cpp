@@ -37,6 +37,9 @@ constexpr const char* extensionload[] =
     "fs.lex61",
 };
 
+using l61::LogLevel;
+using l61::toLogger;
+
 int l61_extension_init()
 {
     std::println("ver: {}", lex61rt::getApiData()->l61Ctx.version);
