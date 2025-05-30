@@ -225,7 +225,7 @@ static int l61_main(int argc, const char* argv[])
             //TODO: Move this to a separate function
 
             (void)L; // This is done to appease the compiler(-Werror)
-            (void)D; // Learn this trick from NASA of all people
+            (void)D; // Learn this trick from NASA Documentation of all places
 
             if (!l61::mstat.procStat.signalStack.empty())
             {
