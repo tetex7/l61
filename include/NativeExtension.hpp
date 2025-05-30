@@ -37,8 +37,14 @@ namespace l61
 class NativeExtension final : public l61Object
 {
 public:
+    /**
+     * @brief The standard entry point for an extension usually defined by the extension runtime
+     */
     static constexpr const char* entryPointSymbolName = "__l61_rt_ex_init__";
 
+    /**
+     * @brief The symbol name for the extension header this must be self defined
+     */
     static constexpr const char* headerSymbolName = "__lex61_header__";
 
     using ExtensionEntryPoint_t = int(l61_api_extension_ptr);
@@ -46,29 +52,78 @@ public:
     using ExtensionEntryPointCall_t = std::function<ExtensionEntryPoint_t>;
 private:
     std::string extensionPath;
+
+    /**
+     * @brief an OS dependent handle to a shared library
+     * @note Praise be to Linux dynamic linker
+     */
     void* soHandle;
     ExtensionEntryPointCall_t extensionEntryPointCall;
 
+    /**
+     * @brief A mutex for a slight Fred safety
+     */
     mutable std::mutex soMutex;
 
+    /**
+     * @brief Horrifically unsafe and that's why it's private
+     * @param symStr The name of the symbol
+     * @return Returns a raw void pointer to that symbol
+     */
     [[nodiscard]] void* blindSymbolLookup(const std::string& symStr) const;
 
     void isGoodExtension() const;
 public:
+    /**
+     * @brief Safely loads an extension
+     * @param extension Fill in with the result of the lookup
+     * @param api Fill in with a pointer to the api exchange structure
+     * @param required Do you care if this extension is not loaded
+     * @return The return value of the entry point
+     */
     static int safeExtensionLoad(const std::expected<NativeExtension, std::string>& extension, l61_api_extension_ptr api, bool required = true);
+
+    /**
+     * @brief A lookup system
+     * @param exName Extension file name not the path
+     * @return An extension on successful a string on error
+     */
     static std::expected<NativeExtension, std::string> extensionLookUp(const std::string& exName);
 
+    /**
+     * @return Returns false of an extension has been moved or is no longer valid
+     */
     [[nodiscard]] bool isValid() const;
 
+    /**
+     * @param path The full path to an extension
+     */
     explicit NativeExtension(const std::string& path);
 
+    /**
+     * @return A reference to the extension entry point
+     */
     [[nodiscard]]
     const ExtensionEntryPointCall_t& getExtensionEntryPointCall() const;
+
+    /**
+     * @return Returns the path to the extension
+     */
     [[nodiscard]]
     const std::string& getExtensionPath() const;
 
+    /**
+     * @return the path of the extension as well
+     */
     std::string toString() const override;
 
+    /**
+     * @brief A relatively safe way to look up symbols within an extension
+     * @tparam T The type of the symbol you are looking up
+     * @param symStr
+     * @return A pointer to that symbol as T* But on error returns a string
+     * @note for C++ code Please make sure that the symbol names are not mangled
+     */
     template<typename T>
     std::expected<std::add_pointer_t<std::type_identity_t<T>>, std::string> extensionSymbolLookup(const std::string& symStr) const
     {
@@ -84,6 +139,9 @@ public:
         }
     }
 
+    /**
+     * @return Returns a pointer to the extensions header
+     */
     const lex61_header_t* getExtensionHeader() const;
 
     __inline const lex61_header_t& getExtensionHeaderAsRef() const

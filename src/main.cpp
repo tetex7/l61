@@ -214,13 +214,16 @@ static int l61_main(int argc, const char* argv[])
 
     l61::shEnv->addValue("spaths"s, l61::mstat.spaths);
 
-    l61::shEnv->specialRun([&](sol::state& lua) {
+    l61::shEnv->specialRun([](sol::state& lua) {
         lua_State* L = lua.lua_state();
         lua_sethook(L, l61::lambdaToFunPtr<std::remove_pointer_t<lua_Hook>>([](lua_State* L, lua_Debug* D) -> void {
             //This event handler and message pump is work in progress
             //why is it hooked into the lua environment you might ask
             //Because when Lua Code is running I do not have control over the environment
             //and this is a hack that I thought up many nights
+            //This should not influence the lua environment
+            //Yes exists, so I can have code time to run my event system
+            //TODO: Move this to a separate function
 
 
             (void)L; // This is done to appease the compiler(-Werror)

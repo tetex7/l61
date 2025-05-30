@@ -37,9 +37,10 @@ namespace l61
      * @return A pointer to the Lambda
      */
     template<typename FunctionSignature, typename Lambda>
-    FunctionSignature* lambdaToFunPtr(const Lambda& lambda)
+    std::add_pointer_t<FunctionSignature> lambdaToFunPtr(const Lambda& lambda)
     {
-        return static_cast<FunctionSignature*>(lambda);
+        static_assert(std::is_convertible_v<Lambda, std::add_pointer_t<FunctionSignature>>, "Lambda must be non-capturing and convertible to a function pointer.");
+        return static_cast<std::add_pointer_t<FunctionSignature>>(lambda);
     }
 
     template<typename T>
