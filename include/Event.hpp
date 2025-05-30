@@ -21,28 +21,31 @@
 
 #ifndef EVENT_HPP
 #define EVENT_HPP
-#include "defs.hpp"
+#include <functional>
 
 namespace l61 {
 
     class Event
     {
     public:
-        using callback_t = std::function<int()>;
+        using callback_t = std::function<void()>;
     private:
         callback_t fun;
     public:
-        explicit Event(callback_t function);
+
+        explicit Event(const callback_t& function);
+
+        // ReSharper disable once CppNonExplicitConvertingConstructor
+        template<typename Lambda>
+        Event(const Lambda& lambda) : fun(lambda){}// NOLINT(*-explicit-constructor)
 
         void reset();
-        void set(callback_t function);
+        void set(const callback_t& function);
 
-        int call() const;
+        void call() const;
 
         Event(Event&& event) noexcept;
-
-        Event(const Event&) = delete;
-        Event(Event&) = delete;
+        Event(const Event& event);
 
         // ReSharper disable once CppNonExplicitConversionOperator
         /**

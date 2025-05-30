@@ -23,7 +23,7 @@
 
 namespace l61
 {
-    Event::Event(callback_t function)
+    Event::Event(const callback_t& function)
         : fun(function) {}
 
     void Event::reset()
@@ -31,18 +31,21 @@ namespace l61
         fun = callback_t();
     }
 
-    void Event::set(callback_t function)
+    void Event::set(const callback_t& function)
     {
         fun = function;
     }
 
-    int Event::call() const
+    void Event::call() const
     {
-        return fun();
+        fun();
     }
 
     Event::Event(Event&& event) noexcept
     : fun(std::move(event.fun)) {}
+
+    Event::Event(const Event& event)
+    : fun(event.fun){}
 
     Event::operator bool() const
     {

@@ -150,7 +150,7 @@ public:
     }
 
     ~NativeExtension() override;
-    NativeExtension(NativeExtension& nativeExtension) = delete;
+    NativeExtension(const NativeExtension& nativeExtension) = delete;
     NativeExtension(NativeExtension&& nativeExtension) noexcept;
 };
 }

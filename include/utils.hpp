@@ -22,6 +22,7 @@
 #include <functional>
 #include <type_traits>
 #include <vector>
+#include <memory>
 
 namespace l61
 {

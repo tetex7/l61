@@ -65,7 +65,8 @@ l61_stat mstat = {
         std::make_unique<ExtensionManager>(),
         {},
         0,
-        {}
+        {},
+        EventBus()
     }
 };
 }
@@ -167,14 +168,6 @@ static int l61_main(int argc, const char* argv[])
     {
         l61::mstat.make_file_path = vm["script"s].as<std::string>();
     }
-    //std::println("{}", execEx("ls --help"));
-    rl_initialize();
-
-    /*rl_bind_key(':', lambdaToFunPtr<rl_command_func_t>([](int, int) -> int {
-        std::println("dd");
-        std::exit(2);
-        return 0;
-    }));*/
 
     std::signal(SIGINT, &sighandler_f);
 
@@ -184,6 +177,12 @@ static int l61_main(int argc, const char* argv[])
         help(desc);
         return 1;
     }
+
+
+    l61::mstat.procStat.eventBus.addEvent(SIGINT, []() -> void {
+        l61::toLogger(l61::LogLevel::FATAL, "SIGINT detected goodbye");
+        std::exit(0);
+    });
 
     switch (l61::mstat.procStat.runMode)
     {
@@ -225,16 +224,16 @@ static int l61_main(int argc, const char* argv[])
             //Yes exists, so I can have code time to run my event system
             //TODO: Move this to a separate function
 
-
             (void)L; // This is done to appease the compiler(-Werror)
-            (void)D; // Learn this trick from NASA of all places
-            l61::c_signal_t sig = l61::mstat.procStat.signalStack.front();
-            l61::mstat.procStat.signalStack.pop();
-            if (sig == SIGINT)
+            (void)D; // Learn this trick from NASA of all people
+
+            if (!l61::mstat.procStat.signalStack.empty())
             {
-                std::exit(0);
+                l61::c_signal_t sig = l61::mstat.procStat.signalStack.front();
+                l61::mstat.procStat.signalStack.pop();
+                l61::mstat.procStat.eventBus.push(sig);
             }
-            //TODO: Actually implement Event bus logic
+            l61::mstat.procStat.eventBus.pumpIt();
         }), LUA_MASKCOUNT, 50);
     });
 
