@@ -105,5 +105,10 @@ bool ScriptEnvironment::has(const std::string& key)
     return getLuaCtx()[key] != sol::nil;
 }
 
+void ScriptEnvironment::specialRun(const std::function<void(sol::state&)>& func)
+{
+    func(getLuaCtx());
+}
+
 ScriptEnvironment::~ScriptEnvironment() = default;
 }

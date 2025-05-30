@@ -44,7 +44,11 @@ namespace l61 {
         Event(const Event&) = delete;
         Event(Event&) = delete;
 
-        operator bool() const;
+        // ReSharper disable once CppNonExplicitConversionOperator
+        /**
+         * @brief True if the event has a callback to be called upon
+         */
+        operator bool() const; // NOLINT(*-explicit-constructor)
     };
 
 } // l61

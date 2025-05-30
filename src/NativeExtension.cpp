@@ -25,6 +25,9 @@
 #include <string>
 #include "defs.hpp"
 #include "Logger.hpp"
+
+#define setup_lock() std::lock_guard<std::mutex> lock(soMutex)
+
 namespace l61
 {
 int NativeExtension::safeExtensionLoad(const std::expected<NativeExtension, std::string>& extension, l61_api_extension_ptr api, bool required)
@@ -54,9 +57,9 @@ std::expected<NativeExtension, std::string> NativeExtension::extensionLookUp(con
     }
     return std::unexpected(std::format("Extension '{}' does not exist", exName));
 }
-
 void* NativeExtension::blindSymbolLookup(const std::string& symStr) const
 {
+    setup_lock();
     dlerror();
     void* ptr = dlsym(soHandle, symStr.c_str());
 
@@ -78,6 +81,7 @@ void NativeExtension::isGoodExtension() const
 
 bool NativeExtension::isValid() const
 {
+    setup_lock();
     return !soHandle ? false : true;
 }
 
@@ -97,18 +101,21 @@ NativeExtension::NativeExtension(const std::string& path)
 const NativeExtension::ExtensionEntryPointCall_t& NativeExtension::getExtensionEntryPointCall() const
 {
     isGoodExtension();
+    setup_lock();
     return this->extensionEntryPointCall;
 }
 
 const std::string& NativeExtension::getExtensionPath() const
 {
     isGoodExtension();
+    setup_lock();
     return extensionPath;
 }
 
 const lex61_header_t* NativeExtension::getExtensionHeader() const
 {
     auto header = this->extensionSymbolLookup<const lex61_header_t>(headerSymbolName);
+    setup_lock();
     if (header.has_value())
     {
         return header.value();
@@ -118,6 +125,7 @@ const lex61_header_t* NativeExtension::getExtensionHeader() const
 
 std::string NativeExtension::toString() const
 {
+    setup_lock();
     return this->getExtensionPath();
 }
 

@@ -26,11 +26,14 @@
 
 #include "defs.hpp"
 #include <expected>
+#include <mutex>
 
 #include "l61Object.hpp"
 namespace l61
 {
-
+/**
+ * @brief Handling native extensions
+ */
 class NativeExtension final : public l61Object
 {
 public:
@@ -45,6 +48,8 @@ private:
     std::string extensionPath;
     void* soHandle;
     ExtensionEntryPointCall_t extensionEntryPointCall;
+
+    mutable std::mutex soMutex;
 
     [[nodiscard]] void* blindSymbolLookup(const std::string& symStr) const;
 
@@ -69,18 +74,19 @@ public:
     {
         try
         {
+            //This is very spooky but trust me Bro it's this way, or it does not work
+            //And yes this does break my rule of self enforced strict aliasing
             return reinterpret_cast<std::add_pointer_t<T>>(blindSymbolLookup(symStr));
         }
         catch (std::runtime_error& e)
         {
             return std::unexpected(e.what());
         }
-        
     }
 
     const lex61_header_t* getExtensionHeader() const;
 
-    inline const lex61_header_t& getExtensionHeaderAsRef() const
+    __inline const lex61_header_t& getExtensionHeaderAsRef() const
     {
         return *getExtensionHeader();
     }

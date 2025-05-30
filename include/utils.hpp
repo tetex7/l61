@@ -16,11 +16,12 @@
  */
 
 #pragma once
-#include <type_traits>
 #ifndef UTILS_HPP
 #define UTILS_HPP
-#include "defs.hpp"
+#include <string>
 #include <functional>
+#include <type_traits>
+#include <vector>
 
 namespace l61
 {
@@ -28,22 +29,36 @@ namespace l61
     std::string get_file_str(const std::string& f_name);
     std::string execEx(const char* cmd);
 
-    template<typename T>
-    T* lambdaToFunPtr(const std::function<T>& lambda)
+    /**
+     * @brief Designed to help with C Apis that take function pointers
+     * @tparam FunctionSignature The function signature for the Lambda (not a Pointer type)
+     * @tparam Lambda The Lambda type
+     * @param lambda The Lambda
+     * @return A pointer to the Lambda
+     */
+    template<typename FunctionSignature, typename Lambda>
+    FunctionSignature* lambdaToFunPtr(const Lambda& lambda)
     {
-        return lambda.template target<T>();
-    }
-
-    template<typename T>
-    T& lambdaToFunRef(const std::function<T>& lambda)
-    {
-        return *lambdaToFunPtr<T>(lambda);
+        return static_cast<FunctionSignature*>(lambda);
     }
 
     template<typename T>
     T runLambda(const std::function<T()>& lambda)
     {
-        return lambda();
+        return std::forward<T>(lambda());
+    }
+
+    template<typename T>
+    std::size_t getHash(T&& v)
+    {
+        return std::hash<T>{}(std::forward<T>(v));
+    }
+
+    template<typename T>
+    [[__nodiscard__,__gnu__::__always_inline__]]
+    constexpr std::remove_reference_t<T>&& copy(T&& val) noexcept
+    {
+        return std::forward<T>(T(std::forward<T>(val)));
     }
 }
 

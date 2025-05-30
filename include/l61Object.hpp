@@ -36,6 +36,7 @@ concept l61Obj = std::is_base_of_v<l61Object, T>;
 
 class l61Object
 {
+protected:
 public:
     virtual ~l61Object();
 
@@ -47,9 +48,9 @@ public:
 
 template<l61Obj T>
 [[__gnu__::__always_inline__]]
-consteval inline l61Object& toL61Obj(T&& v)
+constexpr __inline l61Object& toL61Obj(T& v)
 {
-    return std::forward<l61Object&>(v);
+    return static_cast<l61Object&>(v);
 }
 }
 

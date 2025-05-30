@@ -23,17 +23,18 @@
 #ifndef SCRIPTENVIRONMENT_HPP
 #define SCRIPTENVIRONMENT_HPP
 
-#include "sol/sol.hpp"
-#include <optional>
+#include <expected>
+#include <functional>
 #include <stdexcept>
 
 #include "defs.hpp"
+#include "sol/sol.hpp"
 #include "l61Object.hpp"
 
 namespace l61
 {
 
-/*abstract*/ class ScriptEnvironment : public l61Object
+l61_abstract_class ScriptEnvironment : public l61Object
 {
 private:
     const std::string scriptFilePath;
@@ -47,8 +48,8 @@ protected:
 
     const std::string& getScriptFilePath() const;
 
-    virtual int run(const std::vector<std::string>& args) = 0;
-    virtual void scriptPreInit() = 0;
+    l61_abstract_call(int run(const std::vector<std::string>& args));
+    l61_abstract_call(void scriptPreInit());
 
     explicit ScriptEnvironment(const std::string& scriptFilePath, l61_stat& scriptCtx);
 
@@ -75,7 +76,7 @@ public:
                 return temp.get<T>();
             }
         }
-        throw std::runtime_error(std::format("Value not exst {}", key));
+        throw std::runtime_error(std::format("Value not exist {}", key));
     }
 
     template<class T>
@@ -95,6 +96,15 @@ public:
     virtual int scriptRun(const std::vector<std::string>& args);
 
     std::string toString() const override;
+
+    ScriptEnvironment(const ScriptEnvironment&) = delete;
+    ScriptEnvironment(const ScriptEnvironment&& val) = delete;
+
+    ScriptEnvironment& operator=(const ScriptEnvironment&) = delete;
+
+    //Yes this does leak the Lua State what are you going to do bite me
+    void specialRun(const std::function<void(sol::state&)>& func);
+
 
     ~ScriptEnvironment() override;
     friend l61_abstract_class AbstractScriptDebugger;

@@ -20,6 +20,8 @@
 //
 #pragma once
 
+//Documentation in this header is still work in progress
+//Professionalism is not guaranteed And will never be lol
 
 #ifndef DEFS_HPP
 #define DEFS_HPP
@@ -30,11 +32,12 @@
 #include <string>
 #include <cstring>
 #include <vector>
-#include <unistd.h>
+#include <csignal>
 #include <filesystem>
-#include "sol/sol.hpp"
 #include <print>
+#include <queue>
 
+#include "sol/sol.hpp"
 #include "json.hpp"
 
 #define C_CALL extern "C"
@@ -42,20 +45,48 @@
 #   define LEX61_SYM_LOOKUP_COMPAT extern "C"
 #endif
 
+//Oh, yes this is an abomination, but I like Java and I like to know what am I reading and its purpose
+//So the pseudo keywords stay
+
+/**
+ * @brief denotes that I class is an interface with little to no implementation
+ * @note A static analyzer could be designed to use these although usage would have to be self enforced
+ */
 #define l61_interface struct
+
+/**
+ * @brief This denotes that a call within an interface is a pure virtual
+ * @param sig Function signature written like prototype
+ * @note A static analyzer could be designed to use these although usage would have to be self enforced
+ */
 #define l61_interface_call(sig) virtual sig = 0
 
-
+/**
+ * @brief Denotes that the class is abstract with most functions being implemented leaving a few functions to be implemented by inheritors
+ */
 #define l61_abstract_class class
+/**
+ * @brief denotes that the method call is not implemented
+ * @param sig Function signature written like prototype
+ */
 #define l61_abstract_call(sig) virtual sig = 0
 
+//This one was a good idea when I wrote it not so much anymore
+//don't use this it's going to be gone within a few weeks
+/**
+ * @param sig Function signature written like prototype
+ * @deprecated This one was a good idea when I wrote it not so much anymore
+ */
 #define l61_virtual_call(sig) virtual sig
 
+//We do not talk about this abomination
 namespace std
 {
     template<class K, class V>
     using HashMap = std::unordered_map<K, V>;
 }
+
+//End of abomination
 
 namespace fs = std::filesystem;
 
@@ -107,7 +138,7 @@ template<typename... vT>
     (std::cout << ... << vals);
 }
 
-class ConfigRecord final
+struct ConfigRecord final
 {
     std::vector<std::string> forceMount;
     std::vector<std::string> extension;
@@ -125,12 +156,15 @@ struct config_t
     NLOHMANN_DEFINE_TYPE_INTRUSIVE(config_t, spaths, plugins);
 };
 
+using c_signal_t = int;
+
 struct ProgramStatus
 {
     ScriptMode runMode;
     std::unique_ptr<ExtensionManager> extension_manager;
     config_t config;
     flag_t verbose;
+    std::queue<c_signal_t> signalStack; // Yes, yes I know it's not a stack but the semantics are how I like my stacks
 };
 
 struct l61_stat

@@ -41,6 +41,9 @@ namespace l61
         l61_virtual_call(~AbstractScriptDebugger());
 
         l61_abstract_call(int run());
+
+        AbstractScriptDebugger(const AbstractScriptDebugger&) = delete;
+        AbstractScriptDebugger& operator=(const AbstractScriptDebugger&) = delete;
     };
 }
 

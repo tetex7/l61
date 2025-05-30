@@ -45,7 +45,7 @@ namespace l61
 
     struct pclose_f
     {
-        int operator()(FILE* __stream)
+        int operator()(FILE* __stream) const
         {
             return pclose(__stream);
         }
@@ -53,7 +53,7 @@ namespace l61
 
     std::string execEx(const char* cmd)
     {
-        std::array<char, PATH_MAX> buffer;
+        std::array<char, PATH_MAX> buffer{};
         std::string result;
         std::unique_ptr<FILE, pclose_f> pipe(popen(cmd, "r"), pclose_f());
         if (!pipe) {

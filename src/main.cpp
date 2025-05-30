@@ -64,14 +64,15 @@ l61_stat mstat = {
         ScriptMode::UndefMode,
         std::make_unique<ExtensionManager>(),
         {},
-        0
+        0,
+        {}
     }
 };
 }
 
-using namespace l61;
+//using namespace l61;
 
-config_t mkConfig()
+l61::config_t mkConfig()
 {
     return {
         {},
@@ -84,34 +85,22 @@ config_t mkConfig()
 #define REP_BUG_TEXT "Copyright (C) 2025  Tetex7.\nFor Docs and bug reporting\nplease see: <https://github.com/tetex7/l61>."
 static void help(po::options_description& desc)
 {
-    cout_print("Usage: l61 [options] [PATH_TO_FILE]\n");
-    cout_print(desc);
-    cout_print("\n\n");
-    cout_print("version: ", mstat.version, '\n');
-    cout_print(REP_BUG_TEXT, '\n');
+    l61::cout_print("Usage: l61 [options] [PATH_TO_FILE]\n");
+    l61::cout_print(desc);
+    l61::cout_print("\n\n");
+    l61::cout_print("version: ", l61::mstat.version, '\n');
+    l61::cout_print(REP_BUG_TEXT, '\n');
 }
 
-l61_api_extension_t exdata = {
-    mstat,
-    shEnv
+l61::l61_api_extension_t exdata = {
+    l61::mstat,
+    l61::shEnv
 };
 
 
 static void sighandler_f(int sig)
 {
-    switch (sig)
-    {
-    case SIGINT:
-        {
-            //std::string sg = readline("exit?(yes/no): ");
-            //if (sg == "yes" || sg == "y")
-            //{
-            //    std::exit(0);
-            //}
-            std::exit(0);
-            break;
-        }
-    };
+    l61::mstat.procStat.signalStack.push(sig);
 }
 
 static int l61_main(int argc, const char* argv[])
@@ -132,7 +121,7 @@ static int l61_main(int argc, const char* argv[])
 
     if (vm.contains("verbose"s))
     {
-        mstat.procStat.verbose = 1;
+        l61::mstat.procStat.verbose = 1;
     }
 
     if (vm.contains("help"s))
@@ -145,38 +134,38 @@ static int l61_main(int argc, const char* argv[])
     {
         for (const std::string& path : vm["add-to-spaths"s].as<std::vector<std::string>>())
         {
-            mstat.spaths.push_back(path);
+            l61::mstat.spaths.push_back(path);
         }
     }
 
     if (vm.contains("cd"s))
     {
-        mstat.work_path = vm["cd"s].as<std::string>();
-        mstat.make_file_path = mstat.work_path + "/build.l61";
-        mstat.spaths[2] = mstat.work_path + "/scripts";
+        l61::mstat.work_path = vm["cd"s].as<std::string>();
+        l61::mstat.make_file_path = l61::mstat.work_path + "/build.l61";
+        l61::mstat.spaths[2] = l61::mstat.work_path + "/scripts";
     }
 
     if (vm.contains("mode"s))
     {
-        mstat.procStat.runMode = toScriptMode(vm["mode"s].as<std::string>());
+        l61::mstat.procStat.runMode = l61::toScriptMode(vm["mode"s].as<std::string>());
     }
     else
     {
-        mstat.procStat.runMode = ScriptMode::BuildScriptMode;
+        l61::mstat.procStat.runMode = l61::ScriptMode::BuildScriptMode;
     }
 
     if (vm.contains("spaths"s))
     {
-        for (std::size_t i = 0; i < mstat.spaths.size(); i++)
+        for (std::size_t i = 0; i < l61::mstat.spaths.size(); i++)
         {
-            cout_print("[", i, "] = \"", mstat.spaths[i] + "\"\n");
+            l61::cout_print("[", i, "] = \"", l61::mstat.spaths[i] + "\"\n");
         }
         return 0;
     }
 
     if (vm.contains("script"s))
     {
-        mstat.make_file_path = vm["script"s].as<std::string>();
+        l61::mstat.make_file_path = vm["script"s].as<std::string>();
     }
     //std::println("{}", execEx("ls --help"));
     rl_initialize();
@@ -189,29 +178,29 @@ static int l61_main(int argc, const char* argv[])
 
     std::signal(SIGINT, &sighandler_f);
 
-    if (!fs::exists(mstat.make_file_path))
+    if (!fs::exists(l61::mstat.make_file_path))
     {
-        std::println(std::cerr, "file {} Doesn't exists", mstat.make_file_path);
+        std::println(std::cerr, "file {} Doesn't exists", l61::mstat.make_file_path);
         help(desc);
         return 1;
     }
 
-    switch (mstat.procStat.runMode)
+    switch (l61::mstat.procStat.runMode)
     {
-    case ScriptMode::BuildScriptMode:
-        shEnv = std::make_unique<BuildScript>(mstat.make_file_path, mstat);
-        NativeExtension::safeExtensionLoad(NativeExtension::extensionLookUp("build.lex61"s), &exdata, false);
+    case l61::ScriptMode::BuildScriptMode:
+        l61::shEnv = std::make_unique<l61::BuildScript>(l61::mstat.make_file_path, l61::mstat);
+        l61::NativeExtension::safeExtensionLoad(l61::NativeExtension::extensionLookUp("build.lex61"s), &exdata, false);
         break;
-    case ScriptMode::ShellScriptMode:
-        shEnv = std::make_unique<ShellScript>(mstat.make_file_path, mstat);
-        NativeExtension::safeExtensionLoad(NativeExtension::extensionLookUp("script.lex61"s), &exdata, false);
+    case l61::ScriptMode::ShellScriptMode:
+        l61::shEnv = std::make_unique<l61::ShellScript>(l61::mstat.make_file_path, l61::mstat);
+        l61::NativeExtension::safeExtensionLoad(l61::NativeExtension::extensionLookUp("script.lex61"s), &exdata, false);
         break;
     default:
-        shEnv = std::make_unique<BuildScript>(mstat.make_file_path, mstat);
+        l61::shEnv = std::make_unique<l61::BuildScript>(l61::mstat.make_file_path, l61::mstat);
         break;
     }
 
-    toLogger(LogLevel::INFO, "loaded file {} in {}", static_cast<std::string>(*shEnv), scrModeToStr(mstat.procStat.runMode));
+    l61::toLogger(l61::LogLevel::INFO, "loaded file {} in {}", static_cast<std::string>(*l61::shEnv), l61::scrModeToStr(l61::mstat.procStat.runMode));
 
     std::vector<std::string> lua_arg_vector = {};
 
@@ -221,11 +210,32 @@ static int l61_main(int argc, const char* argv[])
     }
 
     //NativeExtension::safeExtensionLoad(NativeExtension::extensionLookUp("base.lex61"s), &exdata, false);
-    mstat.procStat.extension_manager->lookupAndLoadExtension("base.lex61", &exdata);
+    l61::mstat.procStat.extension_manager->lookupAndLoadExtension("base.lex61", &exdata);
 
-    shEnv->addValue("spaths"s, mstat.spaths);
+    l61::shEnv->addValue("spaths"s, l61::mstat.spaths);
 
-    return shEnv->scriptRun(lua_arg_vector);
+    l61::shEnv->specialRun([&](sol::state& lua) {
+        lua_State* L = lua.lua_state();
+        lua_sethook(L, l61::lambdaToFunPtr<std::remove_pointer_t<lua_Hook>>([](lua_State* L, lua_Debug* D) -> void {
+            //This event handler and message pump is work in progress
+            //why is it hooked into the lua environment you might ask
+            //Because when Lua Code is running I do not have control over the environment
+            //and this is a hack that I thought up many nights
+
+
+            (void)L; // This is done to appease the compiler(-Werror)
+            (void)D; // Learn this trick from NASA of all places
+            l61::c_signal_t sig = l61::mstat.procStat.signalStack.front();
+            l61::mstat.procStat.signalStack.pop();
+            if (sig == SIGINT)
+            {
+                std::exit(0);
+            }
+            //TODO: Actually implement Event bus logic
+        }), LUA_MASKCOUNT, 50);
+    });
+
+    return l61::shEnv->scriptRun(lua_arg_vector);
 }
 
 
@@ -243,7 +253,7 @@ int main(int argc, const char* argv[])
     }
     catch (std::exception& e)
     {
-        toLogger(LogLevel::FATAL, "{}", e.what());
+        l61::toLogger(l61::LogLevel::FATAL, "{}", e.what());
         //std::println(std::cerr, "error: {}", e.what());
         exit(1);
     }
