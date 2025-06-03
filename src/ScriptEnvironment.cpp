@@ -30,6 +30,9 @@ void ScriptEnvironment::lib61_setup()
     lb.set_function("getPwd", []() -> std::string {
         return mstat.work_path;
     });
+    lb.set_function("pushEventBus", [](const EventBus::bus_frequency_t& freq) {
+        mstat.procStat.eventBus.push(freq);
+    });
 }
 
 l61_stat& ScriptEnvironment::getScriptCtx()
@@ -108,6 +111,12 @@ bool ScriptEnvironment::has(const std::string& key)
 void ScriptEnvironment::specialRun(const std::function<void(sol::state&)>& func)
 {
     func(getLuaCtx());
+}
+
+sol::protected_function_result ScriptEnvironment::runCodeBlock(const std::string& luaCode)
+{
+    auto* t = l61_interface_cast(IBasicScriptEngine, this);
+    return getLuaCtx().do_string(luaCode);
 }
 
 ScriptEnvironment::~ScriptEnvironment() = default;

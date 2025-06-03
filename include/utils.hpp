@@ -23,12 +23,25 @@
 #include <type_traits>
 #include <vector>
 #include <memory>
+#include <sstream>
 
 namespace l61
 {
+    /*template<typename T>
+    concept LambdaCall = requires(T t) { //WIP
+        // Must be a class with an overloaded operator()
+        { &T::operator() } -> std::same_as<auto (T::*)(...) const>;
+    };*/
+    namespace meta
+    {
+        template<typename T>
+        concept CppObject = std::is_class_v<T>;
+    }
+
     std::vector<char> get_file(const std::string& f_name);
     std::string get_file_str(const std::string& f_name);
     std::string execEx(const char* cmd);
+    std::string get_input(const std::string& prompt = "");
 
     /**
      * @brief Designed to help with C Apis that take function pointers
@@ -44,6 +57,20 @@ namespace l61
         return static_cast<std::add_pointer_t<FunctionSignature>>(lambda);
     }
 
+    /**
+     * @brief Deconstructs an object only use when necessary
+     * @tparam T The type to deconstruct
+     * @param val The variable to deconstruct
+     */
+    template<meta::CppObject T>
+    [[__gnu__::__always_inline__]]
+    constexpr void deconstruct(T& val)
+    {
+        static_assert(std::is_destructible_v<T>, "Type must be destructible");
+        static_assert(not std::is_trivially_destructible_v<T>);
+        val.~T();
+    }
+
     template<typename T>
     T runLambda(const std::function<T()>& lambda)
     {
@@ -51,16 +78,17 @@ namespace l61
     }
 
     template<typename T>
-    std::size_t getHash(T&& v)
+    std::string toAddressStrings(const T* ptr)
     {
-        return std::hash<T>{}(std::forward<T>(v));
+        std::stringstream ss;
+        ss << std::hex << reinterpret_cast<const void*>(ptr);
+        return ss.str();
     }
 
     template<typename T>
-    [[__nodiscard__,__gnu__::__always_inline__]]
-    constexpr std::remove_reference_t<T>&& copy(T&& val) noexcept
+    std::size_t getHash(T&& v)
     {
-        return std::forward<T>(T(std::forward<T>(val)));
+        return std::hash<T>{}(std::forward<T>(v));
     }
 }
 

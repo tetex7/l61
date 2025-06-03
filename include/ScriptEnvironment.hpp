@@ -29,12 +29,13 @@
 
 #include "defs.hpp"
 #include "sol/sol.hpp"
-#include "l61Object.hpp"
+#include "Object.hpp"
+#include "IBasicScriptEngine.hpp"
 
 namespace l61
 {
 
-l61_abstract_class ScriptEnvironment : public l61Object
+l61_abstract_class ScriptEnvironment : public Object, public IBasicScriptEngine
 {
 private:
     const std::string scriptFilePath;
@@ -43,7 +44,7 @@ private:
 
     void lib61_setup();
 protected:
-    sol::state& getLuaCtx();
+    sol::state& getLuaCtx() override;
     l61_stat& getScriptCtx();
 
     const std::string& getScriptFilePath() const;
@@ -82,8 +83,7 @@ public:
     template<class T>
     void setValue(const std::string& key, const T& value)
     {
-        auto temp = getLuaCtx()[key];
-        if (temp.is<T>())
+        if (auto temp = getLuaCtx()[key]; temp.is<T>())
         {
             return temp.set(value);
         }
@@ -103,8 +103,9 @@ public:
     ScriptEnvironment& operator=(const ScriptEnvironment&) = delete;
 
     //Yes this does leak the Lua State what are you going to do bite me
-    void specialRun(const std::function<void(sol::state&)>& func);
+    void specialRun(const std::function<void(sol::state&)>& func) override;
 
+    sol::protected_function_result runCodeBlock(const std::string& luaCode) override;
 
     ~ScriptEnvironment() override;
     friend l61_abstract_class AbstractScriptDebugger;

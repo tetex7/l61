@@ -38,6 +38,7 @@
 #include "NativeExtension.hpp"
 #include "utils.hpp"
 #include "AbstractScriptDebugger.hpp"
+#include "IBasicScriptEngine.hpp"
 
 
 namespace po = boost::program_options;
@@ -56,7 +57,7 @@ l61_stat mstat = {
     std::getenv("HOME"),
     std::vector {
         (fs::read_symlink("/proc/self/exe").parent_path().parent_path().string() + "/lib"),
-        (std::string(std::getenv("HOME")) + "/l61_lib"),
+        (std::string(std::getenv("HOME")) + "/.l61_lib"),
         (fs::current_path().string() + "/scripts")
     },
     __L61__FV_VER__,
@@ -98,6 +99,7 @@ l61::l61_api_extension_t exdata = {
     l61::shEnv
 };
 
+class tests : public l61::Object{};
 
 static void sighandler_f(int sig)
 {
@@ -170,6 +172,7 @@ static int l61_main(int argc, const char* argv[])
     }
 
     std::signal(SIGINT, &sighandler_f);
+    std::signal(SIGTERM, &sighandler_f);
 
     if (!fs::exists(l61::mstat.make_file_path))
     {
@@ -180,9 +183,15 @@ static int l61_main(int argc, const char* argv[])
 
 
     l61::mstat.procStat.eventBus.addEvent(SIGINT, []() -> void {
-        l61::toLogger(l61::LogLevel::FATAL, "SIGINT detected goodbye");
-        std::exit(0);
+        std::string input = l61::get_input("\nexit(y/n):");
+        if (input == "yes" || input == "y") std::exit(0);
+        if (input == "d" || input == "debugger" || input == "debug")
+        {
+            l61::mstat.procStat.eventBus.push("debugger_Initialization");
+        }
     });
+
+    l61::mstat.procStat.eventBus.addEvent("debugger_Initialization", [](){});
 
     switch (l61::mstat.procStat.runMode)
     {
@@ -199,7 +208,8 @@ static int l61_main(int argc, const char* argv[])
         break;
     }
 
-    l61::toLogger(l61::LogLevel::INFO, "loaded file {} in {}", static_cast<std::string>(*l61::shEnv), l61::scrModeToStr(l61::mstat.procStat.runMode));
+    l61::toLogger(l61::LogLevel::INFO, "loaded file {} in {}", *l61::shEnv, l61::mstat.procStat.runMode);
+    l61::toLogger(l61::LogLevel::ERROR, "test: {}", tests());
 
     std::vector<std::string> lua_arg_vector = {};
 
@@ -213,7 +223,9 @@ static int l61_main(int argc, const char* argv[])
 
     l61::shEnv->addValue("spaths"s, l61::mstat.spaths);
 
-    l61::shEnv->specialRun([](sol::state& lua) {
+    l61::mstat.procStat.eventBus.push("com.trs.l61.PreLuaBoot");
+
+    l61::shEnv->specialRun([](const sol::state& lua) {
         lua_State* L = lua.lua_state();
         lua_sethook(L, l61::lambdaToFunPtr<std::remove_pointer_t<lua_Hook>>([](lua_State* L, lua_Debug* D) -> void {
             //This event handler and message pump is work in progress
@@ -234,7 +246,7 @@ static int l61_main(int argc, const char* argv[])
                 l61::mstat.procStat.eventBus.push(sig);
             }
             l61::mstat.procStat.eventBus.pumpIt();
-        }), LUA_MASKCOUNT, 50);
+        }), LUA_MASKCOUNT, 10);
     });
 
     return l61::shEnv->scriptRun(lua_arg_vector);
@@ -256,7 +268,6 @@ int main(int argc, const char* argv[])
     catch (std::exception& e)
     {
         l61::toLogger(l61::LogLevel::FATAL, "{}", e.what());
-        //std::println(std::cerr, "error: {}", e.what());
-        exit(1);
+        std::exit(1);
     }
 }

@@ -49,6 +49,11 @@
 //Oh, yes this is an abomination, but I like Java and I like to know what am I reading and its purpose
 //So the pseudo keywords stay
 
+//Why does this macro exist to help with fast writing of interfaces
+//Which are tedious to make when they're all pure virtual if you've done C++ for a long enough time you know
+//And the abstract macros or for at a glance reading
+//and This is very much so inspired by how COM headers Are written and as well Qt headers
+
 /**
  * @brief denotes that I class is an interface with little to no implementation
  * @note A static analyzer could be designed to use these although usage would have to be self enforced
@@ -57,10 +62,17 @@
 
 /**
  * @brief This denotes that a call within an interface is a pure virtual
+ * @param access_level The access level of the function call
  * @param sig Function signature written like prototype
  * @note A static analyzer could be designed to use these although usage would have to be self enforced
  */
-#define l61_interface_call(sig) virtual sig = 0
+#define l61_interface_call(access_level, sig) access_level: virtual sig = 0
+
+/**
+ * @brief Create a standard virtual destructor for your interface
+ * @param type The interface type
+ */
+#define l61_interface_deconstructor(type) public: virtual ~type() = default
 
 /**
  * @brief Denotes that the class is abstract with most functions being implemented leaving a few functions to be implemented by inheritors
@@ -72,16 +84,19 @@
  */
 #define l61_abstract_call(sig) virtual sig = 0
 
-//This one was a good idea when I wrote it not so much anymore
-//don't use this it's going to be gone within a few weeks
 /**
- * @param sig Function signature written like prototype
- * @deprecated This one was a good idea when I wrote it not so much anymore
+ * @brief Create a standard virtual destructor for your abstract class
+ * @param type The abstract class type
+ * @note Is not mandatory but is recommended for simple abstract classes
  */
-#define l61_virtual_call(sig) virtual sig
+#define l61_abstract_destructor(type) public: virtual ~type() = default
 
-//We do not talk about this abomination
-namespace std
+#define l61_no_copy(type)        \
+type(const type&) = delete; \
+type& operator=(const type&) = delete
+
+
+namespace l61
 {
     template<class K, class V>
     using HashMap = std::unordered_map<K, V>;
@@ -205,4 +220,13 @@ extern l61_stat mstat;
 extern std::unique_ptr<AbstractScriptDebugger> luaDugger;
 
 }
+
+template <>
+struct std::formatter<l61::ScriptMode> : std::formatter<std::string> {
+    auto format(const l61::ScriptMode& mode, format_context& ctx) const
+    {
+        const std::string result = l61::scrModeToStr(mode);
+        return std::formatter<std::string>::format(result, ctx);
+    }
+};
 #endif //DEFS_HPP

@@ -35,10 +35,11 @@ enum class LogLevel : std::uint8_t
     FATAL
 };
 
+
 template<typename... Ty>
 void toLogger(LogLevel level, std::format_string<Ty...> fmt, Ty&&... v_ty)
 {
-    if (!mstat.procStat.verbose && level == LogLevel::INFO) return; //  && !(static_cast<std::uint8_t>(level) <= static_cast<std::uint8_t>(LogLevel::ERROR))
+    if (!mstat.procStat.verbose && ((level == LogLevel::WARN) || (level == LogLevel::INFO))) return;
     std::string le;
     switch (level)
     {

@@ -27,26 +27,58 @@
 #include <string>
 #include <queue>
 #include <memory>
+#include <set>
+#include <format>
 
 #include "Event.hpp"
 
+
+
 namespace l61
 {
+    namespace meta
+    {
+        /**
+         * A type Safeway not to blow your leg off With event frequencies
+         */
+        template<typename T>
+        concept EventBusFrequencyCompatible =
+        std::is_same_v<T, std::int32_t> ||
+        std::is_same_v<T, std::string> ||
+        std::is_convertible_v<T, std::string>; // To appease the compiler for string literals
+
+        template<typename T>
+        struct is_eventBus_freq_compatible
+        {
+            constexpr static bool value = EventBusFrequencyCompatible<T>;
+        };
+        template<typename T>
+        constexpr inline bool is_eventBus_freq_compatible_v = is_eventBus_freq_compatible<T>::value;
+    }
+
     class EventBus final
     {
     public:
         using bus_frequency_t = std::variant<std::int32_t, std::string>;
+
     private:
         std::unordered_map<bus_frequency_t, std::unique_ptr<Event>> _map;
         std::queue<bus_frequency_t> _freq_stack;
     public:
-        void operator()();
 
-        void addEvent(const bus_frequency_t& freq, const Event& event);
+        bool addEvent(const bus_frequency_t& freq, const Event& event);
+        void removeEvent(const bus_frequency_t& freq);
 
         void pumpIt();
 
         void push(const bus_frequency_t& freq);
+        void pushBand(const std::set<bus_frequency_t>& freqBand);
+
+        template<meta::EventBusFrequencyCompatible... Ty>
+        void pushBand(Ty&&... vals)
+        {
+            pushBand({std::forward<Ty>(vals)...});
+        }
 
         explicit EventBus();
         ~EventBus();
@@ -55,15 +87,24 @@ namespace l61
         EventBus(EventBus&) = delete;
         EventBus& operator=(const EventBus&) = delete;
     };
+
+    //std::ostream& operator<<(std::ostream& stream, s)
 } // l61
 
-/*template <>
-struct std::hash<l61::EventBus::bus_frequency_t> {
-    size_t operator()(const l61::EventBus::bus_frequency_t& key) const noexcept {
-        return std::visit([](auto&& val) {
-            return std::hash<std::decay_t<decltype(val)>>{}(val);
-        }, key);
+template <>
+struct std::formatter<l61::EventBus::bus_frequency_t> : std::formatter<std::string> {
+    auto format(const l61::EventBus::bus_frequency_t& freq, format_context& ctx) const {
+        const std::string result = std::visit([]<typename Tp>(const Tp& val) {
+            using T = std::decay_t<Tp>;
+            if constexpr (std::is_same_v<T, std::string>)
+                return std::format("\"{}\"", val);
+            else if constexpr (std::is_same_v<T, std::int32_t>)
+                return std::format("{}", val);
+            else
+                return std::format("'{}'", val);
+        }, freq);
+        return std::formatter<std::string>::format(result, ctx);
     }
-};*/
+};
 
 #endif //EVENTBUS_HPP

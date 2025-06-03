@@ -19,7 +19,6 @@
 
 namespace l61
 {
-    AbstractScriptDebugger::~AbstractScriptDebugger() = default;
 
     AbstractScriptDebugger::AbstractScriptDebugger(ScriptEnvironment* script, l61_stat& lstat)
     : scriptCtx(script), lstat(lstat){}

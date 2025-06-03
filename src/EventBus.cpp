@@ -19,19 +19,25 @@
 // Created by tete on 05/30/2025.
 //
 #include "EventBus.hpp"
+#include "Logger.hpp"
 
 
 namespace l61
 {
-    void EventBus::operator()()
+
+    bool EventBus::addEvent(const bus_frequency_t& freq, const Event& event)
     {
-        pumpIt();
+        if (_map.contains(freq)) return false;//throw std::runtime_error("Frequency already in use");
+        _map[freq] = std::make_unique<Event>(event);
+        return true;
     }
 
-    void EventBus::addEvent(const bus_frequency_t& freq, const Event& event)
+    void EventBus::removeEvent(const bus_frequency_t& freq)
     {
-        if (_map.contains(freq)) throw std::runtime_error("Frequency already in use");
-        _map[freq] = std::make_unique<Event>(event);
+        if (_map.contains(freq))
+        {
+            _map.erase(freq);
+        }
     }
 
     void EventBus::pumpIt()
@@ -45,6 +51,10 @@ namespace l61
                     event.call();
                 }
             }
+            else
+            {
+                toLogger(LogLevel::WARN, "no freq: {} on bus", freq);
+            }
             _freq_stack.pop();
         }
     }
@@ -52,6 +62,14 @@ namespace l61
     void EventBus::push(const bus_frequency_t& freq)
     {
         _freq_stack.push(freq);
+    }
+
+    void EventBus::pushBand(const std::set<bus_frequency_t>& freqBand)
+    {
+        for (const bus_frequency_t& freq : freqBand)
+        {
+            this->push(freq);
+        }
     }
 
     EventBus::EventBus() = default;

@@ -25,33 +25,35 @@
 #include <string>
 #include <type_traits>
 #include <utility>
+#include <format>
 namespace l61
 {
+    class Object;
 
-class l61Object;
+    namespace meta
+    {
+        template<class T>
+        concept l61Obj = std::is_base_of_v<Object, T>;
+    }
 
-template<class T>
-concept l61Obj = std::is_base_of_v<l61Object, T>;
 
+    class Object
+    {
+    public:
+        virtual ~Object();
 
-class l61Object
-{
-protected:
-public:
-    virtual ~l61Object();
+        virtual std::string toString() const;
+        virtual std::size_t hashCode() const;
+        explicit operator std::string() const;
+    };
+}
 
-    virtual std::string toString() const;
-    virtual std::size_t hashCode() const;
-    explicit operator std::string() const;
+template <l61::meta::l61Obj T>
+struct std::formatter<T> : formatter<std::string> {
+    auto format(const T& obj, std::format_context& ctx) const {
+        const std::string result = static_cast<const l61::Object&>(obj).toString();
+        return std::formatter<std::string>::format(result, ctx);
+    }
 };
-
-
-template<l61Obj T>
-[[__gnu__::__always_inline__]]
-constexpr __inline l61Object& toL61Obj(T& v)
-{
-    return static_cast<l61Object&>(v);
-}
-}
 
 #endif //L61OBJECT_HPP

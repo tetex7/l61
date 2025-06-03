@@ -25,6 +25,12 @@
 
 namespace l61
 {
+    namespace meta
+    {
+        template<class T>
+        concept l61CompatibleScriptDebugger = std::is_base_of_v<AbstractScriptDebugger, T>;
+    }
+
     l61_abstract_class AbstractScriptDebugger
     {
     private:
@@ -38,12 +44,12 @@ namespace l61
 
         AbstractScriptDebugger(ScriptEnvironment* script, l61_stat& lstat);
     public:
-        l61_virtual_call(~AbstractScriptDebugger());
-
         l61_abstract_call(int run());
 
         AbstractScriptDebugger(const AbstractScriptDebugger&) = delete;
         AbstractScriptDebugger& operator=(const AbstractScriptDebugger&) = delete;
+
+        l61_abstract_destructor(AbstractScriptDebugger);
     };
 }
 

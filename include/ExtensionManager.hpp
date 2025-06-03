@@ -30,7 +30,7 @@ namespace l61
 class ExtensionManager final
 {
 private:
-    std::HashMap<std::string, std::unique_ptr<NativeExtension>> extension_map;
+    HashMap<std::string, std::unique_ptr<NativeExtension>> extension_map;
 public:
     explicit ExtensionManager();
     ~ExtensionManager();

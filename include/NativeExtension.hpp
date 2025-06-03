@@ -23,18 +23,18 @@
 #include <type_traits>
 #ifndef NATIVEEXTENSION_HPP
 #define NATIVEEXTENSION_HPP
-
-#include "defs.hpp"
 #include <expected>
 #include <mutex>
 
-#include "l61Object.hpp"
+#include "defs.hpp"
+#include "Object.hpp"
+
 namespace l61
 {
 /**
  * @brief Handling native extensions
  */
-class NativeExtension final : public l61Object
+class NativeExtension final : public Object
 {
 public:
     /**

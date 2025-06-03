@@ -18,6 +18,7 @@
 #include "utils.hpp"
 #include <fstream>
 #include <functional>
+#include <iostream>
 namespace l61
 {
 
@@ -63,5 +64,32 @@ namespace l61
             result += buffer.data();
         }
         return result;
+    }
+
+
+    std::string get_input(const std::string& prompt)
+    {
+        if (!prompt.empty()) {
+            std::cout << prompt << ' ';
+        }
+
+        std::string input;
+
+        while (true)
+        {
+            const char ch = std::cin.get();
+            if (ch == '\n' || ch == '\r') {
+                break;
+            }
+            if (ch == '\b' || ch == 127) { // Handle backspace or delete
+                if (!input.empty()) {
+                    input.pop_back();
+                    std::cout << "\b \b"; // Erase char from terminal
+                }
+            } else {
+                input += ch;
+            }
+        }
+        return input;
     }
 }
