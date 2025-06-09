@@ -19,7 +19,7 @@
 // Created by tete on 05/08/2025.
 //
 
-#include "ExtensionManager.hpp"
+#include "l61/ExtensionManager.hpp"
 namespace l61
 {
 

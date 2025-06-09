@@ -28,17 +28,18 @@
 #include <readline/readline.h>
 #include <csignal>
 #include <string>
+#include <stacktrace>
 
-#include "BuildScript.hpp"
-#include "ShellScript.hpp"
-#include "defs.hpp"
+#include "l61/BuildScript.hpp"
+#include "l61/ShellScript.hpp"
+#include "l61/defs.hpp"
 
-#include "ExtensionManager.hpp"
-#include "Logger.hpp"
-#include "NativeExtension.hpp"
-#include "utils.hpp"
-#include "AbstractScriptDebugger.hpp"
-#include "IBasicScriptEngine.hpp"
+#include "l61/ExtensionManager.hpp"
+#include "l61/Logger.hpp"
+#include "l61/NativeExtension.hpp"
+#include "l61/utils.hpp"
+#include "l61/AbstractScriptDebugger.hpp"
+#include "l61/IBasicScriptEngine.hpp"
 
 
 namespace po = boost::program_options;
@@ -99,8 +100,6 @@ l61::l61_api_extension_t exdata = {
     l61::shEnv
 };
 
-class tests : public l61::Object{};
-
 static void sighandler_f(int sig)
 {
     l61::mstat.procStat.signalStack.push(sig);
@@ -115,7 +114,7 @@ static int l61_main(int argc, const char* argv[])
     ("mode,m", po::value<std::string>()->value_name(R"({"shell" or "build"})"s), "Every mode is specialized to what they're used for")
     ("cd,C", po::value<std::string>()->value_name("path"s), "Falsifies the current directory")
     ("spaths,", "Dumps the built-in spaths")
-    ("add-to-spaths,p", po::value<std::vector<std::string>>()->composing(), "Add values to the spaths")
+    ("add-to-spaths,p", po::value<std::vector<std::string>>()->composing()->value_name("path"), "Add values to the spaths")
     ("verbose,v", "more loging");
 
     po::variables_map vm;
@@ -187,11 +186,15 @@ static int l61_main(int argc, const char* argv[])
         if (input == "yes" || input == "y") std::exit(0);
         if (input == "d" || input == "debugger" || input == "debug")
         {
-            l61::mstat.procStat.eventBus.push("debugger_Initialization");
+            if (l61::shEnv)
+            {
+                l61::mstat.procStat.eventBus.push("com.trs.l61.debugger_initialization");
+                l61::shEnv->attachDebugger(l61::luaDugger.get());
+            }
         }
     });
 
-    l61::mstat.procStat.eventBus.addEvent("debugger_Initialization", [](){});
+    l61::mstat.procStat.eventBus.addEvent("com.trs.l61.debugger_initialization", [](){});
 
     switch (l61::mstat.procStat.runMode)
     {
@@ -209,7 +212,6 @@ static int l61_main(int argc, const char* argv[])
     }
 
     l61::toLogger(l61::LogLevel::INFO, "loaded file {} in {}", *l61::shEnv, l61::mstat.procStat.runMode);
-    l61::toLogger(l61::LogLevel::ERROR, "test: {}", tests());
 
     std::vector<std::string> lua_arg_vector = {};
 
@@ -267,7 +269,7 @@ int main(int argc, const char* argv[])
     }
     catch (std::exception& e)
     {
-        l61::toLogger(l61::LogLevel::FATAL, "{}", e.what());
+        l61::toLogger(l61::LogLevel::FATAL, "Unhandled exception: {}", e.what());
         std::exit(1);
     }
 }

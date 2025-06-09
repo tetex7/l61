@@ -19,8 +19,8 @@
 // Created by tete on 05/30/2025.
 //
 #pragma once
-#ifndef EVENTBUS_HPP
-#define EVENTBUS_HPP
+#ifndef L61_EVENTBUS_HPP
+#define L61_EVENTBUS_HPP
 #include <cstdint>
 #include <map>
 #include <variant>
@@ -30,7 +30,7 @@
 #include <set>
 #include <format>
 
-#include "Event.hpp"
+#include "l61/Event.hpp"
 
 
 

@@ -19,12 +19,12 @@
 // Created by tete on 05/05/2025.
 //
 
-#include "NativeExtension.hpp"
+#include "l61/NativeExtension.hpp"
 #include <dlfcn.h>
 #include <stdexcept>
 #include <string>
-#include "defs.hpp"
-#include "Logger.hpp"
+#include "l61/defs.hpp"
+#include "l61/Logger.hpp"
 
 #define setup_lock() std::lock_guard<std::mutex> lock(soMutex)
 

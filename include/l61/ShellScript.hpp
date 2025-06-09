@@ -18,23 +18,36 @@
 //
 // Created by tete on 05/05/2025.
 //
+#pragma once
 
-#include "l61/defs.hpp"
-using namespace l61;
-static l61_api_extension_t* raw = nullptr;
+#ifndef L61_SHELLSCRIPT_HPP
+#define L61_SHELLSCRIPT_HPP
 
-namespace lex61rt
-{ 
-    l61_api_extension_ptr getApiData()
-    {
-        return raw;
-    }
-}
-
-extern int l61_extension_init();
-
-C_CALL int __l61_rt_ex_init__(l61_api_extension_t* api) // NOLINT(*-reserved-identifier)
+#include "sol/sol.hpp"
+#include "l61/ScriptEnvironment.hpp"
+namespace l61
 {
-    raw = api;
-    return l61_extension_init();
+
+class ShellScript : public ScriptEnvironment
+{
+protected:
+    int run(const std::vector<std::string>& args) override;
+
+    void scriptPreInit() override;
+
+public:
+    ShellScript(const std::string& scriptFilePath, l61_stat& scriptCtx);
+    ~ShellScript() override;
+};
+
+
+__inline sol::table makeSubTable(const std::string&& name, sol::table table)
+{
+    sol::table x = table.create_with();
+	table.set(std::forward<const std::string>(name), x);
+	return x;
 }
+}
+
+
+#endif //SHELLSCRIPT_HPP

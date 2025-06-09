@@ -21,7 +21,7 @@
 
 #define LEX61_SYM_LOOKUP_COMPAT extern "C"
 
-#include "defs.hpp"
+#include "l61/defs.hpp"
 
 namespace lex61rt 
 {

@@ -19,7 +19,7 @@
 // Created by tete on 05/01/2025.
 //
 
-#include "BuildScript.hpp"
+#include "l61/BuildScript.hpp"
 namespace l61
 {
 

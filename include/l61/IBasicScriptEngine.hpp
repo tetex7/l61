@@ -18,9 +18,10 @@
 //
 // Created by tete on 06/01/2025.
 //
+#pragma once
 
-#ifndef IBASICSCRIPTENGINE_HPP
-#define IBASICSCRIPTENGINE_HPP
+#ifndef L61_IBASICSCRIPTENGINE_HPP
+#define L61_IBASICSCRIPTENGINE_HPP
 #include "AbstractScriptDebugger.hpp"
 
 namespace l61

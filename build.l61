@@ -15,7 +15,8 @@ function main(argc, argv)
    --print(bash.."\n")
    --while true do
    --end
-   --l61.pushEventBus(2)
+    --l61.pushEventBus(2)
+   l61.fs.exists("/bin")
    return 1
 end
 

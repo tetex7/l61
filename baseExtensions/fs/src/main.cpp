@@ -15,12 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "ShellScript.hpp"
-#include "defs.hpp"
-#include "ScriptEnvironment.hpp"
+#include "l61/ShellScript.hpp"
+#include "l61/defs.hpp"
+#include "l61/ScriptEnvironment.hpp"
 #include "sol/sol.hpp"
 #include "lex61rt.hpp"
-#include "ExtensionManager.hpp"
+#include "l61/ExtensionManager.hpp"
 #include <filesystem>
 
 

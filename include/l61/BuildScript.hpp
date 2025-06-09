@@ -16,25 +16,26 @@
  */
 
 //
-// Created by tete on 05/05/2025.
+// Created by tete on 05/01/2025.
 //
+#pragma once
+#ifndef L61_BUILDSCRIPT_HPP
+#define L61_BUILDSCRIPT_HPP
 
-#include "l61/defs.hpp"
-using namespace l61;
-static l61_api_extension_t* raw = nullptr;
-
-namespace lex61rt
-{ 
-    l61_api_extension_ptr getApiData()
-    {
-        return raw;
-    }
-}
-
-extern int l61_extension_init();
-
-C_CALL int __l61_rt_ex_init__(l61_api_extension_t* api) // NOLINT(*-reserved-identifier)
+#include "l61/ScriptEnvironment.hpp"
+namespace l61
 {
-    raw = api;
-    return l61_extension_init();
+
+class BuildScript : public ScriptEnvironment
+{
+protected:
+    int run(const std::vector<std::string>& args) override;
+    void scriptPreInit() override;
+public:
+    explicit BuildScript(const std::string& scriptFilePath, l61_stat& scriptCtx);
+    ~BuildScript() override;
+};
+
 }
+
+#endif //BUILDSCRIPT_HPP

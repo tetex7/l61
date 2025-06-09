@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- #include "AbstractScriptDebugger.hpp"
+ #include "l61/AbstractScriptDebugger.hpp"
 
 namespace l61
 {

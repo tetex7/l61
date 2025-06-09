@@ -18,8 +18,8 @@
 //
 // Created by tete on 05/30/2025.
 //
-#include "EventBus.hpp"
-#include "Logger.hpp"
+#include "l61/EventBus.hpp"
+#include "l61/Logger.hpp"
 
 
 namespace l61

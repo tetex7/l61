@@ -19,8 +19,9 @@
 // Created by tete on 05/01/2025.
 //
 
-#include "ScriptEnvironment.hpp"
-#include "Logger.hpp"
+#include "l61/ScriptEnvironment.hpp"
+#include "l61/Logger.hpp"
+#include "l61/utils.hpp"
 #include "sol/sol.hpp"
 namespace l61
 {
@@ -50,8 +51,22 @@ const std::string& ScriptEnvironment::getScriptFilePath() const
     return this->scriptFilePath;
 }
 
+static void standard_lua_debugger_hook(lua_State* L, lua_Debug* D)
+{
+    sol::state_view sL{L};
+    ScriptEnvironment* this_script = reinterpret_cast<ScriptEnvironment*>(sL["__l61_trs_environment_script_this__"].get<uintptr_t>());
+    auto* debugger = this_script->script_debugger_;
+    if (debugger)
+        debugger->run(L, D);
+}
+
 ScriptEnvironment::ScriptEnvironment(const std::string& scriptFilePath, l61_stat& scriptCtx)
-    : scriptFilePath(scriptFilePath), scriptCtx(scriptCtx), luaCtx(sol::state()) {}
+    : scriptFilePath(scriptFilePath), scriptCtx(scriptCtx), luaCtx(sol::state()), script_debugger_(nullptr)
+{
+    setValue("__l61_trs_environment_script_this__", reinterpret_cast<uintptr_t>(this));
+    lua_State* L = this->ScriptEnvironment::getLuaCtx().lua_state();
+    lua_sethook(L, standard_lua_debugger_hook, LUA_MASKCOUNT, 1);
+}
 
 int ScriptEnvironment::standardMainEntryPoint(const std::vector<std::string>& args)
 {
@@ -113,9 +128,17 @@ void ScriptEnvironment::specialRun(const std::function<void(sol::state&)>& func)
     func(getLuaCtx());
 }
 
+
+
+
+void ScriptEnvironment::attachDebugger(AbstractScriptDebugger* debugger)
+{
+    if (script_debugger_) throw std::runtime_error("Script Debugger already attached");
+    this->script_debugger_ = debugger;
+}
+
 sol::protected_function_result ScriptEnvironment::runCodeBlock(const std::string& luaCode)
 {
-    auto* t = l61_interface_cast(IBasicScriptEngine, this);
     return getLuaCtx().do_string(luaCode);
 }
 

@@ -15,13 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "Logger.hpp"
-#include "NativeExtension.hpp"
-#include "defs.hpp"
-#include "ScriptEnvironment.hpp"
+#include "l61/Logger.hpp"
+#include "l61/NativeExtension.hpp"
+#include "l61/defs.hpp"
+#include "l61/ScriptEnvironment.hpp"
 #include "sol/sol.hpp"
 #include "lex61rt.hpp"
-#include "ExtensionManager.hpp"
+#include "l61/ExtensionManager.hpp"
 #include <cstdio>
 #include <exception>
 #include <print>
