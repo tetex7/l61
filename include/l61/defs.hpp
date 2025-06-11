@@ -46,51 +46,6 @@
 #   define LEX61_SYM_LOOKUP_COMPAT extern "C"
 #endif
 
-//Oh, yes this is an abomination, but I like Java and I like to know what am I reading and its purpose
-//So the pseudo keywords stay
-
-//Why does this macro exist to help with fast writing of interfaces
-//Which are tedious to make when they're all pure virtual if you've done C++ for a long enough time you know
-//And the abstract macros or for at a glance reading
-//and This is very much so inspired by how COM headers Are written and as well Qt headers
-
-/**
- * @brief denotes that I class is an interface with little to no implementation
- * @note A static analyzer could be designed to use these although usage would have to be self enforced
- */
-#define l61_interface struct
-
-/**
- * @brief This denotes that a call within an interface is a pure virtual
- * @param access_level The access level of the function call
- * @param sig Function signature written like prototype
- * @note A static analyzer could be designed to use these although usage would have to be self enforced
- */
-#define l61_interface_call(access_level, sig) access_level: virtual sig = 0
-
-/**
- * @brief Create a standard virtual destructor for your interface
- * @param type The interface type
- */
-#define l61_interface_deconstructor(type) public: virtual ~type() = default
-
-/**
- * @brief Denotes that the class is abstract with most functions being implemented leaving a few functions to be implemented by inheritors
- */
-#define l61_abstract_class class
-/**
- * @brief denotes that the method call is not implemented
- * @param sig Function signature written like prototype
- */
-#define l61_abstract_call(sig) virtual sig = 0
-
-/**
- * @brief Create a standard virtual destructor for your abstract class
- * @param type The abstract class type
- * @note Is not mandatory but is recommended for simple abstract classes
- */
-#define l61_abstract_destructor(type) public: virtual ~type() = default
-
 //Works on clang and GCC Though that's everybody important
 //But poor Microsoft the farthest from being standard
 //yet cannot even do simple gnu extensions

@@ -51,7 +51,7 @@ const std::string& ScriptEnvironment::getScriptFilePath() const
     return this->scriptFilePath;
 }
 
-static void standard_lua_debugger_hook(lua_State* L, lua_Debug* D)
+void standard_lua_debugger_hook(lua_State* L, lua_Debug* D)
 {
     sol::state_view sL{L};
     ScriptEnvironment* this_script = reinterpret_cast<ScriptEnvironment*>(sL["__l61_trs_environment_script_this__"].get<uintptr_t>());

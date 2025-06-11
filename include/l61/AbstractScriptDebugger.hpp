@@ -38,7 +38,6 @@
 #define L61_ABSTRACT_SCRIPT_DEBUGGER_HPP
 #include "sol/sol.hpp"
 #include "l61/defs.hpp"
-#include "l61/ScriptEnvironment.hpp"
 
 namespace l61
 {
@@ -47,6 +46,8 @@ namespace l61
         template<class T>
         concept l61CompatibleScriptDebugger = std::is_base_of_v<AbstractScriptDebugger, T>;
     }
+
+    class ScriptEnvironment;
 
     l61_abstract_class AbstractScriptDebugger
     {

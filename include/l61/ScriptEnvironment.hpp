@@ -87,7 +87,7 @@ public:
     {
         if (auto temp = getLuaCtx()[key]; temp.is<T>())
         {
-            return temp.set(value);
+            temp.set(value);
         }
     }
 

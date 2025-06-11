@@ -32,7 +32,7 @@ endif
 GCCFLAG += $(DBUG_FLAGS)
 
 CFLAGS = ${GCCFLAG} -std=gnu99
-CPPFLAGS = ${GCCFLAG} -std=gnu++23
+CPPFLAGS = ${GCCFLAG} -std=gnu++23 -include l61/PseudoKeywords.hpp
 LDFLAGS = $(DBUG_FLAGS) # Link as a shared object
 LDLIBS = -rdynamic -llua -lreadline -lboost_program_options
 

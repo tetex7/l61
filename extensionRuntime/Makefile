@@ -21,7 +21,7 @@ DEBUG ?= 1
 CC = gcc
 CXX = g++
 AR = ar
-GCCFLAG = -fPIC -rdynamic -Wall -Wextra -fno-strict-aliasing -DSOL_ALL_SAFETIES_ON  # -fPIC for Position Independent Code
+GCCFLAG = -fPIC -rdynamic -Wall -Wextra -fno-strict-aliasing -DSOL_ALL_SAFETIES_ON -include l61/PseudoKeywords.hpp  # -fPIC for Position Independent Code
 
 ifeq ($(DEBUG),1)
   GCCFLAGS += -g -O0
