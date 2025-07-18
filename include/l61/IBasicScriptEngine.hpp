@@ -54,4 +54,4 @@ namespace l61
     };
 }
 
-#endif //IBASICSCRIPTENGINE_HPP
+#endif //L61_IBASICSCRIPTENGINE_HPP

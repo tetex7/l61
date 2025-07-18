@@ -37,6 +37,8 @@ public:
 
     NativeExtension& lookupAndLoadExtension(const std::string& extensionPath, l61_api_extension_ptr api, bool loadEntryPoint = true);
 
+    void unload(const std::string& plugin);
+
     bool has(const std::string& exName) const;
 
     const NativeExtension& get(const std::string& exName) const;

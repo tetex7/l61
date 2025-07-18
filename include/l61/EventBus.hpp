@@ -77,7 +77,7 @@ namespace l61
         template<meta::EventBusFrequencyCompatible... Ty>
         void pushBand(Ty&&... vals)
         {
-            pushBand({std::forward<Ty>(vals)...});
+            this->pushBand({std::forward<Ty>(vals)...});
         }
 
         explicit EventBus();
@@ -107,4 +107,4 @@ struct std::formatter<l61::EventBus::bus_frequency_t> : std::formatter<std::stri
     }
 };
 
-#endif //EVENTBUS_HPP
+#endif //L61_EVENTBUS_HPP

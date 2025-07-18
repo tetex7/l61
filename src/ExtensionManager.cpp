@@ -42,6 +42,14 @@ NativeExtension& ExtensionManager::lookupAndLoadExtension(const std::string& ext
     throw std::runtime_error(std::format("No extension found during lookup for {}", extensionPath));
 }
 
+void ExtensionManager::unload(const std::string& plugin)
+{
+    if (has(plugin))
+    {
+        this->extension_map.erase(plugin);
+    }
+}
+
 bool ExtensionManager::has(const std::string& exName) const
 {
     return extension_map.contains(exName);
@@ -49,7 +57,7 @@ bool ExtensionManager::has(const std::string& exName) const
 
 const NativeExtension& ExtensionManager::operator[](const std::string& exName) const
 {
-    if (has(exName))
+    if (!has(exName))
     {
         throw std::runtime_error(std::format("extension '{}' has not loaded", exName));
     }

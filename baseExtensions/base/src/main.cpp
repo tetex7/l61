@@ -32,13 +32,11 @@ LEX61RT_MAKE_HEADER(
     "1.0.0"
 );
 
-constexpr const char* extensionload[] =
-{
+constexpr const char* extensionload[] = {
     "fs.lex61",
 };
 
 using l61::LogLevel;
-using l61::toLogger;
 
 int l61_extension_init()
 {
@@ -52,11 +50,12 @@ int l61_extension_init()
     {
         try
         {
-            auto& ex = extension_manager.lookupAndLoadExtension(str, lex61rt::getApiData(), false);
-            if (ex.getExtensionHeader()->authors[0] != "Tetex7"s)
+            if (auto& ex = extension_manager.lookupAndLoadExtension(str, lex61rt::getApiData(), false); ex.getExtensionHeader()->authors[0] != "Tetex7"s)
             {
+                extension_manager.unload(str);
                 std::println("no good header for {}", str);
-                std::exit(1);
+                l61::toLogger(LogLevel::ERROR, "Cannot find well formed {}", str);
+                //std::exit(1);
             }
             else
             {
@@ -66,14 +65,9 @@ int l61_extension_init()
         } 
         catch (std::exception& exception)
         {
-            toLogger(LogLevel::ERROR, "{}", exception.what());
+            l61::toLogger(LogLevel::ERROR, "{}", exception.what());
         }
     }
 
     return 0;
 }
-
-/*C_CALL int __l61_rt_ex_init__(l61_api_extension_t* api) // NOLINT(*-reserved-identifier)
-{
-    return l61_extension_init(api);
-}*/

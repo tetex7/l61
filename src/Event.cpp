@@ -47,6 +47,8 @@ namespace l61
     Event::Event(const Event& event)
     : fun(event.fun){}
 
+
+
     Event::operator bool() const
     {
         return static_cast<bool>(fun);

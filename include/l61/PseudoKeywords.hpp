@@ -23,17 +23,19 @@
 #ifndef L61_PSEUDOKEYWORDS_HPP
 #define L61_PSEUDOKEYWORDS_HPP
 
-//Oh, yes this is an abomination, but I like Java and I like to know what am I reading and its purpose
-//So the pseudo keywords stay
+// Oh, yes this is an abomination, but I like Java and I like to know what am I reading and its purpose
+// So the pseudo keywords stay
 
-//Why does this macro exist to help with fast writing of interfaces
-//Which are tedious to make when they're all pure virtual if you've done C++ for a long enough time you know
-//And the abstract macros or for at a glance reading
-//and This is very much so inspired by how COM headers Are written and as well Qt headers
+// Why does this macro exist to help with fast writing of interfaces
+// Which are tedious to make when they're all pure virtual if you've done C++ for a long enough time you know
+// And the abstract macros or for at a glance reading
+// and This is very much so inspired by how COM headers Are written and as well Qt headers
 
-//Yes this is force include
-//yes when you use my api you're going to have to tell your compiler to force include this
-//Why... fuck you
+// Yes this is force include
+// yes when you use my api you're going to have to tell your compiler to force include this
+
+// A rule within this header file of pseudo keywords is that
+// all pseudo keywords must distill down to simple real keywords no preprocessor magic
 
 /**
  * @brief denotes that I class is an interface with little to no implementation
@@ -71,5 +73,7 @@
  * @note Is not mandatory but is recommended for simple abstract classes
  */
 #define l61_abstract_destructor(type) public: virtual ~type() = default
+
+#define l61_unused [[maybe_unused]]
 
 #endif

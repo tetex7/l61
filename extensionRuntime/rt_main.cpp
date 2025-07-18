@@ -20,8 +20,11 @@
 //
 
 #include "l61/defs.hpp"
+#include <cassert>
+
+static l61::l61_api_extension_t* raw = l61::null;
+
 using namespace l61;
-static l61_api_extension_t* raw = nullptr;
 
 namespace lex61rt
 { 
@@ -35,6 +38,7 @@ extern int l61_extension_init();
 
 C_CALL int __l61_rt_ex_init__(l61_api_extension_t* api) // NOLINT(*-reserved-identifier)
 {
+    assert(api != nullptr && "Null pointer given to API for extension runtime");
     raw = api;
     return l61_extension_init();
 }

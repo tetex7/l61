@@ -35,7 +35,7 @@ LEX61_SYM_LOOKUP_COMPAT lex61rt::lex61_header_t __lex61_header__ = { \
 }
 
 LEX61_SYM_LOOKUP_COMPAT {
-    extern lex61rt::lex61_header_t __lex61_header__;
+    extern lex61rt::lex61_header_t __lex61_header__; // NOLINT(*-reserved-identifier)
 }
 
 #endif

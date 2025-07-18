@@ -213,15 +213,20 @@ static int l61_main(int argc, const char* argv[])
 
     l61::toLogger(l61::LogLevel::INFO, "loaded file {} in {}", *l61::shEnv, l61::mstat.procStat.runMode);
 
-    std::vector<std::string> lua_arg_vector = {};
+    std::vector<std::string> lua_arg_vector = l61::null;
 
     for (std::size_t i = 0; i < static_cast<std::size_t>(argc); i++)
     {
         lua_arg_vector.emplace_back(argv[i]);
     }
 
+    std::unique_ptr<int> s = static_cast<std::unique_ptr<int>>(l61::null);
+
     //NativeExtension::safeExtensionLoad(NativeExtension::extensionLookUp("base.lex61"s), &exdata, false);
-    l61::mstat.procStat.extension_manager->lookupAndLoadExtension("base.lex61", &exdata);
+    auto& base_ex = l61::mstat.procStat.extension_manager->lookupAndLoadExtension("base.lex61", l61::null, false);
+
+    int base_ret = base_ex.getExtensionEntryPointCall()(&exdata);
+    if (base_ret) throw std::runtime_error(std::format("Entry point for extension base.lex16 Returned A value of {}", base_ret));
 
     l61::shEnv->addValue("spaths"s, l61::mstat.spaths);
 
@@ -229,7 +234,7 @@ static int l61_main(int argc, const char* argv[])
 
     l61::shEnv->specialRun([](const sol::state& lua) {
         lua_State* L = lua.lua_state();
-        lua_sethook(L, l61::lambdaToFunPtr<std::remove_pointer_t<lua_Hook>>([](lua_State* L, lua_Debug* D) -> void {
+        lua_sethook(L, l61::lambdaToFunPtr<std::remove_pointer_t<lua_Hook>>([](l61_unused lua_State* L, l61_unused lua_Debug* D) -> void {
             //This event handler and message pump is work in progress
             //why is it hooked into the lua environment you might ask
             //Because when Lua Code is running I do not have control over the environment
@@ -258,7 +263,7 @@ static int l61_main(int argc, const char* argv[])
 /**
  * @brief A slim main for exception handling
  * @param argc Number of arguments
- * @param argv A pointer to the ray of arguments
+ * @param argv A pointer to the array of arguments
  * @return Exit code
  */
 int main(int argc, const char* argv[])

@@ -56,11 +56,19 @@ static_assert(std::is_base_of_v<type, std::remove_pointer_t<decltype(obj)>>); \
 dynamic_cast<type*>(obj); \
 })*/
 
-#define l61_interface_cast(type, obj) \
-([]<typename T, typename Tp = type>(T _obj) -> Tp* { \
-    static_assert(std::is_base_of_v<Tp, std::remove_pointer_t<T>>, "l61_interface_cast type must be a base of the object's type"); \
-    return dynamic_cast<Tp*>(_obj); \
-})(obj)
+#include <l61/meta.hpp>
+
+
+#define l61_interface_cast(type, obj) l61::dyn_cast<type, decltype(obj)>(obj)
+/*([]< \
+typename R = decltype(obj), \
+typename Rp = type, \
+typename T = std::conditional_t<std::is_pointer_v<R>, R, std::add_pointer_t<R>>, \
+typename Tx = std::conditional_t<std::is_pointer_v<Rp>, Rp, std::add_pointer_t<Rp>>>(T _obj) -> Tx { \
+    static_assert(std::is_base_of_v<std::remove_pointer_t<Tx>, std::remove_pointer_t<T>>, "l61_interface_cast type must be a base of the object's type"); \
+    return static_cast<Tx>(_obj); \
+})((obj))*/
+
 
 #define l61_no_copy(type)        \
 type(const type&) = delete; \
@@ -82,7 +90,7 @@ using std::literals::operator ""s;
 namespace l61
 {
 
-using flag_t = bool;
+using flag_t = std::uint8_t;
 
 enum class ScriptMode : std::uint8_t
 {
