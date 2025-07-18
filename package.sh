@@ -15,6 +15,8 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
+rm -rf ./l61-*-pak
+
 min=0
 max=99999
 ra=$((min + RANDOM % $((max-min))))
@@ -25,13 +27,11 @@ cp -rv ./deploymentFileSystem ./${PAK_NAME}
 cp -v ./build/l61.out ./${PAK_NAME}/bin/l61
 mkdir -p "${PAK_NAME}/lib/native"
 
-for i in $(ls ./baseExtensions); do
-        EX="${i##*.}"
-        if [[ "${EX}" != "mk" ]]; then
-            cp -v "./baseExtensions/${i}/${i}.lex61" "./${PAK_NAME}/lib/native"
-        fi
-done
+find ./build -maxdepth 1 -type f -name "*.lex61" -exec cp -v {} "./${PAK_NAME}/lib/native" \;
 
-cp -rv ./include ./${PAK_NAME}/l61_include
-cp -v ./extensionRuntime/l61_extension_rt.o "./${PAK_NAME}/lib/native"
+cp -v ./build/libl61Core.so "./${PAK_NAME}/lib/native/libl61Core.so"
+cp -rv ./l61Core/include ./${PAK_NAME}/l61_include
+cp -v ./build/libl61_lex61_rt.a "./${PAK_NAME}/lib/native"
 cp -v ./extensionRuntime/lex61rt.hpp ./${PAK_NAME}/l61_include/lex61rt.hpp
+
+find "./${PAK_NAME}" -maxdepth 10 -type f -name ".holdOpen.txt" -exec rm -vf {} \;

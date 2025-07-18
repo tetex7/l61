@@ -55,7 +55,6 @@ int l61_extension_init()
                 extension_manager.unload(str);
                 std::println("no good header for {}", str);
                 l61::toLogger(LogLevel::ERROR, "Cannot find well formed {}", str);
-                //std::exit(1);
             }
             else
             {

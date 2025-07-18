@@ -71,3 +71,8 @@ compile_commands.json
 
 .idea/
 **/.idea/
+
+.ninja_*
+build.ninja
+Makefile
+l61_config.h

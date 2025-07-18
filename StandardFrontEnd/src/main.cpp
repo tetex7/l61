@@ -33,6 +33,7 @@
 #include "l61/BuildScript.hpp"
 #include "l61/ShellScript.hpp"
 #include "l61/defs.hpp"
+#include "l61/l61_config.h"
 
 #include "l61/ExtensionManager.hpp"
 #include "l61/Logger.hpp"
@@ -46,31 +47,31 @@ namespace po = boost::program_options;
 
 namespace l61
 {
-std::unique_ptr<ScriptEnvironment> shEnv;
-std::unique_ptr<AbstractScriptDebugger> luaDugger;
+    std::unique_ptr<ScriptEnvironment> shEnv;
+    std::unique_ptr<AbstractScriptDebugger> luaDugger;
 
 
-l61_stat mstat = {
-    fs::current_path().string(),
-    fs::current_path().string() + "/build.l61",
-    fs::read_symlink("/proc/self/exe"),
-    std::getenv("USER"),
-    std::getenv("HOME"),
-    std::vector {
-        (fs::read_symlink("/proc/self/exe").parent_path().parent_path().string() + "/lib"),
-        (std::string(std::getenv("HOME")) + "/.l61_lib"),
-        (fs::current_path().string() + "/scripts")
-    },
-    __L61__FV_VER__,
-    ProgramStatus {
-        ScriptMode::UndefMode,
-        std::make_unique<ExtensionManager>(),
-        {},
-        0,
-        {},
-        EventBus()
-    }
-};
+    l61_stat mstat = {
+        fs::current_path().string(),
+        fs::current_path().string() + "/build.l61",
+        fs::read_symlink("/proc/self/exe"),
+        std::getenv("USER"),
+        std::getenv("HOME"),
+        std::vector {
+            (fs::read_symlink("/proc/self/exe").parent_path().parent_path().string() + "/lib"),
+            (std::string(std::getenv("HOME")) + "/.l61_lib"),
+            (fs::current_path().string() + "/scripts")
+        },
+        L61_CONFIG_STR_VERSION,
+        ProgramStatus {
+            ScriptMode::UndefMode,
+            std::make_unique<ExtensionManager>(),
+            {},
+            0,
+            {},
+            EventBus()
+        }
+    };
 }
 
 //using namespace l61;
@@ -144,7 +145,7 @@ static int l61_main(int argc, const char* argv[])
     {
         l61::mstat.work_path = vm["cd"s].as<std::string>();
         l61::mstat.make_file_path = l61::mstat.work_path + "/build.l61";
-        l61::mstat.spaths[2] = l61::mstat.work_path + "/scripts";
+        l61::mstat.spaths[3] = l61::mstat.work_path + "/scripts";
     }
 
     if (vm.contains("mode"s))

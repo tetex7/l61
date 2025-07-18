@@ -82,6 +82,9 @@ namespace l61
             }
             return T(null_t());
         }
+
+        template<isNullableType T>
+        __inline consteval void operator=(T){} // NOLINT(*-unconventional-assign-operator)
     };
     __inline constexpr null_t null;
 }
