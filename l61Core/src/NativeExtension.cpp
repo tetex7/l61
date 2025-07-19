@@ -20,11 +20,49 @@
 //
 
 #include "l61/NativeExtension.hpp"
-#include <dlfcn.h>
 #include <stdexcept>
 #include <string>
 #include "l61/defs.hpp"
 #include "l61/Logger.hpp"
+
+#ifdef _WIN32
+#include <windows.h>
+
+#define RTLD_LAZY   0
+#define RTLD_NOW    0
+#define RTLD_GLOBAL 0
+#define RTLD_LOCAL  0
+
+static inline void* dlopen(const char* file, int mode)
+{
+    (void)mode; // unused
+    HMODULE handle = LoadLibraryA(file);
+    return (void*)handle;
+}
+
+static inline void* dlsym(void* handle, const char* symbol)
+{
+    return (void*)GetProcAddress((HMODULE)handle, symbol);
+}
+
+static inline int dlclose(void* handle)
+{
+    return FreeLibrary((HMODULE)handle) ? 0 : -1;
+}
+
+static inline const char* dlerror(void)
+{
+    static char buffer[256];
+    FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+                   NULL, GetLastError(),
+                   MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                   buffer, sizeof(buffer), NULL);
+    return buffer;
+}
+
+#else
+#include <dlfcn.h>
+#endif
 
 #define setup_lock() std::lock_guard<std::mutex> lock(soMutex)
 
