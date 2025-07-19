@@ -25,5 +25,7 @@ set_target_properties(l61_rt PROPERTIES
         #LIBRARY_OUTPUT_DIRECTORY ${BIN_DIR}
 )
 
+set_target_output(l61_rt ${BIN_DIR})
+
 target_compile_options(l61_rt PRIVATE ${L61_TOPLEVEL_COMPILE_ARGS} -fPIC -std=c++23)
 target_compile_definitions(l61_rt PRIVATE L61_RT_BUILDING)

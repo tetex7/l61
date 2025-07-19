@@ -28,14 +28,20 @@ endif()
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 include(BuildOptions.cmake)
 
-set(EXECUTABLE_OUTPUT_PATH "${BIN_DIR}")
-set(LIBRARY_OUTPUT_PATH  "${BIN_DIR}")
+function(set_target_output target_name out_path)
+    set_target_properties(${target_name} PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY "${out_path}"
+            LIBRARY_OUTPUT_DIRECTORY "${out_path}"
+            ARCHIVE_OUTPUT_DIRECTORY "${out_path}"
+    )
+endfunction()
 
 configure_file(
         ${CMAKE_SOURCE_DIR}/l61_config.h.in
         ${CMAKE_SOURCE_DIR}/l61Core/include/l61/l61_config.h
 )
 
+message(STATUS "BIN_DIR: ${BIN_DIR}")
 # Include top-level headers
 include_directories(${CMAKE_SOURCE_DIR}/l61Core/include)
 include_directories(${CMAKE_SOURCE_DIR}/extensionRuntime)

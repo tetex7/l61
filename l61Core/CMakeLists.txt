@@ -25,6 +25,8 @@ set_target_properties(l61_core PROPERTIES
         #LIBRARY_OUTPUT_DIRECTORY ${BIN_DIR}
 )
 
+set_target_output(l61_core ${BIN_DIR})
+
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(LIB_LUA lua REQUIRED)
 

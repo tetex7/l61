@@ -25,6 +25,8 @@ set_target_properties(l61 PROPERTIES
         BUILD_RPATH "\$ORIGIN/../lib/native"
 )
 
+set_target_output(l61 ${BIN_DIR})
+
 find_package(Boost REQUIRED COMPONENTS program_options)
 target_link_libraries(l61 PRIVATE Boost::program_options)
 

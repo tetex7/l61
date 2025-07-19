@@ -23,6 +23,7 @@ function(add_l61_lex61_target target_name output_filename object_files)
             PREFIX ""
             SUFFIX ".lex61"
     )
+    set_target_output(${target_name} ${BIN_DIR})
     target_include_directories(${target_name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
     target_link_libraries(${target_name} PRIVATE l61_rt)
     target_link_libraries(${target_name} PRIVATE l61_core)
