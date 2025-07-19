@@ -27,6 +27,7 @@
 
 #ifdef _WIN32
 #include <windows.h>
+#undef ERROR
 
 #define RTLD_LAZY   0
 #define RTLD_NOW    0
@@ -101,7 +102,7 @@ void* NativeExtension::blindSymbolLookup(const std::string& symStr) const
     dlerror();
     void* ptr = dlsym(soHandle, symStr.c_str());
 
-    char* error = dlerror();
+    const char* error = dlerror();
     if (error != NULL)
     {
         throw std::runtime_error(std::string(error));
