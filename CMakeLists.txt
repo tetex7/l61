@@ -15,10 +15,14 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-cmake_minimum_required(VERSION 4.0)
+cmake_minimum_required(VERSION 3.24.0)
 project(lambda61 LANGUAGES CXX C)
 
 set(CMAKE_SKIP_INSTALL_RULES ON)
+
+if(POLICY CMP0167)
+    cmake_policy(SET CMP0167 NEW)
+endif()
 
 # Optional: turn this off for faster dev builds
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)

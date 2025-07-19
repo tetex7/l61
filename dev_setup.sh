@@ -65,14 +65,16 @@ function clean()
         rm -fv ./build.ninja
     fi
     rm -frv ./build
-    rm -frv ./**/CMakeFiles
+
     rm -frv ./.cmake
+    find "." -maxdepth 10 -type d -name "CMakeFiles" -exec rm -vrf {} \;
     rm -fv ./compile_commands.json
     rm -fv ./CMakeCache.txt
     rm -fv ./.ninja_*
     rm -fv ./l61Core/include/l61/l61_config.h
     rm -fv l61-*-x86_64.pkg.tar.zst
     rm -rfv ./l61-*-pak
+
 }
 
 function make_cmd()
@@ -131,6 +133,7 @@ case "$1" in
         echo "ninja   : $(command -v ninja || echo not found)"
         echo "make    : $(command -v make || echo not found)"
         echo "makepkg : $(command -v makepkg || echo not found)"
+        echo "git     : $(command -v git || echo not found)"
         ;;
     package| pkg | --package|-pkg )
         make_package "${@:2}"

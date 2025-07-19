@@ -15,7 +15,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-function(add_l61_lex61_object target_name output_filename object_files)
+function(add_l61_lex61_target target_name output_filename object_files)
     add_library(${target_name} SHARED ${object_files})
 
     set_target_properties(${target_name} PROPERTIES

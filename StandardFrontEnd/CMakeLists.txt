@@ -22,7 +22,6 @@ set(CMAKE_SKIP_INSTALL_RULES ON)
 
 set_target_properties(l61 PROPERTIES
         OUTPUT_NAME "l61.out"
-        #EXECUTABLE_OUTPUT_DIRECTORY ${BIN_DIR}
         BUILD_RPATH "\$ORIGIN/../lib/native"
 )
 
@@ -31,5 +30,5 @@ target_link_libraries(l61 PRIVATE Boost::program_options)
 
 target_link_libraries(l61 PRIVATE l61_core)
 target_include_directories(l61 PRIVATE "${CMAKE_SOURCE_DIR}/StandardFrontEnd/include")
-target_compile_options(l61 PRIVATE ${L61_TOPLEVEL_COMPILE_ARGS} -fPIC -std=c++23) #-Wl,-rpath=$$ORIGIN/../lib)
+target_compile_options(l61 PRIVATE ${L61_TOPLEVEL_COMPILE_ARGS} -std=c++23)
 target_compile_definitions(l61 PRIVATE L61_BUILDING)

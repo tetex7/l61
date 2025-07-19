@@ -77,7 +77,7 @@ namespace l61
 
         while (true)
         {
-            const char ch = std::cin.get();
+            const char ch = static_cast<char>(std::cin.get());
             if (ch == '\n' || ch == '\r') {
                 break;
             }

@@ -35,6 +35,7 @@
 //
 // Created by tete on 05/13/2025.
 //
+#pragma once
 
 #ifndef L61_OBJECT_HPP
 #define L61_OBJECT_HPP
