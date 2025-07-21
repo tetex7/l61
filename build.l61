@@ -1,7 +1,7 @@
 function main(argc, argv)
    print(l61.getPwd())
 
-   if mountLib("test").test() == "fuck" then
+   if mountLib("test").test() == "test" then
         print(mountLib("test").test())
    end
 
