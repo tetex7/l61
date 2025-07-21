@@ -16,7 +16,11 @@
 #
 
 cmake_minimum_required(VERSION 3.24.0)
-project(lambda61 LANGUAGES CXX C)
+project(lambda61 LANGUAGES CXX)
+
+find_package(PkgConfig REQUIRED)
+include(BuildOptions.cmake)
+include(base_interface.cmake)
 
 set(CMAKE_SKIP_INSTALL_RULES ON)
 
@@ -26,7 +30,36 @@ endif()
 
 # Optional: turn this off for faster dev builds
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-include(BuildOptions.cmake)
+
+function(load_component component)
+    if(IS_DIRECTORY "${component}" )
+        if(EXISTS "${component}/CMakeLists.txt")
+            message(STATUS "Loaded Component: ${component}")
+            add_subdirectory("${component}")
+            return()
+        endif ()
+    endif ()
+    message(FATAL_ERROR "Component Not Found: ${component}")
+endfunction()
+
+function(add_all_subdirectories BASE_DIR)
+    file(GLOB CHILD_DIRS RELATIVE ${BASE_DIR} "${BASE_DIR}/*")
+
+    foreach(child ${CHILD_DIRS})
+        set(full_path "${BASE_DIR}/${child}")
+        if(IS_DIRECTORY ${full_path})
+            if(EXISTS "${full_path}/CMakeLists.txt")
+                load_component(${full_path})
+            endif()
+        endif()
+    endforeach()
+endfunction()
+
+function(set_target_property target_name key value)
+    set_target_properties(${target_name} PROPERTIES
+            ${key} ${value}
+    )
+endfunction()
 
 function(set_target_output target_name out_path)
     set_target_properties(${target_name} PROPERTIES
@@ -36,20 +69,19 @@ function(set_target_output target_name out_path)
     )
 endfunction()
 
+
+
 configure_file(
         ${CMAKE_SOURCE_DIR}/l61_config.h.in
         ${CMAKE_SOURCE_DIR}/l61Core/include/l61/l61_config.h
 )
 
-message(STATUS "BIN_DIR: ${BIN_DIR}")
-# Include top-level headers
-include_directories(${CMAKE_SOURCE_DIR}/l61Core/include)
-include_directories(${CMAKE_SOURCE_DIR}/extensionRuntime)
-
 # Add subdirectories
-add_subdirectory(l61Core)
-add_subdirectory(extensionRuntime)
-add_subdirectory(StandardFrontEnd)
+load_component(l61Core)
+
+load_component(extensionRuntime)
+load_component(StandardFrontEnd)
+load_component(ShallFrontEnd)
 
 # Add extensions last (can be dynamic later)
-add_subdirectory(baseExtensions)
+load_component(baseExtensions)

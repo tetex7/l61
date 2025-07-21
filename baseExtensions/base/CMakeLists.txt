@@ -17,4 +17,4 @@
 
 file(GLOB BASE_LEX61_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/src/**/*.cpp")
 
-add_l61_lex61_target(base_lex61 base ${BASE_LEX61_CPP_FILES})
+add_l61_lex61_target(base_lex61 base SRCS ${BASE_LEX61_CPP_FILES})

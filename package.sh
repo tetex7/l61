@@ -15,16 +15,13 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-rm -rf ./l61-*-pak
+PAK_NAME="l61-deployment-package"
 
-min=0
-max=99999
-ra=$((min + RANDOM % $((max-min))))
-
-PAK_NAME="l61-${ra}-pak"
+rm -rf ./${PAK_NAME}
 
 cp -rv ./deploymentFileSystem ./${PAK_NAME}
 cp -v ./build/l61.out ./${PAK_NAME}/bin/l61
+cp -v ./build/sh61.out ./${PAK_NAME}/bin/sh61
 mkdir -p "${PAK_NAME}/lib/native"
 
 find ./build -maxdepth 1 -type f -name "*.lex61" -exec cp -v {} "./${PAK_NAME}/lib/native" \;
@@ -35,3 +32,8 @@ cp -v ./build/libl61_lex61_rt.a "./${PAK_NAME}/lib/native"
 cp -v ./extensionRuntime/lex61rt.hpp ./${PAK_NAME}/l61_include/lex61rt.hpp
 
 find "./${PAK_NAME}" -maxdepth 10 -type f -name ".holdOpen.txt" -exec rm -vf {} \;
+
+GIT_COMMIT_HASH=$(git rev-parse --short HEAD)
+
+echo "Built: $(date)" > "${PAK_NAME}/build-info.txt"
+echo "Commit: ${GIT_COMMIT_HASH}" >> "${PAK_NAME}/build-info.txt"

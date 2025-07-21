@@ -44,8 +44,8 @@ private:
 
     AbstractScriptDebugger* script_debugger_;
 
-    void lib61_setup();
 protected:
+    void lib61_setup();
     sol::state& getLuaCtx() override;
     l61_stat& getScriptCtx();
 
@@ -107,6 +107,8 @@ public:
     //Yes this does leak the Lua State what are you going to do bite me
     void specialRun(const std::function<void(sol::state&)>& func) override;
 
+    void exec(const std::string& code) final;
+
     void attachDebugger(AbstractScriptDebugger* debugger) override;
 
     sol::protected_function_result runCodeBlock(const std::string& luaCode) override;
@@ -115,6 +117,13 @@ public:
     friend l61_abstract_class AbstractScriptDebugger;
     friend void standard_lua_debugger_hook(lua_State* L, lua_Debug* D);
 };
+
+__inline sol::table makeSubTable(const std::string&& name, sol::table table)
+{
+    sol::table x = table.create_with();
+    table.set(std::forward<const std::string>(name), x);
+    return x;
+}
 
 }
 

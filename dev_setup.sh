@@ -71,7 +71,7 @@ function clean()
     rm -fv ./.ninja_*
     rm -fv ./l61Core/include/l61/l61_config.h
     rm -fv l61-*-x86_64.pkg.tar.zst
-    rm -rfv ./l61-*-pak
+    rm -rfv ./l61-deployment-package
     find "." -maxdepth 10 -type d -name "CMakeFiles" -exec rm -vrf {} \;
 }
 

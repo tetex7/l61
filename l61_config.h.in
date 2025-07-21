@@ -28,12 +28,12 @@
 #ifndef LIBL61_CONFIG_H
 #define LIBL61_CONFIG_H
 
+
+
 #cmakedefine L61_CONFIG_STATIC_ONLY
 #cmakedefine L61_CONFIG_THREAD_AWARE
 
 #cmakedefine L61_CONFIG_USE_LIB_SAFENET
-
-#cmakedefine L61_NO_STD_BOOL
 
 #cmakedefine L61_CONFIG_DEBUG
 #define L61_CONFIG_STR_VERSION "@L61_CONFIG_STR_VERSION@"

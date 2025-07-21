@@ -14,21 +14,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
-
-file(GLOB L61_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/src/**/*.cpp")
-add_executable(l61 ${L61_CPP_FILES})
-
 set(CMAKE_SKIP_INSTALL_RULES ON)
+file(GLOB L61_CORE_EXTENSION_SYSTEM_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 
-set_target_property(l61 BUILD_RPATH "\$ORIGIN/../lib/native")
-set_target_property(l61 OUTPUT_NAME "l61.out")
+add_submodule(l61_core_extension_system SRCS ${L61_CORE_EXTENSION_SYSTEM_CPP_FILES})
 
-set_target_output(l61 ${BIN_DIR})
-
-find_package(Boost REQUIRED COMPONENTS program_options)
-target_link_libraries(l61 PRIVATE Boost::program_options)
-
-target_link_libraries(l61 PRIVATE l61_core)
-target_include_directories(l61 PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
-target_link_libraries(l61 PRIVATE base_interface)
-target_compile_definitions(l61 PRIVATE L61_BUILDING)
+target_compile_options(l61_core_extension_system PRIVATE
+        ${L61_CORE_DEBUG_FLAG}
+)

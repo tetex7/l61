@@ -27,5 +27,8 @@ set_target_properties(l61_rt PROPERTIES
 
 set_target_output(l61_rt ${BIN_DIR})
 
-target_compile_options(l61_rt PRIVATE ${L61_TOPLEVEL_COMPILE_ARGS} -fPIC -std=c++23)
+target_include_directories(l61_rt PUBLIC ${CMAKE_SOURCE_DIR}/extensionRuntime)
+target_link_libraries(l61_rt PUBLIC l61_core)
+target_link_libraries(l61_rt PRIVATE base_interface)
+target_compile_options(l61_rt PRIVATE -fPIC)
 target_compile_definitions(l61_rt PRIVATE L61_RT_BUILDING)

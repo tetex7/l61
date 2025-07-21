@@ -15,6 +15,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/*
+ * Copyright (C) 2025  Tetex7
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 //
 // Created by tete on 05/01/2025.
 //
@@ -128,7 +145,21 @@ void ScriptEnvironment::specialRun(const std::function<void(sol::state&)>& func)
     func(getLuaCtx());
 }
 
+static void lua_run(lua_State* L, const std::string& str)
+{
+    if (luaL_dostring(L, str.c_str()) != LUA_OK)
+    {
+        const char* str = lua_tostring(L, -1);
+        std::cerr << "BAD_LUA: " << str << '\n';
+        return;
+    }
+}
 
+
+void ScriptEnvironment::exec(const std::string& code)
+{
+    lua_run(static_cast<lua_State*>(this->getLuaCtx()), code);
+}
 
 
 void ScriptEnvironment::attachDebugger(AbstractScriptDebugger* debugger)

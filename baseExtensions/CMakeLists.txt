@@ -15,8 +15,9 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-function(add_l61_lex61_target target_name output_filename object_files)
-    add_library(${target_name} SHARED ${object_files})
+function(add_l61_lex61_target target_name output_filename)
+    cmake_parse_arguments(ARG "" "" "SRCS" ${ARGN})
+    add_library(${target_name} SHARED ${ARG_SRCS})
 
     set_target_properties(${target_name} PROPERTIES
             OUTPUT_NAME "${output_filename}"
@@ -27,20 +28,8 @@ function(add_l61_lex61_target target_name output_filename object_files)
     target_include_directories(${target_name} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
     target_link_libraries(${target_name} PRIVATE l61_rt)
     target_link_libraries(${target_name} PRIVATE l61_core)
-    target_compile_options(${target_name} PRIVATE ${L61_TOPLEVEL_COMPILE_ARGS} -fPIC -std=c++23)
-endfunction()
-
-function(add_all_subdirectories BASE_DIR)
-    file(GLOB CHILD_DIRS RELATIVE ${BASE_DIR} "${BASE_DIR}/*")
-
-    foreach(child ${CHILD_DIRS})
-        set(full_path "${BASE_DIR}/${child}")
-        if(IS_DIRECTORY ${full_path})
-            if(EXISTS "${full_path}/CMakeLists.txt")
-                add_subdirectory(${full_path})
-            endif()
-        endif()
-    endforeach()
+    target_link_libraries(${target_name} PRIVATE base_interface)
+    target_compile_options(${target_name} PRIVATE -fPIC -g)
 endfunction()
 
 add_all_subdirectories(${CMAKE_CURRENT_SOURCE_DIR})

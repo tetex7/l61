@@ -14,13 +14,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
-
+include_guard(GLOBAL)
 execute_process(
         COMMAND ${CMAKE_C_COMPILER} -dumpmachine
         OUTPUT_VARIABLE PLATFORM_TRIPLE
         OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 set(BIN_DIR ${CMAKE_SOURCE_DIR}/build)
+
+
 
 set(L61_TOPLEVEL_COMPILE_ARGS -Wall -Wextra -Werror -Wpedantic -fno-strict-aliasing -DSOL_ALL_SAFETIES_ON -include ${CMAKE_SOURCE_DIR}/l61Core/include/l61/PseudoKeywords.hpp)
 
@@ -34,6 +36,11 @@ endif ()
 
 # Debug flag control
 option(L61_CONFIG_DEBUG "Enable debug mode" OFF)
+
+if(L61_CONFIG_DEBUG)
+    message(STATUS "L61 Debug mode enabled")
+endif()
+
 
 option(L61_CONFIG_USE_LIB_SAFENET "" OFF)
 

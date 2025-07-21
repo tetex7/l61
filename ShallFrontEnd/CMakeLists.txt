@@ -16,19 +16,22 @@
 #
 
 file(GLOB L61_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/src/**/*.cpp")
-add_executable(l61 ${L61_CPP_FILES})
+add_executable(sh61 ${L61_CPP_FILES})
 
 set(CMAKE_SKIP_INSTALL_RULES ON)
 
-set_target_property(l61 BUILD_RPATH "\$ORIGIN/../lib/native")
-set_target_property(l61 OUTPUT_NAME "l61.out")
+set_target_property(sh61 BUILD_RPATH "\$ORIGIN/../lib/native")
+set_target_property(sh61 OUTPUT_NAME "sh61.out")
 
-set_target_output(l61 ${BIN_DIR})
+set_target_output(sh61 ${BIN_DIR})
 
 find_package(Boost REQUIRED COMPONENTS program_options)
-target_link_libraries(l61 PRIVATE Boost::program_options)
+target_link_libraries(sh61 PRIVATE Boost::program_options)
 
-target_link_libraries(l61 PRIVATE l61_core)
-target_include_directories(l61 PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
+pkg_check_modules(LIB_READLINE readline REQUIRED)
+target_link_libraries(sh61 PRIVATE ${LIB_READLINE_LIBRARIES})
+
+target_link_libraries(sh61 PRIVATE l61_core)
+target_include_directories(sh61 PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")
 target_link_libraries(l61 PRIVATE base_interface)
-target_compile_definitions(l61 PRIVATE L61_BUILDING)
+target_compile_definitions(sh61 PRIVATE L61_BUILDING)

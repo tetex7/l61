@@ -15,6 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdio>
+#include <exception>
+#include <print>
+
 #include "l61/Logger.hpp"
 #include "l61/NativeExtension.hpp"
 #include "l61/defs.hpp"
@@ -22,14 +26,13 @@
 #include "sol/sol.hpp"
 #include "lex61rt.hpp"
 #include "l61/ExtensionManager.hpp"
-#include <cstdio>
-#include <exception>
-#include <print>
+
+#include "l61/l61_config.h"
 
 LEX61RT_MAKE_HEADER(
     "base",
     { "Tetex7" },
-    "1.0.0"
+    L61_CONFIG_STR_VERSION
 );
 
 constexpr const char* extensionload[] = {
@@ -46,7 +49,7 @@ int l61_extension_init()
 
     auto& extension_manager = *lex61rt::getApiData()->l61Ctx.procStat.extension_manager;
 
-    for (const char* const& str : extensionload) 
+    for (const char* const& str : extensionload)
     {
         try
         {

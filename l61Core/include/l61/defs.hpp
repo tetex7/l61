@@ -195,9 +195,7 @@ namespace l61
     l61_abstract_class AbstractScriptDebugger;
 
     // Must be defined by the front end
-    extern std::unique_ptr<ScriptEnvironment> shEnv;
     extern l61_stat mstat;
-    extern std::unique_ptr<AbstractScriptDebugger> luaDugger;
     // End of must be's
 }
 

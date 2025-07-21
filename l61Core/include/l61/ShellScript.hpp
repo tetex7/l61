@@ -41,12 +41,7 @@ public:
 };
 
 
-__inline sol::table makeSubTable(const std::string&& name, sol::table table)
-{
-    sol::table x = table.create_with();
-	table.set(std::forward<const std::string>(name), x);
-	return x;
-}
+
 }
 
 
