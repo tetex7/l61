@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2024  Tetex7
+# Copyright (C) 2025  tetex7
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,11 +14,5 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
-set(CMAKE_SKIP_INSTALL_RULES ON)
-file(GLOB L61_CORE_EXTENSION_SYSTEM_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 
-add_submodule(l61_core_extension_system l61_core SRCS ${L61_CORE_EXTENSION_SYSTEM_CPP_FILES})
-
-target_compile_options(l61_core_extension_system PRIVATE
-        ${L61_CORE_DEBUG_FLAG}
-)
+add_all_subdirectories(${CMAKE_CURRENT_SOURCE_DIR})

@@ -77,3 +77,6 @@ build.ninja
 Makefile
 l61_config.h
 l61-deployment-package
+*\[*\]_include.cmake
+*\[*\]_tests.cmake
+Testing/Temporary

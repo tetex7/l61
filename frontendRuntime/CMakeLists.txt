@@ -14,11 +14,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
+
+file(GLOB L61_FE_RT_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
+add_library(l61_front_end_rt STATIC ${L61_FE_RT_CPP_FILES})
+
 set(CMAKE_SKIP_INSTALL_RULES ON)
-file(GLOB L61_CORE_EXTENSION_SYSTEM_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 
-add_submodule(l61_core_extension_system l61_core SRCS ${L61_CORE_EXTENSION_SYSTEM_CPP_FILES})
-
-target_compile_options(l61_core_extension_system PRIVATE
-        ${L61_CORE_DEBUG_FLAG}
+set_target_properties(l61_front_end_rt PROPERTIES
+        OUTPUT_NAME "l61_front_end_rt"
+        #LIBRARY_OUTPUT_DIRECTORY ${BIN_DIR}
 )
+
+set_target_output(l61_front_end_rt ${BIN_DIR})
+
+target_include_directories(l61_front_end_rt PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_link_libraries(l61_front_end_rt PUBLIC l61_core)
+target_link_libraries(l61_front_end_rt PRIVATE base_interface)
+target_compile_options(l61_front_end_rt PRIVATE -fPIC)
+target_compile_definitions(l61_front_end_rt PRIVATE L61_FE_RT_BUILDING)

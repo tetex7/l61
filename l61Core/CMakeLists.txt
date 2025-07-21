@@ -32,12 +32,12 @@ target_compile_definitions(l61_core_interface INTERFACE
 
 add_library(l61_core SHARED ${L61_CORE_CPP_FILES})
 
-function(add_submodule target_name)
+function(add_submodule target_name master_module)
     cmake_parse_arguments(ARG "" "" "SRCS" ${ARGN})
     add_library(${target_name} OBJECT ${ARG_SRCS})
     set_target_output(${target_name} ${BIN_DIR}/l61_core_submodule)
     target_link_libraries(${target_name} PUBLIC l61_core_interface)
-    target_link_libraries(l61_core PRIVATE ${target_name})
+    target_link_libraries(${master_module} PRIVATE ${target_name})
 endfunction()
 
 set(L61_CORE_DEBUG_FLAG $<$<BOOL:${L61_CONFIG_DEBUG}>:-O0> $<$<NOT:$<BOOL:${L61_CONFIG_DEBUG}>>:-O2>)

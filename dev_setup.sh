@@ -72,7 +72,15 @@ function clean()
     rm -fv ./l61Core/include/l61/l61_config.h
     rm -fv l61-*-x86_64.pkg.tar.zst
     rm -rfv ./l61-deployment-package
+    rm -rfv ./Testing/Temporary
+
     find "." -maxdepth 10 -type d -name "CMakeFiles" -exec rm -vrf {} \;
+
+    find "." -maxdepth 10 -type f -name "CTestTestfile.cmake" -exec rm -vf {} \;
+
+    find "." -maxdepth 10 -type f -name "*\[*\]_include.cmake" -exec rm -vf {} \;
+
+    find "." -maxdepth 10 -type f -name "*\[*\]_test.cmake" -exec rm -vf {} \;
 }
 
 function make_cmd()

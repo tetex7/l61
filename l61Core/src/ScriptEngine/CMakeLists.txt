@@ -17,7 +17,7 @@
 set(CMAKE_SKIP_INSTALL_RULES ON)
 file(GLOB L61_CORE_SCRIPT_ENGINE_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 
-add_submodule(l61_core_script_engine SRCS ${L61_CORE_SCRIPT_ENGINE_CPP_FILES})
+add_submodule(l61_core_script_engine l61_core SRCS ${L61_CORE_SCRIPT_ENGINE_CPP_FILES})
 
 target_compile_options(l61_core_script_engine PRIVATE
         ${L61_CORE_DEBUG_FLAG}

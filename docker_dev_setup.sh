@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2024  Tetex7
+# Copyright (C) 2025  Tetex7
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,11 +14,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
-set(CMAKE_SKIP_INSTALL_RULES ON)
-file(GLOB L61_CORE_EXTENSION_SYSTEM_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 
-add_submodule(l61_core_extension_system l61_core SRCS ${L61_CORE_EXTENSION_SYSTEM_CPP_FILES})
+set -e  # Exit on error
 
-target_compile_options(l61_core_extension_system PRIVATE
-        ${L61_CORE_DEBUG_FLAG}
-)
+IMAGE_NAME="l61-dev-env"
+PROJECT_DIR="$(pwd)"
+
+echo "Building Docker image: $IMAGE_NAME"
+docker build -t "$IMAGE_NAME" .
+#-it
+echo "Running container from $IMAGE_NAME"
+docker run --rm -i \
+  --user builder \
+  -v "$PROJECT_DIR":/home/builder/project \
+  -w /home/builder/project \
+  "$IMAGE_NAME" /home/builder/project/dev_setup.sh "$@"

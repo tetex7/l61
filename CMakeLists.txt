@@ -19,6 +19,9 @@ cmake_minimum_required(VERSION 3.24.0)
 project(lambda61 LANGUAGES CXX)
 
 find_package(PkgConfig REQUIRED)
+find_package(GTest REQUIRED)
+enable_testing()
+
 include(BuildOptions.cmake)
 include(base_interface.cmake)
 
@@ -78,10 +81,11 @@ configure_file(
 
 # Add subdirectories
 load_component(l61Core)
-
+load_component(frontendRuntime)
 load_component(extensionRuntime)
-load_component(StandardFrontEnd)
-load_component(ShallFrontEnd)
+#load_component(StandardFrontEnd)
+#load_component(ShallFrontEnd)
 
 # Add extensions last (can be dynamic later)
 load_component(baseExtensions)
+load_component(Testing)
