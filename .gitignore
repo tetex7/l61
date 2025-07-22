@@ -80,3 +80,4 @@ l61-deployment-package
 *\[*\]_include.cmake
 *\[*\]_tests.cmake
 Testing/Temporary
+docs/

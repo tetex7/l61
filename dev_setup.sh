@@ -73,6 +73,7 @@ function clean()
     rm -fv l61-*-x86_64.pkg.tar.zst
     rm -rfv ./l61-deployment-package
     rm -rfv ./Testing/Temporary
+    rm -rfv ./docs
 
     find "." -maxdepth 10 -type d -name "CMakeFiles" -exec rm -vrf {} \;
 
