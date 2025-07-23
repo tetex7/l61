@@ -1,0 +1,31 @@
+# .clang-format
+
+Language: Cpp
+BasedOnStyle: LLVM
+
+# --- Braces and layout ---
+BreakBeforeBraces: Allman
+AllowShortIfStatementsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortBlocksOnASingleLine: Never
+AlwaysBreakAfterReturnType: None
+AlwaysBreakAfterDefinitionReturnType: None
+IndentWidth: 4
+UseTab: Never
+
+# --- Pointers and references ---
+PointerAlignment: Right     # Ensures: int* ptr;
+ReferenceAlignment: Right   # Ensures: int& ref;
+
+# --- Spacing ---
+SpaceBeforeParens: ControlStatements
+SpaceAfterCStyleCast: true
+SpacesInParentheses: false
+SpacesInSquareBrackets: false
+SpaceBeforeAssignmentOperators: true
+
+# --- Other ---
+DerivePointerAlignment: false
+AlignAfterOpenBracket: Align
+AlignOperands: true
+SortIncludes: false

@@ -56,6 +56,9 @@ namespace l61
         constexpr inline bool is_eventBus_freq_compatible_v = is_eventBus_freq_compatible<T>::value;
     }
 
+    /**
+     * @brief This is an event bus leveraging \ref l61::Event
+     */
     class EventBus final
     {
     public:
