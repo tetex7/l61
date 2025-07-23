@@ -32,7 +32,7 @@ namespace l61
     class Object;
 }
 
-namespace l61
+namespace l61::meta
 {
     template<
         typename cast_type, // The only mandatory template parameter The rest can be inferred
@@ -60,33 +60,41 @@ namespace l61
 
     template<typename T>
     concept castToZeroCompatible = requires { (void)static_cast<T>(0); };
-
-    struct null_t final
+    namespace nulling
     {
-        //I don't know why I add this, but it might come in handy
-        template<isNullableType T>
-        constexpr null_t(T){} // NOLINT(*-explicit-constructor)
-
-        constexpr null_t() = default;
-
-        template<isNullableType T>
-        __inline consteval operator T() const // NOLINT(*-explicit-constructor)
+        struct null_t final
         {
-            if constexpr (std::default_initializable<T>)
-            {
-                if constexpr (castToZeroCompatible<T>)
-                    return static_cast<T>(0);
-                else if constexpr (std::is_pointer_v<T>)
-                    return nullptr;
-                return T();
-            }
-            return T(null_t());
-        }
+            //I don't know why I add this, but it might come in handy
+            template<isNullableType T>
+            constexpr null_t(T){} // NOLINT(*-explicit-constructor)
 
-        template<isNullableType T>
-        __inline consteval void operator=(T){} // NOLINT(*-unconventional-assign-operator)
-    };
-    __inline constexpr null_t null;
+            constexpr null_t() = default;
+
+            template<isNullableType T>
+            __inline consteval operator T() const // NOLINT(*-explicit-constructor)
+            {
+                if constexpr (std::default_initializable<T>)
+                {
+                    if constexpr (castToZeroCompatible<T>)
+                        return static_cast<T>(0);
+                    else if constexpr (std::is_pointer_v<T>)
+                        return nullptr;
+                    return T();
+                }
+                return T(null_t());
+            }
+
+            template<isNullableType T>
+            __inline consteval void operator=(T){} // NOLINT(*-unconventional-assign-operator)
+        };
+    }
+    __inline constexpr nulling::null_t null;
+}
+
+namespace l61
+{
+    using meta::dyn_cast;
+    using meta::null;
 }
 
 #endif //L61_META_HPP

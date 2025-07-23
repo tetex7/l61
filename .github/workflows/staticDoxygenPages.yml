@@ -32,7 +32,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - run: echo ${PWD}
-      - run: sudo apt-get update && sudo apt-get install -y doxygen graphviz
+      - run: sudo apt-get install -y doxygen graphviz
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - run: doxygen
