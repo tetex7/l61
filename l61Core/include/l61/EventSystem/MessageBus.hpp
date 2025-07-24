@@ -16,41 +16,21 @@
  */
 
 //
-// Created by tete on 05/22/2025.
+// Created by tete on 07/23/2025.
 //
+#pragma once
+#ifndef L61_EVENT_SYSTEM_MESSAGEBUS_HPP
+#define L61_EVENT_SYSTEM_MESSAGEBUS_HPP
+#include <l61/EventSystem/MessageBusPackets.hpp>
 
-#include "l61/EventSystem/Event.hpp"
+namespace l61::EventSystem {
 
-namespace l61::EventSystem
-{
-    Event::Event(const callback_t& function)
-        : fun(function) {}
-
-    void Event::reset()
+    class MessageBus
     {
-        fun = callback_t();
-    }
+    private:
 
-    void Event::set(const callback_t& function)
-    {
-        fun = function;
-    }
+    };
 
-    void Event::call() const
-    {
-        fun();
-    }
+} // EventSystem
 
-    Event::Event(Event&& event) noexcept
-    : fun(std::move(event.fun)) {}
-
-    Event::Event(const Event& event)
-    : fun(event.fun){}
-
-
-
-    Event::operator bool() const
-    {
-        return static_cast<bool>(fun);
-    }
-} // l61
+#endif //L61_EVENT_SYSTEM_MESSAGEBUS_HPP

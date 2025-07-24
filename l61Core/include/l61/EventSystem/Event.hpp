@@ -19,12 +19,15 @@
 // Created by tete on 05/22/2025.
 //
 
-#ifndef L61_EVENT_HPP
-#define L61_EVENT_HPP
+#ifndef L61_EVENT_SYSTEM_EVENT_HPP
+#define L61_EVENT_SYSTEM_EVENT_HPP
 #include <functional>
 
-namespace l61 {
-
+namespace l61::EventSystem
+{
+    /**
+     * @brief
+     */
     class Event
     {
     public:

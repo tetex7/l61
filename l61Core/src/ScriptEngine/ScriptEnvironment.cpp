@@ -48,7 +48,7 @@ void ScriptEnvironment::lib61_setup()
     lb.set_function("getPwd", []() -> std::string {
         return mstat.work_path;
     });
-    lb.set_function("pushEventBus", [](const EventBus::bus_frequency_t& freq) {
+    lb.set_function("pushEventBus", [](const EventSystem::bus_frequency_t& freq) {
         mstat.procStat.eventBus.push(freq);
     });
 }

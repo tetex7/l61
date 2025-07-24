@@ -37,9 +37,15 @@ enum class LogLevel : std::uint8_t
     FATAL
 };
 
-
+/**
+ *
+ * @tparam Ty Types of arguments passed to be logged
+ * @param level The logging output level e.g \ref LogLevel::WARN
+ * @param fmt The format string using modern C++23 std::format
+ * @param args Values to be logged
+ */
 template<typename... Ty>
-void toLogger(LogLevel level, std::format_string<Ty...> fmt, Ty&&... v_ty)
+void toLogger(LogLevel level, std::format_string<Ty...> fmt, Ty&&... args)
 {
     if (!mstat.procStat.verbose && ((level == LogLevel::WARN) || (level == LogLevel::INFO))) return;
     std::string le;
@@ -82,7 +88,7 @@ void toLogger(LogLevel level, std::format_string<Ty...> fmt, Ty&&... v_ty)
         now_tm->tm_sec,
         le,
         "l61-rt",
-        std::format(fmt, std::forward<Ty>(v_ty)...)
+        std::format(fmt, std::forward<Ty>(args)...)
     );
 }
 

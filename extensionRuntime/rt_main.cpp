@@ -22,7 +22,7 @@
 #include "l61/defs.hpp"
 #include <cassert>
 
-static l61::l61_api_extension_t* raw = l61::null;
+static l61::l61_api_extension_t* raw = l61::meta::null;
 
 using namespace l61;
 

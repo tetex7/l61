@@ -39,7 +39,7 @@
 
 #include "sol/sol.hpp"
 #include "json.hpp"
-#include "l61/EventBus.hpp"
+#include "EventSystem/EventBus.hpp"
 
 #define C_CALL extern "C"
 #ifndef LEX61_SYM_LOOKUP_COMPAT
@@ -160,7 +160,7 @@ namespace l61
         config_t config;
         flag_t verbose;
         std::queue<c_signal_t> signalStack; // Yes, yes I know it's not a stack but the semantics are how I like my stacks
-        EventBus eventBus;
+        EventSystem::EventBus eventBus;
     };
 
     struct l61_stat

@@ -53,15 +53,17 @@ namespace l61::meta
         return static_cast<Tx>(obj);
     }
 
-    struct null_t;
+    namespace nulling {struct null_t;}
 
     template<typename T>
-    concept isNullableType = std::default_initializable<T> || std::is_constructible_v<T, null_t>;
+    concept isNullableType = std::default_initializable<T> || std::is_constructible_v<T, nulling::null_t>;
 
     template<typename T>
     concept castToZeroCompatible = requires { (void)static_cast<T>(0); };
+
     namespace nulling
     {
+
         struct null_t final
         {
             //I don't know why I add this, but it might come in handy
@@ -71,7 +73,7 @@ namespace l61::meta
             constexpr null_t() = default;
 
             template<isNullableType T>
-            __inline consteval operator T() const // NOLINT(*-explicit-constructor)
+            __inline constexpr operator T() const // NOLINT(*-explicit-constructor)
             {
                 if constexpr (std::default_initializable<T>)
                 {
@@ -88,13 +90,18 @@ namespace l61::meta
             __inline consteval void operator=(T){} // NOLINT(*-unconventional-assign-operator)
         };
     }
+
+    template<typename>
+    inline constexpr bool always_false = false;
+
     __inline constexpr nulling::null_t null;
+    using nulling::null_t;
 }
 
 namespace l61
 {
     using meta::dyn_cast;
-    using meta::null;
+    //using meta::null;
 }
 
 #endif //L61_META_HPP

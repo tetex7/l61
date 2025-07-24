@@ -18,11 +18,11 @@
 //
 // Created by tete on 05/30/2025.
 //
-#include "l61/EventBus.hpp"
+#include "l61/EventSystem/EventBus.hpp"
 #include "l61/Logger.hpp"
 
 
-namespace l61
+namespace l61::EventSystem
 {
 
     bool EventBus::addEvent(const bus_frequency_t& freq, const Event& event)
