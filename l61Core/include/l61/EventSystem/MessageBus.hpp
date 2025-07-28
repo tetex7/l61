@@ -22,13 +22,19 @@
 #ifndef L61_EVENT_SYSTEM_MESSAGEBUS_HPP
 #define L61_EVENT_SYSTEM_MESSAGEBUS_HPP
 #include <l61/EventSystem/MessageBusPackets.hpp>
+#include <queue>
 
-namespace l61::EventSystem {
+namespace l61::EventSystem
+{
 
     class MessageBus
     {
     private:
-
+        std::queue<message_packet_t> _packet_queue;
+    public:
+        void push(message_packet_t&& packet);
+        void pop();
+        message_packet_t& peek();
     };
 
 } // EventSystem
