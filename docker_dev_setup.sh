@@ -29,3 +29,5 @@ docker run --rm -i \
   -v "$PROJECT_DIR":/home/builder/project \
   -w /home/builder/project \
   "$IMAGE_NAME" /home/builder/project/dev_setup.sh "$@"
+
+  #-u $(id -u):$(id -g) \

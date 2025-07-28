@@ -27,6 +27,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - run: chmod -R 777 .
       - run: sudo systemctl start docker
       - run: ./docker_dev_setup.sh
       - run: ./docker_dev_setup.sh mk
