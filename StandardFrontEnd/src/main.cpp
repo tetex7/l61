@@ -69,7 +69,7 @@ namespace l61
             {},
             0,
             {},
-            EventBus()
+            EventSystem::EventBus()
         }
     };
 }
@@ -106,7 +106,7 @@ static void sighandler_f(int sig)
     l61::mstat.procStat.signalStack.push(sig);
 }
 
-static int l61_main(int argc, const char* argv[])
+int l61_main(int argc, const char* argv[])
 {
     po::options_description desc("l61 options"s);
     desc.add_options()
@@ -214,20 +214,19 @@ static int l61_main(int argc, const char* argv[])
 
     l61::toLogger(l61::LogLevel::INFO, "loaded file {} in {}", *l61::shEnv, l61::mstat.procStat.runMode);
 
-    std::vector<std::string> lua_arg_vector = l61::null;
+    std::vector<std::string> lua_arg_vector = l61::meta::null;
 
     for (std::size_t i = 0; i < static_cast<std::size_t>(argc); i++)
     {
         lua_arg_vector.emplace_back(argv[i]);
     }
 
-    std::unique_ptr<int> s = static_cast<std::unique_ptr<int>>(l61::null);
+    std::unique_ptr<int> s = static_cast<std::unique_ptr<int>>(l61::meta::null);
 
     //NativeExtension::safeExtensionLoad(NativeExtension::extensionLookUp("base.lex61"s), &exdata, false);
-    auto& base_ex = l61::mstat.procStat.extension_manager->lookupAndLoadExtension("base.lex61", l61::null, false);
+    auto& base_ex = l61::mstat.procStat.extension_manager->lookupAndLoadExtension("base.lex61", l61::meta::null, false);
 
-    int base_ret = base_ex.getExtensionEntryPointCall()(&exdata);
-    if (base_ret) throw std::runtime_error(std::format("Entry point for extension base.lex16 Returned A value of {}", base_ret));
+    if (int base_ret = base_ex.getExtensionEntryPointCall()(&exdata)) throw std::runtime_error(std::format("Entry point for extension base.lex16 Returned A value of {}", base_ret));
 
     l61::shEnv->addValue("spaths"s, l61::mstat.spaths);
 
@@ -258,24 +257,4 @@ static int l61_main(int argc, const char* argv[])
     });
 
     return l61::shEnv->scriptRun(lua_arg_vector);
-}
-
-
-/**
- * @brief A slim main for exception handling
- * @param argc Number of arguments
- * @param argv A pointer to the array of arguments
- * @return Exit code
- */
-int main(int argc, const char* argv[])
-{
-    try
-    {
-        return l61_main(argc, argv);
-    }
-    catch (std::exception& e)
-    {
-        l61::toLogger(l61::LogLevel::FATAL, "Unhandled exception: {}", e.what());
-        std::exit(1);
-    }
 }

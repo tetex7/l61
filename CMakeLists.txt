@@ -83,7 +83,7 @@ configure_file(
 load_component(l61Core)
 load_component(frontendRuntime)
 load_component(extensionRuntime)
-#load_component(StandardFrontEnd)
+load_component(StandardFrontEnd)
 #load_component(ShallFrontEnd)
 
 # Add extensions last (can be dynamic later)

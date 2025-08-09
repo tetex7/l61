@@ -21,22 +21,25 @@
 
 #include "l61/EventSystem/MessageBus.hpp"
 
+#include <stdexcept>
+
 namespace l61::EventSystem
 {
-    void MessageBus::push(message_packet_t&& packet)
+    void MessageBus::push(message_packet_data_t&& packet)
     {
-        _packet_queue.push(std::forward<message_packet_t>(packet));
+        (void)packet;
+        _packets.push_back(std::forward<message_packet_data_t>(packet));
     }
 
     void MessageBus::pop()
     {
-        _packet_queue.pop();
+        _packets.pop();
     }
 
-    message_packet_t& MessageBus::peek()
+    message_packet_data_t& MessageBus::peek()
     {
-        if (_packet_queue.empty())
+        if (_packets.empty())
             throw std::runtime_error("MessageBus::peek() called on empty queue.");
-        return _packet_queue.front();
+        return _packets.front();
     }
 } // EventSystem

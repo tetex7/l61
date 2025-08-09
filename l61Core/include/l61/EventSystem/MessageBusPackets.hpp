@@ -120,7 +120,7 @@ U##type
         }
     };
 
-    struct message_packet_t
+    /*struct message_packet_t
     {
         bus_frequency_t freq;
         std::vector<message_packet_data_t> data;
@@ -135,6 +135,6 @@ U##type
                 }
             };
         }
-    };
+    };*/
 }
 #endif //L61_EVENT_SYSTEM_MESSAGEBUSPACKETS_HPP

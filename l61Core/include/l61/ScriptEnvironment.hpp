@@ -127,4 +127,4 @@ __inline sol::table makeSubTable(const std::string&& name, sol::table table)
 
 }
 
-#endif //SCRIPTENVIRONMENT_HPP
+#endif //L61_SCRIPTENVIRONMENT_HPP

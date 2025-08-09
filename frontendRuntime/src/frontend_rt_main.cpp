@@ -22,7 +22,7 @@
 #include <stdexcept>
 #include "l61/Logger.hpp"
 
-extern int l61_main(int argc, const char** argv);
+extern int l61_main(int argc, const char* argv[]);
 
 int main(int argc, const char** argv)
 {

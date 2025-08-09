@@ -56,6 +56,11 @@ namespace l61
         return typeid(*this).hash_code();
     }
 
+    std::string Object::typeName() const
+    {
+        return demangle(typeid(*this).name());
+    }
+
     Object::operator std::string() const
     {
         return this->toString();

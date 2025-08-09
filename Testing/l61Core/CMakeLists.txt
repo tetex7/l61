@@ -22,7 +22,10 @@ set_target_output(l61_core_test ${BIN_DIR}/testing)
 target_link_libraries(
         l61_core_test
         GTest::gtest_main
+        l61_core
 )
+
+target_link_libraries(l61_core_test base_interface)
 
 include(GoogleTest)
 gtest_discover_tests(l61_core_test)
