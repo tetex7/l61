@@ -19,16 +19,18 @@
 // Created by tete on 05/05/2025.
 //
 
-#include "l61/defs.hpp"
+#include "l61/meta.hpp"
+#include "l61/ExtensionSystem/ExtensionHeaders.hpp"
 #include <cassert>
 
-static l61::l61_api_extension_t* raw = l61::meta::null;
+
+static l61::ExtensionSystem::l61_api_extension_t* raw = l61::null;
 
 using namespace l61;
 
 namespace lex61rt
 { 
-    l61_api_extension_ptr getApiData()
+    ExtensionSystem::l61_api_extension_ptr getApiData()
     {
         return raw;
     }
@@ -36,7 +38,7 @@ namespace lex61rt
 
 extern int l61_extension_init();
 
-C_CALL int __l61_rt_ex_init__(l61_api_extension_t* api) // NOLINT(*-reserved-identifier)
+C_CALL int __l61_rt_ex_init__(ExtensionSystem::l61_api_extension_t* api) // NOLINT(*-reserved-identifier)
 {
     assert(api != nullptr && "Null pointer given to API for extension runtime");
     raw = api;

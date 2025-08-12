@@ -76,4 +76,9 @@
 
 #define l61_unused [[maybe_unused]]
 
+#define C_CALL extern "C"
+#ifndef LEX61_SYM_LOOKUP_COMPAT
+#   define LEX61_SYM_LOOKUP_COMPAT extern "C"
+#endif
+
 #endif

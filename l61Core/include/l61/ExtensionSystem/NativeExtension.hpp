@@ -29,8 +29,9 @@
 
 #include "l61/defs.hpp"
 #include "l61/BaseObjects/Object.hpp"
+#include "l61/ExtensionSystem/ExtensionHeaders.hpp"
 
-namespace l61
+namespace l61::ExtensionSystem
 {
 /**
  * @brief Handling native extensions
@@ -156,4 +157,4 @@ public:
 };
 }
 
-#endif //NATIVEEXTENSION_HPP
+#endif //L61_NATIVEEXTENSION_HPP

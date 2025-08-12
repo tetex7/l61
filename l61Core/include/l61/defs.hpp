@@ -41,10 +41,7 @@
 #include "json.hpp"
 #include "EventSystem/EventBus.hpp"
 
-#define C_CALL extern "C"
-#ifndef LEX61_SYM_LOOKUP_COMPAT
-#   define LEX61_SYM_LOOKUP_COMPAT extern "C"
-#endif
+
 
 //Works on clang and GCC Though that's everybody important
 //But poor Microsoft the farthest from being standard
@@ -141,8 +138,10 @@ namespace l61
         __inline ConfigRecord(std::vector<std::string>&& forceMount, std::vector<std::string>&& extension)
         : forceMount(std::forward<std::vector<std::string>>(forceMount)), extension(std::forward<std::vector<std::string>>(extension)){}
     };
-
-    class ExtensionManager;
+    namespace ExtensionSystem
+    {
+        class ExtensionManager;
+    }
 
     struct config_t
     {
@@ -156,7 +155,7 @@ namespace l61
     struct ProgramStatus
     {
         ScriptMode runMode;
-        std::unique_ptr<ExtensionManager> extension_manager;
+        std::unique_ptr<ExtensionSystem::ExtensionManager> extension_manager;
         config_t config;
         flag_t verbose;
         std::queue<c_signal_t> signalStack; // Yes, yes I know it's not a stack but the semantics are how I like my stacks
@@ -174,23 +173,6 @@ namespace l61
         const std::string version;
         ProgramStatus procStat;
     };
-
-    class ScriptEnvironment;
-
-    struct l61_api_extension_t
-    {
-        l61_stat& l61Ctx;
-        std::unique_ptr<ScriptEnvironment>& scriptCtx;
-    };
-
-    struct lex61_header_t
-    {
-        const std::string name;
-        const std::vector<std::string> authors;
-        const std::string known_compat_version;
-    };
-
-    using l61_api_extension_ptr = l61_api_extension_t*;
 
     l61_abstract_class AbstractScriptDebugger;
 

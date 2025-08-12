@@ -22,10 +22,10 @@
 #ifndef L61_EXTENSIONMANAGER_HPP
 #define L61_EXTENSIONMANAGER_HPP
 
-#include "defs.hpp"
-#include "l61/NativeExtension.hpp"
+#include "l61/ExtensionSystem/NativeExtension.hpp"
+#include "l61/ExtensionSystem/ExtensionHeaders.hpp"
 
-namespace l61
+namespace l61::ExtensionSystem
 {
 class ExtensionManager final
 {

@@ -19,7 +19,7 @@
 // Created by tete on 05/05/2025.
 //
 
-#include "l61/NativeExtension.hpp"
+#include "l61/ExtensionSystem/NativeExtension.hpp"
 #include <stdexcept>
 #include <string>
 #include "l61/defs.hpp"
@@ -67,7 +67,7 @@ static inline const char* dlerror(void)
 
 #define setup_lock() std::lock_guard<std::mutex> lock(soMutex)
 
-namespace l61
+namespace l61::ExtensionSystem
 {
 int NativeExtension::safeExtensionLoad(const std::expected<NativeExtension, std::string>& extension, l61_api_extension_ptr api, bool required)
 {

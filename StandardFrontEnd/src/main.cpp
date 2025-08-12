@@ -35,9 +35,9 @@
 #include "l61/defs.hpp"
 #include "l61/l61_config.h"
 
-#include "l61/ExtensionManager.hpp"
+#include "l61/ExtensionSystem/ExtensionManager.hpp"
 #include "l61/Logger.hpp"
-#include "l61/NativeExtension.hpp"
+#include "l61/ExtensionSystem/NativeExtension.hpp"
 #include "l61/utils.hpp"
 #include "l61/ScriptEngine/AbstractScriptDebugger.hpp"
 #include "l61/ScriptEngine/IBasicScriptEngine.hpp"
@@ -65,7 +65,7 @@ namespace l61
         L61_CONFIG_STR_VERSION,
         ProgramStatus {
             ScriptMode::UndefMode,
-            std::make_unique<ExtensionManager>(),
+            std::make_unique<ExtensionSystem::ExtensionManager>(),
             {},
             0,
             {},
@@ -96,7 +96,7 @@ static void help(po::options_description& desc)
     l61::cout_print(REP_BUG_TEXT, '\n');
 }
 
-l61::l61_api_extension_t exdata = {
+l61::ExtensionSystem::l61_api_extension_t exdata = {
     l61::mstat,
     l61::shEnv
 };
@@ -202,7 +202,7 @@ int l61_main(int argc, const char* argv[])
     {
     case l61::ScriptMode::BuildScriptMode:
         l61::shEnv = std::make_unique<l61::BuildScript>(l61::mstat.make_file_path, l61::mstat);
-        l61::NativeExtension::safeExtensionLoad(l61::NativeExtension::extensionLookUp("build.lex61"s), &exdata, false);
+        l61::ExtensionSystem::NativeExtension::safeExtensionLoad(l61::ExtensionSystem::NativeExtension::extensionLookUp("build.lex61"s), &exdata, false);
         break;
     /*case l61::ScriptMode::ShellScriptMode:
         l61::shEnv = std::make_unique<l61::ShellScript>(l61::mstat.make_file_path, l61::mstat);

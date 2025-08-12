@@ -21,12 +21,12 @@
 
 #define LEX61_SYM_LOOKUP_COMPAT extern "C"
 
-#include "l61/defs.hpp"
+#include "l61/ExtensionSystem/ExtensionHeaders.hpp"
 
 namespace lex61rt 
 {
-    using lex61_header_t = const l61::lex61_header_t;
-    extern l61::l61_api_extension_ptr getApiData();
+    using lex61_header_t = const l61::ExtensionSystem::l61_api_extension_t;
+    extern l61::ExtensionSystem::l61_api_extension_t getApiData();
 }
 
 #define LEX61RT_MAKE_HEADER(...) \
