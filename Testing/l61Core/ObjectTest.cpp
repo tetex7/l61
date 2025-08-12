@@ -19,7 +19,7 @@
 // Created by tete on 8/7/25.
 //
 
-#include "l61/ExtensionManager.hpp"
+#include "l61/ExtensionSystem/ExtensionManager.hpp"
 #include "l61/l61_config.h"
 
 #include <gtest/gtest.h>
@@ -46,7 +46,7 @@ l61_stat mstat = {
     L61_CONFIG_STR_VERSION,
     ProgramStatus {
         ScriptMode::UndefMode,
-        std::make_unique<ExtensionManager>(),
+        std::make_unique<ExtensionSystem::ExtensionManager>(),
         {},
         0,
         {},
