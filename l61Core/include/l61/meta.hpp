@@ -101,7 +101,7 @@ namespace l61::meta
 namespace l61
 {
     using meta::dyn_cast;
-    //using meta::null;
+    using meta::null;
 }
 
 #endif //L61_META_HPP

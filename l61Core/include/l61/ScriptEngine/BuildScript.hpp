@@ -16,33 +16,26 @@
  */
 
 //
-// Created by tete on 05/05/2025.
+// Created by tete on 05/01/2025.
 //
 #pragma once
+#ifndef L61_BUILDSCRIPT_HPP
+#define L61_BUILDSCRIPT_HPP
 
-#ifndef L61_SHELLSCRIPT_HPP
-#define L61_SHELLSCRIPT_HPP
-
-#include "sol/sol.hpp"
-#include "l61/ScriptEnvironment.hpp"
+#include "l61/ScriptEngine/ScriptEnvironment.hpp"
 namespace l61
 {
 
-class ShellScript : public ScriptEnvironment
+class BuildScript : public ScriptEnvironment
 {
 protected:
     int run(const std::vector<std::string>& args) override;
-
     void scriptPreInit() override;
-
 public:
-    ShellScript(const std::string& scriptFilePath, l61_stat& scriptCtx);
-    ~ShellScript() override;
+    explicit BuildScript(const std::string& scriptFilePath, l61_stat& scriptCtx);
+    ~BuildScript() override;
 };
-
-
 
 }
 
-
-#endif //SHELLSCRIPT_HPP
+#endif //BUILDSCRIPT_HPP

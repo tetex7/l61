@@ -30,8 +30,8 @@
 #include <string>
 #include <stacktrace>
 
-#include "l61/BuildScript.hpp"
-#include "l61/ShellScript.hpp"
+#include "l61/ScriptEngine/BuildScript.hpp"
+//#include "l61/ShellScript.hpp"
 #include "l61/defs.hpp"
 #include "l61/l61_config.h"
 
@@ -39,8 +39,8 @@
 #include "l61/Logger.hpp"
 #include "l61/NativeExtension.hpp"
 #include "l61/utils.hpp"
-#include "l61/AbstractScriptDebugger.hpp"
-#include "l61/IBasicScriptEngine.hpp"
+#include "l61/ScriptEngine/AbstractScriptDebugger.hpp"
+#include "l61/ScriptEngine/IBasicScriptEngine.hpp"
 
 
 namespace po = boost::program_options;
@@ -204,10 +204,10 @@ int l61_main(int argc, const char* argv[])
         l61::shEnv = std::make_unique<l61::BuildScript>(l61::mstat.make_file_path, l61::mstat);
         l61::NativeExtension::safeExtensionLoad(l61::NativeExtension::extensionLookUp("build.lex61"s), &exdata, false);
         break;
-    case l61::ScriptMode::ShellScriptMode:
+    /*case l61::ScriptMode::ShellScriptMode:
         l61::shEnv = std::make_unique<l61::ShellScript>(l61::mstat.make_file_path, l61::mstat);
         l61::NativeExtension::safeExtensionLoad(l61::NativeExtension::extensionLookUp("script.lex61"s), &exdata, false);
-        break;
+        break;*/
     default:
         l61::shEnv = std::make_unique<l61::BuildScript>(l61::mstat.make_file_path, l61::mstat);
         break;

@@ -36,7 +36,7 @@
 // Created by tete on 05/01/2025.
 //
 
-#include "l61/ScriptEnvironment.hpp"
+#include "l61/ScriptEngine/ScriptEnvironment.hpp"
 #include "l61/Logger.hpp"
 #include "l61/utils.hpp"
 #include "sol/sol.hpp"

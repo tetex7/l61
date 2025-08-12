@@ -18,9 +18,10 @@
 FROM archlinux:latest
 LABEL authors="Tetex7"
 
-# Install build deps
-RUN pacman -Syu --noconfirm --needed \
+RUN pacman -Syu --noconfirm
+RUN pacman -S --noconfirm --needed \
     base-devel cmake gcc ninja git lua readline boost boost-libs gtest doxygen
+RUN pacman -Scc --noconfirm
 
 # Create non-root user
 RUN useradd -m builder

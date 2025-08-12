@@ -28,7 +28,7 @@
 #include <type_traits>
 
 #include "l61/defs.hpp"
-#include "l61/Object.hpp"
+#include "l61/BaseObjects/Object.hpp"
 
 namespace l61
 {

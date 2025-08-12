@@ -19,7 +19,7 @@
 // Created by tete on 05/13/2025.
 //
 
-#include "l61/Object.hpp"
+#include "l61/BaseObjects/Object.hpp"
 
 #include <cxxabi.h>
 #include <format>

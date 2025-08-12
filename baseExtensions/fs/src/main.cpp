@@ -15,9 +15,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "l61/ShellScript.hpp"
 #include "l61/defs.hpp"
-#include "l61/ScriptEnvironment.hpp"
+#include "l61/ScriptEngine/ScriptEnvironment.hpp"
 #include "sol/sol.hpp"
 #include "lex61rt.hpp"
 #include "l61/ExtensionManager.hpp"

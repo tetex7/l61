@@ -23,7 +23,7 @@
 #include "l61/l61_config.h"
 
 #include <gtest/gtest.h>
-#include <l61/Object.hpp>
+#include <l61/BaseObjects/Object.hpp>
 #include <l61/defs.hpp>
 
 namespace l61

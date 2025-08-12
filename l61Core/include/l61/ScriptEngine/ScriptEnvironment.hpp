@@ -29,8 +29,8 @@
 
 #include "l61/defs.hpp"
 #include "sol/sol.hpp"
-#include "l61/Object.hpp"
-#include "l61/IBasicScriptEngine.hpp"
+#include "l61/BaseObjects/Object.hpp"
+#include "l61/ScriptEngine/IBasicScriptEngine.hpp"
 
 namespace l61
 {
@@ -97,7 +97,7 @@ public:
 
     virtual int scriptRun(const std::vector<std::string>& args);
 
-    std::string toString() const override;
+    [[nodiscard]] std::string toString() const override;
 
     ScriptEnvironment(const ScriptEnvironment&) = delete;
     ScriptEnvironment(const ScriptEnvironment&& val) = delete;
