@@ -21,6 +21,7 @@
 
 #include "l61/meta.hpp"
 #include "l61/ExtensionSystem/ExtensionHeaders.hpp"
+#include "lex61rt.hpp"
 #include <cassert>
 
 

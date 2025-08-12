@@ -15,27 +15,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+//
+// Created by tete on 8/11/25.
+//
 #pragma once
-#ifndef LEX61RT_HPP
-#define LEX61RT_HPP
 
-#define LEX61_SYM_LOOKUP_COMPAT extern "C"
+#ifndef L61_ABSTRACTEXTENSIONENTRYPOINT_HPP
+#define L61_ABSTRACTEXTENSIONENTRYPOINT_HPP
 
-#include "l61/ExtensionSystem/ExtensionHeaders.hpp"
-
-namespace lex61rt 
+namespace l61::ExtensionSystem
 {
-    using lex61_header_t = const l61::ExtensionSystem::lex61_header_t;
-    extern l61::ExtensionSystem::l61_api_extension_ptr getApiData();
+    l61_abstract_class AbstractExtensionEntryPoint
+    {
+    public:
+        virtual ~AbstractExtensionEntryPoint() = default;
+
+    protected:
+        virtual void preLoad() = 0;
+        virtual int initializer() = 0;
+        virtual void unLoad() = 0;
+
+    };
 }
 
-#define LEX61RT_MAKE_HEADER(...) \
-LEX61_SYM_LOOKUP_COMPAT lex61rt::lex61_header_t __lex61_header__ = { \
-    __VA_ARGS__ \
-}
-
-LEX61_SYM_LOOKUP_COMPAT {
-    extern lex61rt::lex61_header_t __lex61_header__; // NOLINT(*-reserved-identifier)
-}
-
-#endif
+#endif // L61_ABSTRACTEXTENSIONENTRYPOINT_HPP

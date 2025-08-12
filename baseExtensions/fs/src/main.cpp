@@ -19,7 +19,7 @@
 #include "l61/ScriptEngine/ScriptEnvironment.hpp"
 #include "sol/sol.hpp"
 #include "lex61rt.hpp"
-#include "l61/ExtensionManager.hpp"
+#include "l61/ExtensionSystem/ExtensionManager.hpp"
 #include <filesystem>
 
 
