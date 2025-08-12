@@ -181,8 +181,9 @@ int l61_main(int argc, const char* argv[])
         return 1;
     }
 
+    l61::mstat.procStat.eventBus.push(l61::EventSystem::PreDefineEvents::PRE_LOAD);
 
-    l61::mstat.procStat.eventBus.addEvent(SIGINT, []() -> void {
+    l61::mstat.procStat.eventBus.addEvent(SIGINT, 0, []() -> void {
         std::string input = l61::get_input("\nexit(y/n):");
         if (input == "yes" || input == "y") std::exit(0);
         if (input == "d" || input == "debugger" || input == "debug")
@@ -195,7 +196,7 @@ int l61_main(int argc, const char* argv[])
         }
     });
 
-    l61::mstat.procStat.eventBus.addEvent("com.trs.l61.debugger_initialization", [](){});
+    l61::mstat.procStat.eventBus.addEvent("com.trs.l61.debugger_initialization", -4, [](){});
 
     switch (l61::mstat.procStat.runMode)
     {

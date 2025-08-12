@@ -44,16 +44,17 @@ namespace l61
         return out;
     }
 
-    struct pclose_f
-    {
-        int operator()(FILE* __stream) const
-        {
-            return pclose(__stream);
-        }
-    };
+
 
     std::string execEx(const char* cmd)
     {
+        struct pclose_f
+        {
+            int operator()(FILE* __stream) const
+            {
+                return pclose(__stream);
+            }
+        };
         std::array<char, PATH_MAX> buffer{};
         std::string result;
         std::unique_ptr<FILE, pclose_f> pipe(popen(cmd, "r"), pclose_f());

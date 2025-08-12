@@ -25,14 +25,22 @@
 namespace l61::EventSystem
 {
 
-    bool EventBus::addEvent(const bus_frequency_t& freq, const Event& event)
+    bool EventBus::addEvent(const bus_frequency_t& freq, const bus_frequency_t& sub_freq, const Event& event)
     {
         if (_map.contains(freq)) return false;//throw std::runtime_error("Frequency already in use");
-        _map[freq] = std::make_unique<Event>(event);
+        _map[freq][sub_freq] = std::make_unique<Event>(event);
         return true;
     }
 
-    void EventBus::removeEvent(const bus_frequency_t& freq)
+    void EventBus::removeEvent(const bus_frequency_t& freq, const bus_frequency_t& sub_freq)
+    {
+        if (_map.contains(freq))
+        {
+            _map[freq].erase(sub_freq);
+        }
+    }
+
+    void EventBus::removeFrequency(const bus_frequency_t &freq)
     {
         if (_map.contains(freq))
         {
@@ -42,21 +50,20 @@ namespace l61::EventSystem
 
     void EventBus::pumpIt()
     {
-        if (!_freq_stack.empty())
+        if (!_map.empty())
         {
             if (const bus_frequency_t& freq = _freq_stack.front(); _map.contains(freq))
             {
-                if (const Event& event = *_map[freq]; static_cast<bool>(event))
+                for (const auto& [key, value] : _map[freq])
                 {
-                    event.call();
+                    if (const Event& event = *value; static_cast<bool>(event))
+                    {
+                        event.call();
+                    }
                 }
             }
-            else
-            {
-                toLogger(LogLevel::WARN, "no freq: {} on bus", freq);
-            }
-            _freq_stack.pop();
         }
+        _freq_stack.pop();
     }
 
     void EventBus::push(const bus_frequency_t& freq)
@@ -69,6 +76,14 @@ namespace l61::EventSystem
         for (const bus_frequency_t& freq : freqBand)
         {
             this->push(freq);
+        }
+    }
+
+    void EventBus::addEventBand(const std::set<std::tuple<const bus_frequency_t&, const bus_frequency_t&, const Event&>>& eventBand)
+    {
+        for (const auto& [freq, sub_freq, event] : eventBand)
+        {
+            this->addEvent(freq, sub_freq, event);
         }
     }
 

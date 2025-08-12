@@ -37,7 +37,6 @@ namespace l61
         concept l61Obj = std::is_base_of_v<Object, T>;
     }
 
-
     class Object
     {
     public:
@@ -58,4 +57,4 @@ struct std::formatter<T> : formatter<std::string> {
     }
 };
 
-#endif //L61OBJECT_HPP
+#endif //L61_OBJECT_HPP

@@ -77,7 +77,7 @@ function clean()
 
     find "." -maxdepth 10 -type d -name "CMakeFiles" -exec rm -vrf {} \;
 
-    find "." -maxdepth 10 -type f -name "CTestTestfile.cmake" -exec rm -vf {} \;
+    find "." -maxdepth 20 -type f -name "CTestTestfile.cmake" -exec rm -vf {} \;
 
     find "." -maxdepth 10 -type f -name "*\[*\]_include.cmake" -exec rm -vf {} \;
 

@@ -32,6 +32,7 @@
 
 #include "l61/EventSystem/Event.hpp"
 #include "l61/EventSystem/types.hpp"
+#include "l61/meta.hpp"
 
 
 
@@ -45,12 +46,14 @@ namespace l61::EventSystem
     class EventBus final
     {
     private:
-        std::unordered_map<bus_frequency_t, std::unique_ptr<Event>> _map;
+        std::unordered_map<bus_frequency_t, std::unordered_map<bus_frequency_t, std::unique_ptr<Event>>> _map;
         std::queue<bus_frequency_t> _freq_stack;
     public:
 
-        bool addEvent(const bus_frequency_t& freq, const Event& event);
-        void removeEvent(const bus_frequency_t& freq);
+        bool addEvent(const bus_frequency_t& freq, const bus_frequency_t& sub_freq, const Event& event);
+        void removeEvent(const bus_frequency_t& freq, const bus_frequency_t& sub_freq);
+
+        void removeFrequency(const bus_frequency_t& freq);
 
         void pumpIt();
 
@@ -62,6 +65,8 @@ namespace l61::EventSystem
         {
             this->pushBand({std::forward<Ty>(vals)...});
         }
+
+        void addEventBand(const std::set<std::tuple<const bus_frequency_t&, const bus_frequency_t&, const Event&>>& eventBand);
 
         explicit EventBus();
         ~EventBus();

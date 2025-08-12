@@ -29,6 +29,11 @@
 
 namespace l61::EventSystem
 {
+    namespace PreDefineEvents
+    {
+        constexpr inline std::int32_t PRE_LOAD = -40;
+        constexpr inline std::int32_t EXT_LOADED = -11;
+    };
     using bus_frequency_t = std::variant<std::int32_t, std::string>;
 }
 
@@ -41,6 +46,7 @@ namespace l61::meta
     concept EventBusFrequencyCompatible =
     std::is_same_v<T, std::int32_t> ||
     std::is_same_v<T, std::string> ||
+    std::is_same_v<T, EventSystem::PreDefineEvents> ||
     std::is_convertible_v<T, std::string>; // To appease the compiler for string literals
 
     template<typename T>

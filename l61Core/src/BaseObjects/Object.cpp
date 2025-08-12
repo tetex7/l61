@@ -48,7 +48,7 @@ namespace l61
 
     std::string Object::toString() const
     {
-        return  std::format("'{}'@{}", demangle(typeid(*this).name()), toAddressStrings(this));
+        return  std::format("'{}'@{}", this->typeName(), toAddressStrings(this));
     }
 
     std::size_t Object::hashCode() const
