@@ -20,7 +20,7 @@ LABEL authors="Tetex7"
 
 # Install build deps
 RUN pacman -Syu --noconfirm --needed \
-    base-devel cmake gcc ninja git lua readline boost boost-libs gtest
+    base-devel cmake gcc ninja git lua readline boost boost-libs gtest doxygen
 
 # Create non-root user
 RUN useradd -m builder

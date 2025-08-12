@@ -2988,7 +2988,7 @@ MSCFILE_DIRS           =
 
 ENABLE_PREPROCESSING      = YES
 MACRO_EXPANSION           = YES
-EXPAND_ONLY_PREDEF        = NO
+EXPAND_ONLY_PREDEF        = YES
 PREDEFINED                = \
   l61_interface=struct \
   l61_interface_call(access, decl)=access: decl \

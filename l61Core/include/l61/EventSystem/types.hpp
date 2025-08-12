@@ -46,7 +46,6 @@ namespace l61::meta
     concept EventBusFrequencyCompatible =
     std::is_same_v<T, std::int32_t> ||
     std::is_same_v<T, std::string> ||
-    std::is_same_v<T, EventSystem::PreDefineEvents> ||
     std::is_convertible_v<T, std::string>; // To appease the compiler for string literals
 
     template<typename T>

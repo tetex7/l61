@@ -35,6 +35,7 @@ function help() {
     echo "  [--]make    | [-]mk    Run the build with detected system"
     echo "  [--]package | [-]pkg   Makes a package using makepkg(Arch)"
     echo "  [--]build   | [-]b     Build the cmake environment"
+    echo "  [--]doxygen | [-]doc   runs doxygen"
     echo "  <cmake args>           Pass-through arguments to cmake"
     echo
     echo "\$CMAKE_GEN = 'Ninja' | 'Unix Makefiles'"
@@ -46,6 +47,11 @@ function rebuild()
     "$0" clean
     "$0" "$@"
     exit $?
+}
+
+function doxygen_cmd()
+{
+    doxygen
 }
 
 function build()
@@ -142,8 +148,11 @@ case "$1" in
         echo "makepkg : $(command -v makepkg || echo not found)"
         echo "git     : $(command -v git || echo not found)"
         ;;
-    package| pkg | --package|-pkg )
+    package|pkg | --package|-pkg )
         make_package "${@:2}"
+        ;;
+    doxygen|doc | --doxygen|-doc)
+        doxygen_cmd "${@:2}"
         ;;
     build|b | --build|-b)
         build "${@:2}"

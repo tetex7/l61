@@ -35,7 +35,13 @@ jobs:
       - run: sudo apt-get install -y doxygen graphviz
       - name: Setup Pages
         uses: actions/configure-pages@v5
-      - run: doxygen
+        #This application is a complete local application with no form of authentication tokens so this is extremely fine
+        #This is a throwaway environment too
+      - run: chmod -R 777 .
+
+
+      - run: sudo systemctl start docker
+      - run: ./docker_dev_setup.sh --doxygen
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
