@@ -27,7 +27,7 @@ set -o pipefail
 
 function help() {
     echo -e "Dev Setup Script"
-    echo "Usage: $0 [clean|(rebuild|rb)|(help|h)|make|<cmake-args>]"
+    echo "Usage: $0 [clean|(rebuild|rb)|(help|h)|(doxygen|doc)|gtest|make|<cmake-args>]"
     echo
     echo "  [--]clean              Cleans the cmake environment"
     echo "  [--]rebuild | [-]rb    Clean and reconfigure the cmake environment"
@@ -36,6 +36,7 @@ function help() {
     echo "  [--]package | [-]pkg   Makes a package using makepkg(Arch)"
     echo "  [--]build   | [-]b     Build the cmake environment"
     echo "  [--]doxygen | [-]doc   runs doxygen"
+    echo "  [--]gtest              runs gtests"
     echo "  <cmake args>           Pass-through arguments to cmake"
     echo
     echo "\$CMAKE_GEN = 'Ninja' | 'Unix Makefiles'"
@@ -52,6 +53,12 @@ function rebuild()
 function doxygen_cmd()
 {
     doxygen
+}
+
+function gtest_run()
+{
+    "$0" mk
+    "$0" mk test
 }
 
 function build()
@@ -81,13 +88,15 @@ function clean()
     rm -rfv ./Testing/Temporary
     rm -rfv ./docs
 
-    find "." -maxdepth 10 -type d -name "CMakeFiles" -exec rm -vrf {} \;
+    find "." -maxdepth 20 -type d -name "CMakeFiles" -exec rm -vrf {} +
 
-    find "." -maxdepth 20 -type f -name "CTestTestfile.cmake" -exec rm -vf {} \;
+    find "." -maxdepth 20 -type f -name "CTestTestfile.cmake" -exec rm -vf {} +
 
-    find "." -maxdepth 10 -type f -name "*\[*\]_include.cmake" -exec rm -vf {} \;
+    find "." -maxdepth 20 -type f -name "*\[*\]_include.cmake" -exec rm -vf {} +
 
-    find "." -maxdepth 10 -type f -name "*\[*\]_test.cmake" -exec rm -vf {} \;
+    find "." -maxdepth 20 -type f -name "*\[*\]_test.cmake" -exec rm -vf {} +
+
+    return 0
 }
 
 function make_cmd()
@@ -103,14 +112,6 @@ function make_package()
 {
     makepkg -f $@
 }
-
-#if [[ "$1" == "clean" ]]; then
-#    clean $@
-#elif [[ "$1" == "rebuild" || "$1" == "rb" ]]; then
-#    rebuild $@
-#else
-#    build $@
-#fi
 
 function check_tools()
 {
@@ -156,6 +157,9 @@ case "$1" in
         ;;
     build|b | --build|-b)
         build "${@:2}"
+        ;;
+    gtest | --gtest)
+        gtest_run
         ;;
     *)
         build "$@"

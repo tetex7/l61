@@ -30,6 +30,6 @@ jobs:
       - run: sudo systemctl start docker
       - run: ./docker_dev_setup.sh
       - run: ./docker_dev_setup.sh mk
-      - run: ./docker_dev_setup.sh mk test
+      - run: ./docker_dev_setup.sh gtest
 
 

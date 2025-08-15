@@ -21,8 +21,14 @@
 
 #include "l61/meta.hpp"
 #include "l61/ExtensionSystem/ExtensionHeaders.hpp"
+#include "l61/ExtensionSystem/AbstractExtensionEntryPoint.hpp"
 #include "lex61rt.hpp"
 #include <cassert>
+#include <memory>
+
+LEX61_SYM_LOOKUP_COMPAT {
+std::unique_ptr<l61::ExtensionSystem::AbstractExtensionEntryPoint> __lex61_header_ExtensionEntryPoint__ = l61::null;
+}
 
 
 static l61::ExtensionSystem::l61_api_extension_t* raw = l61::null;
@@ -37,11 +43,44 @@ namespace lex61rt
     }
 }
 
-extern int l61_extension_init();
+__attribute__((constructor))
+void lex61rt_pre_init()
+{
+    if (__lex61_header_ExtensionEntryPoint__ != nullptr)
+    {
+        __lex61_header_ExtensionEntryPoint__->preLoad();
+    }
+}
+
+__attribute__((destructor))
+void lex61rt_cleanup()
+{
+    if (__lex61_header_ExtensionEntryPoint__ != nullptr)
+    {
+        __lex61_header_ExtensionEntryPoint__->unLoad();
+    }
+}
+
+__attribute__((weak)) int l61_extension_init() { return 0; }
 
 C_CALL int __l61_rt_ex_init__(ExtensionSystem::l61_api_extension_t* api) // NOLINT(*-reserved-identifier)
 {
-    assert(api != nullptr && "Null pointer given to API for extension runtime");
+    if (api == nullptr)
+        throw std::runtime_error("Null pointer given to API for extension runtime");
+
     raw = api;
-    return l61_extension_init();
+    int sat = 0;
+
+    // ReSharper disable once CppUsingResultOfAssignmentAsCondition
+    // ReSharper disable once CppDFAConstantConditions
+    // ReSharper disable once CppDFAUnreachableCode
+    if (sat = l61_extension_init(); sat) return sat;
+
+    if (__lex61_header_ExtensionEntryPoint__ != nullptr)
+    {
+        // ReSharper disable once CppUsingResultOfAssignmentAsCondition
+        if (sat = __lex61_header_ExtensionEntryPoint__->initializer(); sat) return sat;
+    }
+
+    return sat;
 }

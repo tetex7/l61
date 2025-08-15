@@ -25,16 +25,12 @@
 
 namespace l61::ExtensionSystem
 {
-    l61_abstract_class AbstractExtensionEntryPoint
+    l61_interface AbstractExtensionEntryPoint
     {
-    public:
         virtual ~AbstractExtensionEntryPoint() = default;
-
-    protected:
         virtual void preLoad() = 0;
         virtual int initializer() = 0;
         virtual void unLoad() = 0;
-
     };
 }
 

@@ -29,17 +29,26 @@ LEX61RT_MAKE_HEADER(
     "1.0.0"
 );
 
-int l61_extension_init()
+struct FsEntryPoint : l61::ExtensionSystem::AbstractExtensionEntryPoint
 {
-    auto& script = *lex61rt::getApiData()->scriptCtx;
-    auto fs = l61::makeSubTable("fs", script.getValue<sol::table>("l61"));
+    void preLoad() override {}
 
-    fs.set_function("exists", [](const std::string path) -> bool {
-        return fs::exists(path);
-    });
+    int initializer() override
+    {
+        auto& script = *lex61rt::getApiData()->scriptCtx;
+        auto fs = l61::makeSubTable("fs", script.getValue<sol::table>("l61"));
 
-    return 0;
-}
+        fs.set_function("exists", [](const std::string path) -> bool {
+            return fs::exists(path);
+        });
+
+        return 0;
+    }
+
+    void unLoad() override {}
+};
+
+LEX61RT_SET_ENTRY_POINT_CLASS(FsEntryPoint);
 
 /*C_CALL int __l61_rt_ex_init__(l61_api_extension_t* api) // NOLINT(*-reserved-identifier)
 {
