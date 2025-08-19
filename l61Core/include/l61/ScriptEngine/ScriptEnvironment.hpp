@@ -107,7 +107,9 @@ public:
     //Yes this does leak the Lua State what are you going to do bite me
     void specialRun(const std::function<void(sol::state&)>& func) override;
 
-    // for user input
+    /**
+     * @brief for user input
+     */
     void exec(const std::string& code) final;
 
     void attachDebugger(AbstractScriptDebugger* debugger) override;
