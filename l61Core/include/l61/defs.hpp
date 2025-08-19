@@ -40,8 +40,7 @@
 #include "sol/sol.hpp"
 #include "json.hpp"
 #include "EventSystem/EventBus.hpp"
-
-
+#include "l61/baseTypes.hpp"
 
 //Works on clang and GCC Though that's everybody important
 //But poor Microsoft the farthest from being standard
@@ -150,15 +149,13 @@ namespace l61
         NLOHMANN_DEFINE_TYPE_INTRUSIVE(config_t, spaths, plugins);
     };
 
-    using c_signal_t = int;
-
     struct ProgramStatus
     {
         ScriptMode runMode;
         std::unique_ptr<ExtensionSystem::ExtensionManager> extension_manager;
         config_t config;
         flag_t verbose;
-        std::queue<c_signal_t> signalStack; // Yes, yes I know it's not a stack but the semantics are how I like my stacks
+        SignalQueue_t signalQueue; // Yes, yes I know it's not a stack but the semantics are how I like my stacks
         EventSystem::EventBus eventBus;
     };
 

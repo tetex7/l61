@@ -20,10 +20,12 @@
 #ifndef L61_ABSTRACT_SCRIPT_DEBUGGER_HPP
 #define L61_ABSTRACT_SCRIPT_DEBUGGER_HPP
 #include "sol/sol.hpp"
-#include "l61/defs.hpp"
+//#include "l61/defs.hpp"
 
 namespace l61
 {
+    l61_abstract_class AbstractScriptDebugger;
+    struct l61_stat;
     namespace meta
     {
         template<class T>

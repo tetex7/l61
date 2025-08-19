@@ -20,32 +20,24 @@
 #include "sol/sol.hpp"
 #include "lex61rt.hpp"
 #include "l61/ExtensionSystem/ExtensionManager.hpp"
-#include <filesystem>
 
 
 LEX61RT_MAKE_HEADER(
-    "fs",
+    "lua61",
     { "Tetex7" },
     "1.0.0"
 );
 
-struct FsEntryPoint : l61::ExtensionSystem::AbstractExtensionEntryPoint
+struct Lua61EntryPoint : l61::ExtensionSystem::AbstractExtensionEntryPoint
 {
     void preLoad() override {}
 
     int initializer() override
     {
-        auto& script = *lex61rt::getApiData()->scriptCtx;
-        auto fs = l61::makeSubTable("fs", script.getValue<sol::table>("l61"));
-
-        fs.set_function("exists", [](const std::string path) -> bool {
-            return fs::exists(path);
-        });
-
         return 0;
     }
 
     void unLoad() override {}
 };
 
-LEX61RT_SET_ENTRY_POINT_CLASS(FsEntryPoint);
+LEX61RT_SET_ENTRY_POINT_CLASS(Lua61EntryPoint);

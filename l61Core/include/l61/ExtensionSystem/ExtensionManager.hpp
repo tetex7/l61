@@ -41,6 +41,8 @@ public:
 
     bool has(const std::string& exName) const;
 
+    NativeExtension& registerExtension(NativeExtension& extension);
+
     const NativeExtension& get(const std::string& exName) const;
     const NativeExtension& operator[](const std::string& exName) const;
 

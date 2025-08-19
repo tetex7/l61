@@ -40,7 +40,7 @@ enum class LogLevel : std::uint8_t
 /**
  *
  * @tparam Ty Types of arguments passed to be logged
- * @param level The logging output level e.g \ref LogLevel::WARN
+ * @param level The logging output level e.g \ref l61::LogLevel::WARN
  * @param fmt The format string using modern C++23 std::format
  * @param args Values to be logged
  */
@@ -94,4 +94,4 @@ constexpr void toLogger(LogLevel level, std::format_string<Ty...> fmt, Ty&&... a
 
 }
 
-#endif //LOGGER_HPP
+#endif //L61_LOGGER_HPP

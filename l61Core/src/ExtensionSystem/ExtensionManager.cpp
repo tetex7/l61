@@ -55,6 +55,14 @@ bool ExtensionManager::has(const std::string& exName) const
     return extension_map.contains(exName);
 }
 
+NativeExtension& ExtensionManager::registerExtension(NativeExtension& extension)
+{
+    auto path = extension.getExtensionPath();
+    this->extension_map.emplace(path, std::make_unique<NativeExtension>(std::move(extension)));
+
+    return *this->extension_map[path];
+}
+
 const NativeExtension& ExtensionManager::operator[](const std::string& exName) const
 {
     if (!has(exName))

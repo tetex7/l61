@@ -22,12 +22,13 @@
 #include "l61/Logger.hpp"
 
 
+
 namespace l61::EventSystem
 {
 
     bool EventBus::addEvent(const bus_frequency_t& freq, const bus_frequency_t& sub_freq, const Event& event)
     {
-        if (_map.contains(freq)) return false;//throw std::runtime_error("Frequency already in use");
+        //if (_map[freq].contains(sub_freq)) return false;
         _map[freq][sub_freq] = std::make_unique<Event>(event);
         return true;
     }
@@ -50,7 +51,7 @@ namespace l61::EventSystem
 
     void EventBus::pumpIt()
     {
-        if (!_map.empty())
+        if (!_map.empty() && !_freq_stack.empty())
         {
             if (const bus_frequency_t& freq = _freq_stack.front(); _map.contains(freq))
             {
@@ -62,8 +63,8 @@ namespace l61::EventSystem
                     }
                 }
             }
+            _freq_stack.pop();
         }
-        _freq_stack.pop();
     }
 
     void EventBus::push(const bus_frequency_t& freq)
@@ -89,4 +90,16 @@ namespace l61::EventSystem
 
     EventBus::EventBus() = default;
     EventBus::~EventBus() = default;
+
+
+    void runEventBus(EventBus& bus, SignalQueue_t& signals)
+    {
+        if (!signals.empty())
+        {
+            c_signal_t sig = signals.front();
+            signals.pop();
+            bus.push(sig);
+        }
+        bus.pumpIt();
+    }
 } // l61

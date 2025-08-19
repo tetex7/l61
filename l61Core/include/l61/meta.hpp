@@ -22,10 +22,7 @@
 #ifndef L61_META_HPP
 #define L61_META_HPP
 #include <concepts>
-
-#include "meta.hpp"
-#include "meta.hpp"
-#include "meta.hpp"
+#include <type_traits>
 
 namespace l61
 {
@@ -44,13 +41,20 @@ namespace l61::meta
     {
         static_assert(std::is_pointer_v<T>, "l61::dyn_cast only works on pointer types");
 
-        if constexpr (obj == nullptr) return nullptr;
+        //if (obj == nullptr) return nullptr;
 
         if constexpr (std::same_as<T, Tx>)
             return obj; // Just in case somebody accidentally attempts to cast of the same type
 
         static_assert(std::is_base_of_v<std::remove_pointer_t<Tx>, std::remove_pointer_t<T>>, "l61::dyn_cast type must be a base of the obj_type's type");
         return static_cast<Tx>(obj);
+    }
+
+    template<typename T>
+    __inline constexpr T dyn_cast(std::nullptr_t)
+    {
+        static_assert(std::is_pointer_v<T>, "l61::dyn_cast only works on pointer types");
+        return nullptr;
     }
 
     namespace nulling {struct null_t;}
@@ -60,6 +64,9 @@ namespace l61::meta
 
     template<typename T>
     concept castToZeroCompatible = requires { (void)static_cast<T>(0); };
+
+    /*template<typename T>
+    concept stdHashCompatible = requires(T x) { {std::hash(x)} -> std::convertible_to<std::size_t>; };*/
 
     namespace nulling
     {
@@ -73,7 +80,7 @@ namespace l61::meta
             constexpr null_t() = default;
 
             template<isNullableType T>
-            __inline constexpr operator T() const // NOLINT(*-explicit-constructor)
+            constexpr operator T() const // NOLINT(*-explicit-constructor)
             {
                 if constexpr (std::default_initializable<T>)
                 {
@@ -87,14 +94,17 @@ namespace l61::meta
             }
 
             template<isNullableType T>
-            __inline consteval void operator=(T){} // NOLINT(*-unconventional-assign-operator)
+            consteval void operator=(T){} // NOLINT(*-unconventional-assign-operator)
         };
     }
 
     template<typename>
     inline constexpr bool always_false = false;
 
-    __inline constexpr nulling::null_t null;
+    template<typename>
+    inline constexpr bool always_true = true;
+
+    inline constexpr nulling::null_t null;
     using nulling::null_t;
 }
 

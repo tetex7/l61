@@ -103,7 +103,7 @@ l61::ExtensionSystem::l61_api_extension_t exdata = {
 
 static void sighandler_f(int sig)
 {
-    l61::mstat.procStat.signalStack.push(sig);
+    l61::mstat.procStat.signalQueue.push(sig);
 }
 
 int l61_main(int argc, const char* argv[])
@@ -222,8 +222,6 @@ int l61_main(int argc, const char* argv[])
         lua_arg_vector.emplace_back(argv[i]);
     }
 
-    std::unique_ptr<int> s = static_cast<std::unique_ptr<int>>(l61::meta::null);
-
     //NativeExtension::safeExtensionLoad(NativeExtension::extensionLookUp("base.lex61"s), &exdata, false);
     auto& base_ex = l61::mstat.procStat.extension_manager->lookupAndLoadExtension("base.lex61", l61::meta::null, false);
 
@@ -242,18 +240,10 @@ int l61_main(int argc, const char* argv[])
             //and this is a hack that I thought up many nights
             //This should not influence the lua environment
             //Yes exists, so I can have code time to run my event system
-            //TODO: Move this to a separate function
 
             (void)L; // This is done to appease the compiler(-Werror)
             (void)D; // Learn this trick from NASA Documentation of all places
-
-            if (!l61::mstat.procStat.signalStack.empty())
-            {
-                l61::c_signal_t sig = l61::mstat.procStat.signalStack.front();
-                l61::mstat.procStat.signalStack.pop();
-                l61::mstat.procStat.eventBus.push(sig);
-            }
-            l61::mstat.procStat.eventBus.pumpIt();
+            l61::EventSystem::runEventBus(l61::mstat.procStat.eventBus, l61::mstat.procStat.signalQueue);
         }), LUA_MASKCOUNT, 10);
     });
 

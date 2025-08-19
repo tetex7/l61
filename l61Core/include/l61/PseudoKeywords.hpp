@@ -81,4 +81,10 @@
 #   define LEX61_SYM_LOOKUP_COMPAT extern "C"
 #endif
 
+
+namespace l61
+{
+    using c_signal_t = int;
+}
+
 #endif

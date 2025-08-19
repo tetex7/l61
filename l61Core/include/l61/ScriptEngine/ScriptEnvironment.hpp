@@ -51,8 +51,8 @@ protected:
 
     const std::string& getScriptFilePath() const;
 
-    l61_abstract_call(int run(const std::vector<std::string>& args));
-    l61_abstract_call(void scriptPreInit());
+    virtual int run(const std::vector<std::string>& args) = 0;
+    virtual void scriptPreInit() = 0;
 
     explicit ScriptEnvironment(const std::string& scriptFilePath, l61_stat& scriptCtx);
 
@@ -100,13 +100,14 @@ public:
     [[nodiscard]] std::string toString() const override;
 
     ScriptEnvironment(const ScriptEnvironment&) = delete;
-    ScriptEnvironment(const ScriptEnvironment&& val) = delete;
+    ScriptEnvironment(ScriptEnvironment&&) = delete;
 
     ScriptEnvironment& operator=(const ScriptEnvironment&) = delete;
 
     //Yes this does leak the Lua State what are you going to do bite me
     void specialRun(const std::function<void(sol::state&)>& func) override;
 
+    // for user input
     void exec(const std::string& code) final;
 
     void attachDebugger(AbstractScriptDebugger* debugger) override;
@@ -118,7 +119,7 @@ public:
     friend void standard_lua_debugger_hook(lua_State* L, lua_Debug* D);
 };
 
-__inline sol::table makeSubTable(const std::string&& name, sol::table table)
+inline sol::table makeSubTable(const std::string&& name, sol::table table)
 {
     sol::table x = table.create_with();
     table.set(std::forward<const std::string>(name), x);

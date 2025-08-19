@@ -59,6 +59,8 @@ install_manifest.txt
 *.gcno
 *.gcda
 
+vgcore.*
+
 
 *.pkg.tar.zst
 /pkg

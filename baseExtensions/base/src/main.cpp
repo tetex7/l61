@@ -35,41 +35,48 @@ LEX61RT_MAKE_HEADER(
     L61_CONFIG_STR_VERSION
 );
 
-constexpr const char* extensionload[] = {
+constexpr const char* extensionLoad[] = {
     "fs.lex61",
 };
 
 using l61::LogLevel;
 
-int l61_extension_init()
+struct BaseEntryPoint : l61::ExtensionSystem::AbstractExtensionEntryPoint
 {
-    std::println("ver: {}", lex61rt::getApiData()->l61Ctx.version);
-    
-    sol::table l61_table = lex61rt::getApiData()->scriptCtx->has("l61") ? lex61rt::getApiData()->scriptCtx->getValue<sol::table>("l61") : lex61rt::getApiData()->scriptCtx->makeTable("l61");
-
-    auto& extension_manager = *lex61rt::getApiData()->l61Ctx.procStat.extension_manager;
-
-    for (const char* const& str : extensionload)
+    void preLoad() override {}
+    int initializer() override
     {
-        try
-        {
-            if (auto& ex = extension_manager.lookupAndLoadExtension(str, lex61rt::getApiData(), false); ex.getExtensionHeader()->authors[0] != "Tetex7"s)
-            {
-                extension_manager.unload(str);
-                std::println("no good header for {}", str);
-                l61::toLogger(LogLevel::ERROR, "Cannot find well formed {}", str);
-            }
-            else
-            {
-                int rt = ex.getExtensionEntryPointCall()(lex61rt::getApiData());
-                if (rt != 0) return rt;
-            }
-        } 
-        catch (std::exception& exception)
-        {
-            l61::toLogger(LogLevel::ERROR, "{}", exception.what());
-        }
-    }
+        std::println("ver: {}", lex61rt::getApiData()->l61Ctx.version);
 
-    return 0;
-}
+        sol::table l61_table = lex61rt::getApiData()->scriptCtx->has("l61") ? lex61rt::getApiData()->scriptCtx->getValue<sol::table>("l61") : lex61rt::getApiData()->scriptCtx->makeTable("l61");
+
+        auto& extension_manager = *lex61rt::getApiData()->l61Ctx.procStat.extension_manager;
+
+        for (const char* const& str : extensionLoad)
+        {
+            try
+            {
+                if (auto& ex = extension_manager.lookupAndLoadExtension(str, lex61rt::getApiData(), false); ex.getExtensionHeader()->authors[0] != "Tetex7"s)
+                {
+                    extension_manager.unload(str);
+                    std::println("no good header for {}", str);
+                    l61::toLogger(LogLevel::ERROR, "Cannot find well formed {}", str);
+                }
+                else
+                {
+                    int rt = ex.getExtensionEntryPointCall()(lex61rt::getApiData());
+                    if (rt != 0) return rt;
+                }
+            }
+            catch (std::exception& exception)
+            {
+                l61::toLogger(LogLevel::ERROR, "{}", exception.what());
+            }
+        }
+
+        return 0;
+    }
+    void unLoad() override {}
+};
+
+LEX61RT_SET_ENTRY_POINT_CLASS(BaseEntryPoint);

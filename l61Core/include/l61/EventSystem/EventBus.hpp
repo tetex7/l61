@@ -33,7 +33,8 @@
 #include "l61/EventSystem/Event.hpp"
 #include "l61/EventSystem/types.hpp"
 #include "l61/meta.hpp"
-
+#include "l61/ScriptEngine/IBasicScriptEngine.hpp"
+#include "l61/baseTypes.hpp"
 
 
 
@@ -41,7 +42,7 @@
 namespace l61::EventSystem
 {
     /**
-     * @brief This is an event bus leveraging \ref l61::Event
+     * @brief This is an event bus leveraging \ref l61::EventSystem::Event
      */
     class EventBus final
     {
@@ -60,7 +61,7 @@ namespace l61::EventSystem
         void push(const bus_frequency_t& freq);
         void pushBand(const std::set<bus_frequency_t>& freqBand);
 
-        template<meta::EventBusFrequencyCompatible... Ty>
+        template<meta::eventBusFrequencyCompatible... Ty>
         void pushBand(Ty&&... vals)
         {
             this->pushBand({std::forward<Ty>(vals)...});
@@ -75,24 +76,13 @@ namespace l61::EventSystem
         EventBus(EventBus&) = delete;
         EventBus& operator=(const EventBus&) = delete;
     };
+
+
+    void runEventBus(EventBus& bus, SignalQueue_t& signals);
 }
     //std::ostream& operator<<(std::ostream& stream, s)
 // l61
 
-template <>
-struct std::formatter<l61::EventSystem::bus_frequency_t> : std::formatter<std::string> {
-    auto format(const l61::EventSystem::bus_frequency_t& freq, format_context& ctx) const {
-        const std::string result = std::visit([]<typename Tp>(const Tp& val) {
-            using T = std::decay_t<Tp>;
-            if constexpr (std::is_same_v<T, std::string>)
-                return std::format("\"{}\"", val);
-            else if constexpr (std::is_same_v<T, std::int32_t>)
-                return std::format("{}", val);
-            else
-                return std::format("'{}'", val);
-        }, freq);
-        return std::formatter<std::string>::format(result, ctx);
-    }
-};
+
 
 #endif //L61_EVENTBUS_HPP
