@@ -50,6 +50,10 @@ namespace l61
          */
         l61_interface_call(public, void attachDebugger(AbstractScriptDebugger* debugger));
 
+        /**
+         * @brief for user input
+         * @param code lua code
+         */
         l61_interface_call(public, void exec(const std::string& code));
 
         l61_interface_deconstructor(IBasicScriptEngine);
