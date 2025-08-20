@@ -44,7 +44,12 @@ LEX61_SYM_LOOKUP_COMPAT {
 
 namespace lex61rt
 {
-    template<typename T>
+    /**
+     * @brief TODO
+     * @tparam T TODO
+     * @return returns 0
+     */
+    template <l61::meta::extensionEntryPointCompatible T>
     int set_oop_entry_point()
     {
         if (__lex61_header_ExtensionEntryPoint__ != nullptr)

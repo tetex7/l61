@@ -22,6 +22,7 @@
 
 #ifndef L61_ABSTRACTEXTENSIONENTRYPOINT_HPP
 #define L61_ABSTRACTEXTENSIONENTRYPOINT_HPP
+#include  <type_traits>
 
 namespace l61::ExtensionSystem
 {
@@ -32,6 +33,12 @@ namespace l61::ExtensionSystem
         virtual int initializer() = 0;
         virtual void unLoad() = 0;
     };
+}
+
+namespace l61::meta
+{
+    template<typename T>
+    concept extensionEntryPointCompatible = std::is_constructible_v<T, ExtensionSystem::AbstractExtensionEntryPoint>;
 }
 
 #endif // L61_ABSTRACTEXTENSIONENTRYPOINT_HPP
