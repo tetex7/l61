@@ -21,6 +21,7 @@
 
 #include "l61/BaseObjects/Object.hpp"
 
+#include <cassert>
 #include <cxxabi.h>
 #include <format>
 #include <typeinfo>
@@ -40,6 +41,8 @@ namespace l61
         if (status != 0 || !demangled) {
             throw std::runtime_error("Failed to demangle name");
         }
+
+        assert(demangled != nullptr && "demangle failed");
 
         return {demangled.get()};
     }

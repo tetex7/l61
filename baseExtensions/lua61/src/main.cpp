@@ -38,6 +38,8 @@ struct Lua61EntryPoint : l61::ExtensionSystem::AbstractExtensionEntryPoint
     }
 
     void unLoad() override {}
+
+    ~Lua61EntryPoint() override = default;
 };
 
 LEX61RT_SET_ENTRY_POINT_CLASS(Lua61EntryPoint);

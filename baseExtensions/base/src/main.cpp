@@ -77,6 +77,8 @@ struct BaseEntryPoint : l61::ExtensionSystem::AbstractExtensionEntryPoint
         return 0;
     }
     void unLoad() override {}
+
+    ~BaseEntryPoint() override = default;
 };
 
 LEX61RT_SET_ENTRY_POINT_CLASS(BaseEntryPoint);

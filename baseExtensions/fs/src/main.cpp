@@ -46,6 +46,8 @@ struct FsEntryPoint : l61::ExtensionSystem::AbstractExtensionEntryPoint
     }
 
     void unLoad() override {}
+
+    ~FsEntryPoint() override = default;
 };
 
 LEX61RT_SET_ENTRY_POINT_CLASS(FsEntryPoint);

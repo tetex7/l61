@@ -19,6 +19,7 @@
 // Created by tete on 8/7/25.
 //
 
+#include "l61/Logger.hpp"
 #include "l61/ExtensionSystem/ExtensionManager.hpp"
 #include "l61/l61_config.h"
 
@@ -57,6 +58,6 @@ l61_stat mstat = {
 
 TEST(ObjectTests, BasicAssertions) {
     l61::Object object;
-
+    l61::toLogger(l61::LogLevel::ERROR, "test");
     EXPECT_STREQ(object.typeName().c_str(), "l61::Object");
 }
