@@ -20,7 +20,7 @@
 //
 
 #include "l61/ScriptEngine/BuildScript.hpp"
-namespace l61
+namespace l61::ScriptEngine
 {
 
 BuildScript::BuildScript(const std::string& scriptFilePath, l61_stat& scriptCtx)

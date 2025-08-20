@@ -36,7 +36,7 @@ struct FsEntryPoint : l61::ExtensionSystem::AbstractExtensionEntryPoint
     int initializer() override
     {
         auto& script = *lex61rt::getApiData()->scriptCtx;
-        auto fs = l61::makeSubTable("fs", script.getValue<sol::table>("l61"));
+        auto fs = l61::ScriptEngine::makeSubTable("fs", script.getValue<sol::table>("l61"));
 
         fs.set_function("exists", [](const std::string path) -> bool {
             return fs::exists(path);

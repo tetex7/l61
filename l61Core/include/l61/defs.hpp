@@ -170,12 +170,13 @@ namespace l61
         const std::string version;
         ProgramStatus procStat;
     };
-
-    l61_abstract_class AbstractScriptDebugger;
-
+    namespace ScriptEngine
+    {
+        l61_abstract_class AbstractScriptDebugger;
+    }
     // Must be defined by the front end
     extern l61_stat mstat;
-    // End of must be's
+    // End of must be been
 }
 
 template <>

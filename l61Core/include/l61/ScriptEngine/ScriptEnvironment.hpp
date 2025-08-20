@@ -32,7 +32,7 @@
 #include "l61/BaseObjects/Object.hpp"
 #include "l61/ScriptEngine/IBasicScriptEngine.hpp"
 
-namespace l61
+namespace l61::ScriptEngine
 {
 
 l61_abstract_class ScriptEnvironment : public Object, public IBasicScriptEngine

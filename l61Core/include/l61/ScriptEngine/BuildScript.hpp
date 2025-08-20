@@ -23,7 +23,7 @@
 #define L61_BUILDSCRIPT_HPP
 
 #include "l61/ScriptEngine/ScriptEnvironment.hpp"
-namespace l61
+namespace l61::ScriptEngine
 {
 
 class BuildScript : public ScriptEnvironment

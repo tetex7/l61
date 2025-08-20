@@ -28,7 +28,10 @@
 
 namespace l61
 {
-    class ScriptEnvironment;
+    namespace ScriptEngine
+    {
+        class ScriptEnvironment;
+    }
     struct l61_stat;
 }
 namespace l61::ExtensionSystem
@@ -36,7 +39,7 @@ namespace l61::ExtensionSystem
     struct l61_api_extension_t
     {
         l61_stat& l61Ctx;
-        std::unique_ptr<ScriptEnvironment> & scriptCtx;
+        std::unique_ptr<ScriptEngine::ScriptEnvironment> & scriptCtx;
     };
 
     struct lex61_header_t

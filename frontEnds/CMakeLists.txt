@@ -15,4 +15,4 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-load_component(StandardFrontEnd)
+load_component(${CMAKE_CURRENT_SOURCE_DIR}/StandardFrontEnd)

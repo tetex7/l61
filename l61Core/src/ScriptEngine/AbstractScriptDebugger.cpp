@@ -18,7 +18,7 @@
 #include "l61/ScriptEngine/AbstractScriptDebugger.hpp"
 #include "l61/ScriptEngine/ScriptEnvironment.hpp"
 
-namespace l61
+namespace l61::ScriptEngine
 {
 
     AbstractScriptDebugger::AbstractScriptDebugger(ScriptEnvironment* script, l61_stat& lstat)

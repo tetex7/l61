@@ -24,36 +24,42 @@
 
 namespace l61
 {
-    l61_abstract_class AbstractScriptDebugger;
+    namespace ScriptEngine
+    {
+        l61_abstract_class AbstractScriptDebugger;
+    }
     struct l61_stat;
     namespace meta
     {
         template<class T>
-        concept l61CompatibleScriptDebugger = std::is_base_of_v<AbstractScriptDebugger, T>;
+        concept l61CompatibleScriptDebugger = std::is_base_of_v<ScriptEngine::AbstractScriptDebugger, T>;
     }
 
-    class ScriptEnvironment;
-
-    l61_abstract_class AbstractScriptDebugger
+    namespace ScriptEngine
     {
-    private:
-        ScriptEnvironment* const scriptCtx;
-        l61_stat& lstat;
-    protected:
-        ScriptEnvironment* getScriptCtx();
-        l61_stat& getL61Ctx();
-        sol::state& getScriptLuaState();
-        l61_abstract_call(void preRun(lua_State* L, lua_Debug* D));
+        class ScriptEnvironment;
 
-        AbstractScriptDebugger(ScriptEnvironment* script, l61_stat& lstat);
-    public:
-        l61_abstract_call(void run(lua_State* L, lua_Debug* D));
+        l61_abstract_class AbstractScriptDebugger
+        {
+        private:
+            ScriptEnvironment* const scriptCtx;
+            l61_stat& lstat;
+            protected:
+            ScriptEnvironment* getScriptCtx();
+            l61_stat& getL61Ctx();
+            sol::state& getScriptLuaState();
+            l61_abstract_call(void preRun(lua_State* L, lua_Debug* D));
 
-        AbstractScriptDebugger(const AbstractScriptDebugger&) = delete;
-        AbstractScriptDebugger& operator=(const AbstractScriptDebugger&) = delete;
+            AbstractScriptDebugger(ScriptEnvironment* script, l61_stat& lstat);
+        public:
+            l61_abstract_call(void run(lua_State* L, lua_Debug* D));
 
-        l61_abstract_destructor(AbstractScriptDebugger);
-    };
+            AbstractScriptDebugger(const AbstractScriptDebugger&) = delete;
+            AbstractScriptDebugger& operator=(const AbstractScriptDebugger&) = delete;
+
+            l61_abstract_destructor(AbstractScriptDebugger);
+        };
+    }
 }
 
 #endif

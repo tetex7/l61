@@ -47,8 +47,8 @@ namespace po = boost::program_options;
 
 namespace l61
 {
-    std::unique_ptr<ScriptEnvironment> shEnv;
-    std::unique_ptr<AbstractScriptDebugger> luaDugger;
+    std::unique_ptr<ScriptEngine::ScriptEnvironment> shEnv;
+    std::unique_ptr<ScriptEngine::AbstractScriptDebugger> luaDugger;
 
 
     l61_stat mstat = {
@@ -201,7 +201,7 @@ int l61_main(int argc, const char* argv[])
     switch (l61::mstat.procStat.runMode)
     {
     case l61::ScriptMode::BuildScriptMode:
-        l61::shEnv = std::make_unique<l61::BuildScript>(l61::mstat.make_file_path, l61::mstat);
+        l61::shEnv = std::make_unique<l61::ScriptEngine::BuildScript>(l61::mstat.make_file_path, l61::mstat);
         l61::ExtensionSystem::NativeExtension::safeExtensionLoad(l61::ExtensionSystem::NativeExtension::extensionLookUp("build.lex61"s), &exdata, false);
         break;
     /*case l61::ScriptMode::ShellScriptMode:
@@ -209,7 +209,7 @@ int l61_main(int argc, const char* argv[])
         l61::NativeExtension::safeExtensionLoad(l61::NativeExtension::extensionLookUp("script.lex61"s), &exdata, false);
         break;*/
     default:
-        l61::shEnv = std::make_unique<l61::BuildScript>(l61::mstat.make_file_path, l61::mstat);
+        l61::shEnv = std::make_unique<l61::ScriptEngine::BuildScript>(l61::mstat.make_file_path, l61::mstat);
         break;
     }
 

@@ -40,7 +40,7 @@
 #include "l61/Logger.hpp"
 #include "l61/utils.hpp"
 #include "sol/sol.hpp"
-namespace l61
+namespace l61::ScriptEngine
 {
 void ScriptEnvironment::lib61_setup()
 {

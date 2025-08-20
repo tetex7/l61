@@ -24,7 +24,7 @@
 #define L61_IBASICSCRIPTENGINE_HPP
 #include "AbstractScriptDebugger.hpp"
 
-namespace l61
+namespace l61::ScriptEngine
 {
     l61_interface IBasicScriptEngine
     {
