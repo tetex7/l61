@@ -2995,4 +2995,6 @@ PREDEFINED                = \
   l61_abstract_class=class \
   l61_abstract_call(sig)=virtual sig = 0 \
   l61_abstract_destructor(type)=public: virtual ~type() = default \
-  l61_unused=[[maybe_unused]]
+  l61_unused=[[maybe_unused]] \
+  LEX61_SYM_LOOKUP_COMPAT=extern "C" \
+  C_CALL=extern "C" \
