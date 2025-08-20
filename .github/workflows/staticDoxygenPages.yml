@@ -31,8 +31,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - run: echo ${PWD}
-      - run: sudo apt-get install -y doxygen graphviz
+      #- run: echo ${PWD}
+      #- run: sudo apt-get install -y doxygen graphviz
       - name: Setup Pages
         uses: actions/configure-pages@v5
         #This application is a complete local application with no form of authentication tokens so this is extremely fine

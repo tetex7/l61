@@ -30,7 +30,7 @@ using std::literals::operator ""s;
 namespace l61
 {
 
-    std::string demangle(const char* mangledName) {
+    static std::string demangle(const char* mangledName) {
         int status = 0;
         // unique_ptr with custom deleter to free the buffer allocated by __cxa_demangle
         std::unique_ptr<char, void(*)(void*)> demangled(
