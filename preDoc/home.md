@@ -1,2 +1,1 @@
-\mainpage
 # Test
