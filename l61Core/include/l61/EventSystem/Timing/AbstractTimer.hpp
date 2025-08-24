@@ -27,7 +27,7 @@
 #include <cstdint>
 namespace l61::EventSystem::Timing
 {
-    l61_abstract_class AbstractTimer : public Object
+    class AbstractTimer : public Object
     {
     public:
         enum class Mode : bool { SECONDS, MILLISECONDS };
