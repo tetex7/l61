@@ -15,7 +15,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 set(CMAKE_SKIP_INSTALL_RULES ON)
-file(GLOB L61_CORE_EVENT_SYSTEM_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
+file(GLOB L61_CORE_EVENT_SYSTEM_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/**/*.cpp")
 
 add_submodule(l61_core_event_system l61_core SRCS ${L61_CORE_EVENT_SYSTEM_CPP_FILES})
 

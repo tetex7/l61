@@ -20,11 +20,13 @@
 //
 #include "l61/EventSystem/EventBus.hpp"
 #include "l61/Logger.hpp"
-
-
+#include "l61/EventSystem/Timing/AsyncTimer.hpp"
 
 namespace l61::EventSystem
 {
+    static Timing::AsyncTimer t60_timer = Timing::AsyncTimer(Timing::AsyncTimer::Mode::MILLISECONDS);
+    static bool t60_alternate = false;
+
 
     bool EventBus::addEvent(const bus_frequency_t& freq, const bus_frequency_t& sub_freq, const Event& event)
     {
@@ -99,6 +101,13 @@ namespace l61::EventSystem
             c_signal_t sig = signals.front();
             signals.pop();
             bus.push(sig);
+        }
+        if (t60_timer.isFinished())
+        {
+            bus.push(PreDefineEvents::T61_TIMER); // com.trs.eventbus.t60
+            t60_timer.reset();
+            t60_timer.start(t60_alternate ? 17 : 16);
+            t60_alternate = !t60_alternate;
         }
         bus.pumpIt();
     }
