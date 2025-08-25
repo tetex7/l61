@@ -20,7 +20,7 @@
 //
 #include "l61/EventSystem/Timing/AsyncTimer.hpp"
 #include <thread>
-#include <future>
+
 
 namespace l61::EventSystem::Timing
 {
@@ -29,7 +29,7 @@ namespace l61::EventSystem::Timing
     void AsyncTimer::start(std::uint32_t duration)
     {
         m_finished = false;
-        (void)std::async(std::launch::async, [&] -> void {
+        m_task = std::async(std::launch::async, [&] -> void {
             m_running = true;
             if (getMode() == Mode::SECONDS) {
                 std::this_thread::sleep_for(std::chrono::seconds(duration));

@@ -23,6 +23,7 @@
 #define L61_ASYNCTIMER_HPP
 #include "l61/EventSystem/Timing/AbstractTimer.hpp"
 #include <atomic>
+#include <future>
 
 namespace l61::EventSystem::Timing
 {
@@ -31,6 +32,7 @@ namespace l61::EventSystem::Timing
     private:
         std::atomic<bool> m_finished{false};
         std::atomic<bool> m_running{false};
+        std::future<void> m_task;
     public:
         explicit AsyncTimer(Mode mode);
         void start(std::uint32_t duration) override;
