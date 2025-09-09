@@ -18,12 +18,16 @@
 FROM archlinux:latest
 LABEL authors="Tetex7"
 
+ARG USER_ID=1000
+ARG GROUP_ID=1000
+
 RUN pacman -Syu --noconfirm
 RUN pacman -S --noconfirm --needed \
     base-devel cmake gcc ninja git lua readline boost boost-libs gtest doxygen
 RUN pacman -Scc --noconfirm
 
 # Create non-root user
-RUN useradd -m builder
+RUN groupadd -g $GROUP_ID builder \
+ && useradd -m -u $USER_ID -g $GROUP_ID -s /bin/bash builder
 USER builder
 WORKDIR /home/builder/project

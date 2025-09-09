@@ -13,7 +13,7 @@ Think of it as a foundation you can shape into whatever workflow you need, with 
 ## Dependencies
 
 - **Runtime**
-    - GCC
+    - GCC(New enough to compile C++23)
     - Boost.Program_options
     - liblua
     - readline

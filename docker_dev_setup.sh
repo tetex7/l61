@@ -20,15 +20,20 @@ set -e  # Exit on error
 IMAGE_NAME="l61-dev-env"
 PROJECT_DIR="$(pwd)"
 
+HOST_UID=$(id -u)
+HOST_GID=$(id -g)
+
 echo "Building Docker image: $IMAGE_NAME"
-docker build -t "$IMAGE_NAME" .
+docker build \
+    --build-arg USER_ID=$HOST_UID \
+    --build-arg GROUP_ID=$HOST_GID \
+    -t "$IMAGE_NAME" .
 #-it
 echo "Running container from $IMAGE_NAME"
 docker run --rm -i \
   --user builder \
   --network none \
+  -u $(id -u):$(id -g)
   -v "$PROJECT_DIR":/home/builder/project \
   -w /home/builder/project \
   "$IMAGE_NAME" /home/builder/project/dev_setup.sh "$@"
-
-  #-u $(id -u):$(id -g) \
