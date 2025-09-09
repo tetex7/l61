@@ -16,29 +16,26 @@
  */
 
 //
-// Created by tete on 8/11/25.
+// Created by tete on 09/02/2025.
 //
 #pragma once
 
-#ifndef L61_ABSTRACTEXTENSIONENTRYPOINT_HPP
-#define L61_ABSTRACTEXTENSIONENTRYPOINT_HPP
-#include  <type_traits>
+#ifndef L61_IEVENTBUSCONTAINER_HPP
+#define L61_IEVENTBUSCONTAINER_HPP
+#include "l61/EventSystem/types.hpp"
+#include "l61/EventSystem/Event.hpp"
 
-namespace l61::ExtensionSystem
+namespace l61::EventSystem
 {
-    l61_interface AbstractExtensionEntryPoint
+    l61_interface IEventBusContainer
     {
-        virtual ~AbstractExtensionEntryPoint() = default;
-        virtual void preLoad() = 0;
-        virtual int initializer() = 0;
-        virtual void unLoad() = 0;
+        virtual bool addEvent(const bus_frequency_t& freq, const bus_frequency_t& sub_freq, const Event& event) = 0;
+        virtual void removeEvent(const bus_frequency_t& freq, const bus_frequency_t& sub_freq) = 0;
+
+        virtual void removeFrequency(const bus_frequency_t& freq) = 0;
+
+        virtual ~IEventBusContainer() = default;
     };
 }
 
-namespace l61::meta
-{
-    template<typename T>
-    concept extensionEntryPointCompatible = std::derived_from<T, ExtensionSystem::AbstractExtensionEntryPoint>;
-}
-
-#endif // L61_ABSTRACTEXTENSIONENTRYPOINT_HPP
+#endif //L61_IEVENTBUSCONTAINER_HPP

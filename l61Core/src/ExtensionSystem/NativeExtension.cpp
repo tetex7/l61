@@ -75,7 +75,7 @@ int NativeExtension::safeExtensionLoad(const std::expected<NativeExtension, std:
     {
         if (!required)
         {
-            toLogger(LogLevel::ERROR, "{}", extension.error());
+            toLogger(nullptr, LogLevel::ERROR, "{}", extension.error());
             return 1;
         }
         throw std::runtime_error(extension.error());
@@ -83,11 +83,11 @@ int NativeExtension::safeExtensionLoad(const std::expected<NativeExtension, std:
     return extension->getExtensionEntryPointCall()(api);
 }
 
-std::expected<NativeExtension, std::string> NativeExtension::extensionLookUp(const std::string& exName)
+std::expected<NativeExtension, std::string> NativeExtension::extensionLookUp(const std::vector<std::string>& spaths, const std::string& exName)
 {
-    for (const std::string& _path : mstat.spaths)
+    for (const std::string& _path : spaths)
     {
-        if (_path == mstat.spaths[2]) continue;
+        //if (_path == mstat.spaths[2]) continue;
         std::string path = (fs::path(_path) / "native" / exName).string();
         if (fs::exists(path))
         {
@@ -134,7 +134,7 @@ NativeExtension::NativeExtension(const std::string& path)
     dlerror();
 
     this->extensionEntryPointCall = reinterpret_cast<ExtensionEntryPointPtr_t>(blindSymbolLookup(entryPointSymbolName));
-    toLogger(LogLevel::INFO, "loaded NativeExtension on path: \"{}\"", path);
+    //toLogger(, LogLevel::INFO, "loaded NativeExtension on path: \"{}\"", path);
 }
 
 const NativeExtension::ExtensionEntryPointCall_t& NativeExtension::getExtensionEntryPointCall() const

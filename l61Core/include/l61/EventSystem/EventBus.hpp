@@ -35,6 +35,7 @@
 #include "l61/meta.hpp"
 #include "l61/ScriptEngine/IBasicScriptEngine.hpp"
 #include "l61/baseTypes.hpp"
+#include "l61/EventSystem/IEventBusContainer.hpp"
 
 
 
@@ -44,17 +45,17 @@ namespace l61::EventSystem
     /**
      * @brief This is an event bus leveraging \ref l61::EventSystem::Event
      */
-    class EventBus final
+    class EventBus final : public IEventBusContainer
     {
     private:
         std::unordered_map<bus_frequency_t, std::unordered_map<bus_frequency_t, std::unique_ptr<Event>>> _map;
         std::queue<bus_frequency_t> _freq_stack;
     public:
 
-        bool addEvent(const bus_frequency_t& freq, const bus_frequency_t& sub_freq, const Event& event);
-        void removeEvent(const bus_frequency_t& freq, const bus_frequency_t& sub_freq);
+        bool addEvent(const bus_frequency_t& freq, const bus_frequency_t& sub_freq, const Event& event) override;
+        void removeEvent(const bus_frequency_t& freq, const bus_frequency_t& sub_freq) override;
 
-        void removeFrequency(const bus_frequency_t& freq);
+        void removeFrequency(const bus_frequency_t& freq) override;
 
         void pumpIt();
 
@@ -69,11 +70,12 @@ namespace l61::EventSystem
 
         void addEventBand(const std::set<std::tuple<const bus_frequency_t&, const bus_frequency_t&, const Event&>>& eventBand);
 
-        explicit EventBus();
-        ~EventBus();
+        explicit EventBus() = default;
+        ~EventBus() override = default;
 
         EventBus(EventBus&&) = delete;
         EventBus(EventBus&) = delete;
+        EventBus(const EventBus&) = delete;
         EventBus& operator=(const EventBus&) = delete;
     };
 
@@ -85,4 +87,4 @@ namespace l61::EventSystem
 
 
 
-#endif //L61_EVENTBUS_HPP
+#endif //L61_EVENT_SYSTEM_EVENTBUS_HPP

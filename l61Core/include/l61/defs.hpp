@@ -75,6 +75,9 @@ namespace l61
 {
     template<class K, class V>
     using HashMap = std::unordered_map<K, V>;
+
+    template<typename... T>
+    using AutoPointer = std::unique_ptr<T...>;
 }
 
 //End of abomination
@@ -155,7 +158,7 @@ namespace l61
         std::unique_ptr<ExtensionSystem::ExtensionManager> extension_manager;
         config_t config;
         flag_t verbose;
-        SignalQueue_t signalQueue; // Yes, yes I know it's not a stack but the semantics are how I like my stacks
+        SignalQueue_t signalQueue;
         EventSystem::EventBus eventBus;
     };
 
@@ -175,7 +178,7 @@ namespace l61
         l61_abstract_class AbstractScriptDebugger;
     }
     // Must be defined by the front end
-    extern l61_stat mstat;
+    //extern l61_stat mstat;
     // End of must be been
 }
 

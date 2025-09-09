@@ -58,7 +58,7 @@ protected:
 
     int standardMainEntryPoint(const std::vector<std::string>& args);
 
-    static sol::table lua_mountLib(const std::string& libraryName, sol::this_state state);
+    static sol::table lua_mountLib(sol::this_state state, const std::string& libraryName);
 
 public:
     template<class T>

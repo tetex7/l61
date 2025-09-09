@@ -1,5 +1,7 @@
 function main(argc, argv)
-   print(l61.getPwd())
+    s = l61.getPwd()
+    print(type(s))
+    print(s)
 
    if mountLib("test").test() == "test" then
         print(mountLib("test").test())
@@ -15,9 +17,9 @@ function main(argc, argv)
    --print(bash.."\n")
    --while true do
    --end
-    --l61.pushEventBus(2)
+   l61.pushEventBus()
    l61.fs.exists("/bin")
    return 1
 end
 
-return 0
+--return 0

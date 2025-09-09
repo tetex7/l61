@@ -202,7 +202,7 @@ int l61_main(int argc, const char* argv[])
     {
     case l61::ScriptMode::BuildScriptMode:
         l61::shEnv = std::make_unique<l61::ScriptEngine::BuildScript>(l61::mstat.make_file_path, l61::mstat);
-        l61::ExtensionSystem::NativeExtension::safeExtensionLoad(l61::ExtensionSystem::NativeExtension::extensionLookUp("build.lex61"s), &exdata, false);
+        l61::ExtensionSystem::NativeExtension::safeExtensionLoad(l61::ExtensionSystem::NativeExtension::extensionLookUp(l61::mstat.spaths, "build.lex61"s), &exdata, false);
         break;
     /*case l61::ScriptMode::ShellScriptMode:
         l61::shEnv = std::make_unique<l61::ShellScript>(l61::mstat.make_file_path, l61::mstat);
@@ -213,7 +213,7 @@ int l61_main(int argc, const char* argv[])
         break;
     }
 
-    l61::toLogger(l61::LogLevel::INFO, "loaded file {} in {}", *l61::shEnv, l61::mstat.procStat.runMode);
+    l61::toLogger(&l61::mstat, l61::LogLevel::INFO, "loaded file {} in {}", *l61::shEnv, l61::mstat.procStat.runMode);
 
     std::vector<std::string> lua_arg_vector = l61::meta::null;
 
@@ -223,13 +223,12 @@ int l61_main(int argc, const char* argv[])
     }
 
     //NativeExtension::safeExtensionLoad(NativeExtension::extensionLookUp("base.lex61"s), &exdata, false);
-    auto& base_ex = l61::mstat.procStat.extension_manager->lookupAndLoadExtension("base.lex61", l61::meta::null, false);
+    auto& base_ex = l61::mstat.procStat.extension_manager->lookupAndLoadExtension(l61::mstat.spaths, "base.lex61", l61::meta::null, false);
 
     if (int base_ret = base_ex.getExtensionEntryPointCall()(&exdata)) throw std::runtime_error(std::format("Entry point for extension base.lex16 Returned A value of {}", base_ret));
 
-    l61::shEnv->addValue("spaths"s, l61::mstat.spaths);
-
     l61::mstat.procStat.eventBus.push("com.trs.l61.PreLuaBoot");
+    l61::mstat.procStat.eventBus.pumpIt();
 
     l61::shEnv->specialRun([](const sol::state& lua) {
         lua_State* L = lua.lua_state();
@@ -244,7 +243,7 @@ int l61_main(int argc, const char* argv[])
             (void)L; // This is done to appease the compiler(-Werror)
             (void)D; // Learn this trick from NASA Documentation of all places
             l61::EventSystem::runEventBus(l61::mstat.procStat.eventBus, l61::mstat.procStat.signalQueue);
-        }), LUA_MASKCOUNT, 10);
+        }), LUA_MASKCOUNT, 1);
     });
 
     return l61::shEnv->scriptRun(lua_arg_vector);

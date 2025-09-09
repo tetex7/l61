@@ -90,9 +90,6 @@ namespace l61::EventSystem
         }
     }
 
-    EventBus::EventBus() = default;
-    EventBus::~EventBus() = default;
-
 
     void runEventBus(EventBus& bus, SignalQueue_t& signals)
     {

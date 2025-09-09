@@ -17,4 +17,4 @@
 
 file(GLOB LUA61_LEX61_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/src/**/*.cpp")
 
-add_l61_lex61_target(lua61_lex61 lus61 SRCS ${LUA61_LEX61_CPP_FILES})
+add_l61_lex61_target(lua61_lex61 lua61 SRCS ${LUA61_LEX61_CPP_FILES})

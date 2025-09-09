@@ -87,10 +87,11 @@ public:
 
     /**
      * @brief A lookup system
+     * @param spaths
      * @param exName Extension file name not the path
      * @return An extension on successful a string on error
      */
-    static std::expected<NativeExtension, std::string> extensionLookUp(const std::string& exName);
+    static std::expected<NativeExtension, std::string> extensionLookUp(const std::vector<std::string>& spaths, const std::string& exName);
 
     /**
      * @return Returns false of an extension has been moved or is no longer valid
@@ -152,7 +153,8 @@ public:
     }
 
     ~NativeExtension() override;
-    NativeExtension(const NativeExtension& nativeExtension) = delete;
+    NativeExtension(NativeExtension&) = delete;
+    NativeExtension(const NativeExtension&) = delete;
     NativeExtension(NativeExtension&& nativeExtension) noexcept;
 };
 }

@@ -33,7 +33,8 @@ namespace l61::EventSystem
     {
         constexpr inline std::int32_t PRE_LOAD = -40;
         constexpr inline std::int32_t EXT_LOADED = -11;
-        constexpr inline const char* T61_TIMER = "com.trs.eventbus.t60";
+        constexpr inline const char* T61_TIMER = "com.trs.l61.eventbus.t60";
+        constexpr inline const char* SCRIPT_ENGINE_DEBUGGER_EVENT = "com.trs.l61.scriptengine.debugger.gevent";
     };
     using bus_frequency_t = std::variant<std::int32_t, std::string>;
 }

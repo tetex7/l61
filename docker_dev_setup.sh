@@ -27,6 +27,7 @@ echo "Running container from $IMAGE_NAME"
 docker run --rm -i \
   --user builder \
   --network none \
+  -u $(id -u):$(id -g) \
   -v "$PROJECT_DIR":/home/builder/project \
   -w /home/builder/project \
   "$IMAGE_NAME" /home/builder/project/dev_setup.sh "$@"

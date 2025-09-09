@@ -45,9 +45,10 @@ enum class LogLevel : std::uint8_t
  * @param args Values to be logged
  */
 template<typename... Ty>
-constexpr void toLogger(LogLevel level, std::format_string<Ty...> fmt, Ty&&... args)
+constexpr void toLogger(l61_stat* mstat, LogLevel level, std::format_string<Ty...> fmt, Ty&&... args)
 {
-    if (!mstat.procStat.verbose && ((level == LogLevel::WARN) || (level == LogLevel::INFO))) return;
+    if (mstat == nullptr) {}
+    else if (!mstat->procStat.verbose && ((level == LogLevel::WARN) || (level == LogLevel::INFO))) return;
     std::string le;
     switch (level)
     {

@@ -27,9 +27,9 @@ ExtensionManager::ExtensionManager() = default;
 
 ExtensionManager::~ExtensionManager() = default;
 
-NativeExtension& ExtensionManager::lookupAndLoadExtension(const std::string& extensionPath, l61_api_extension_ptr api, bool loadEntryPoint)
+NativeExtension& ExtensionManager::lookupAndLoadExtension(const std::vector<std::string>& spaths, const std::string& extensionPath, l61_api_extension_ptr api, bool loadEntryPoint)
 {
-    auto exOpt = NativeExtension::extensionLookUp(extensionPath);
+    auto exOpt = NativeExtension::extensionLookUp(spaths, extensionPath);
     if (exOpt.has_value())
     {
         this->extension_map.emplace(extensionPath, std::make_unique<NativeExtension>(std::move(exOpt.value())));

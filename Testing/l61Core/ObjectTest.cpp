@@ -31,33 +31,9 @@ namespace l61
 {
 //std::unique_ptr<ScriptEnvironment> shEnv;
 //std::unique_ptr<AbstractScriptDebugger> luaDugger;
-
-
-l61_stat mstat = {
-    fs::current_path().string(),
-    fs::current_path().string() + "/build.l61",
-    fs::read_symlink("/proc/self/exe"),
-    std::getenv("USER"),
-    std::getenv("HOME"),
-    std::vector {
-        (fs::read_symlink("/proc/self/exe").parent_path().parent_path().string() + "/lib"),
-        (std::string(std::getenv("HOME")) + "/.l61_lib"),
-        (fs::current_path().string() + "/scripts")
-    },
-    L61_CONFIG_STR_VERSION,
-    ProgramStatus {
-        ScriptMode::UndefMode,
-        std::make_unique<ExtensionSystem::ExtensionManager>(),
-        {},
-        0,
-        {},
-        EventSystem::EventBus()
-    }
-};
 }
-
 TEST(ObjectTests, BasicAssertions) {
     l61::Object object;
-    l61::toLogger(l61::LogLevel::ERROR, "test");
+    l61::toLogger(nullptr, l61::LogLevel::ERROR, "test");
     EXPECT_STREQ(object.typeName().c_str(), "l61::Object");
 }

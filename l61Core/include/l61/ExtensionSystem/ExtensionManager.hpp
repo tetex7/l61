@@ -35,7 +35,7 @@ public:
     explicit ExtensionManager();
     ~ExtensionManager();
 
-    NativeExtension& lookupAndLoadExtension(const std::string& extensionPath, l61_api_extension_ptr api, bool loadEntryPoint = true);
+    NativeExtension& lookupAndLoadExtension(const std::vector<std::string>& spaths, const std::string& extensionPath, l61_api_extension_ptr api, bool loadEntryPoint = true);
 
     void unload(const std::string& plugin);
 
@@ -47,6 +47,7 @@ public:
     const NativeExtension& operator[](const std::string& exName) const;
 
     ExtensionManager(ExtensionManager&) = delete;
+    ExtensionManager(const ExtensionManager&) = delete;
     ExtensionManager(ExtensionManager&&) = delete;
 };
 }

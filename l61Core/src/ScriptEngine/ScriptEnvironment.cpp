@@ -42,14 +42,16 @@
 #include "sol/sol.hpp"
 namespace l61::ScriptEngine
 {
+
 void ScriptEnvironment::lib61_setup()
 {
     auto lb = has("l61") ? getValue<sol::table>("l61") : getLuaCtx().create_named_table("l61");
-    lb.set_function("getPwd", []() -> std::string {
-        return mstat.work_path;
+    lb.set_function("getPwd", [&]() {
+        return this->getScriptCtx().work_path;
     });
-    lb.set_function("pushEventBus", [](const EventSystem::bus_frequency_t& freq) {
-        mstat.procStat.eventBus.push(freq);
+    lb.set_function("pushEventBus", [&](const EventSystem::bus_frequency_t& freq) {
+        std::println("{}", freq);
+        this->getScriptCtx().procStat.eventBus.push(freq);
     });
 }
 
@@ -80,6 +82,7 @@ void standard_lua_debugger_hook(lua_State* L, lua_Debug* D)
 ScriptEnvironment::ScriptEnvironment(const std::string& scriptFilePath, l61_stat& scriptCtx)
     : scriptFilePath(scriptFilePath), scriptCtx(scriptCtx), luaCtx(sol::state()), script_debugger_(nullptr)
 {
+    addValue("spaths"s, scriptCtx.spaths);
     setValue("__l61_trs_environment_script_this__", reinterpret_cast<uintptr_t>(this));
     lua_State* L = this->ScriptEnvironment::getLuaCtx().lua_state();
     lua_sethook(L, standard_lua_debugger_hook, LUA_MASKCOUNT, 1);
@@ -97,10 +100,10 @@ int ScriptEnvironment::standardMainEntryPoint(const std::vector<std::string>& ar
     return 1;
 }
 
-sol::table ScriptEnvironment::lua_mountLib(const std::string& libraryName, sol::this_state state)
+sol::table ScriptEnvironment::lua_mountLib(sol::this_state state, const std::string& libraryName)
 {
     sol::state_view view = {state};
-    for (const std::string& path : mstat.spaths)
+    for (const std::string& path : view["spaths"].get<std::vector<std::string>>())
     {
         if (fs::exists(path + '/' + libraryName + ".lua"))
         {
@@ -111,6 +114,7 @@ sol::table ScriptEnvironment::lua_mountLib(const std::string& libraryName, sol::
             }
             else
             {
+                toLogger(nullptr, LogLevel::ERROR, "Library mountain miss on {}", libraryName);
                 return sol::nil;
             }
         }

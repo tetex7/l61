@@ -15,7 +15,9 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
 
-PAK_NAME="l61-deployment-package"
+#set -e
+
+readonly PAK_NAME="l61-deployment-package"
 
 rm -rf ./${PAK_NAME}
 

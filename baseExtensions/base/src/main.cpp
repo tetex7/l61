@@ -56,11 +56,11 @@ struct BaseEntryPoint : l61::ExtensionSystem::AbstractExtensionEntryPoint
         {
             try
             {
-                if (auto& ex = extension_manager.lookupAndLoadExtension(str, lex61rt::getApiData(), false); ex.getExtensionHeader()->authors[0] != "Tetex7"s)
+                if (auto& ex = extension_manager.lookupAndLoadExtension(lex61rt::getApiData()->l61Ctx.spaths, str, lex61rt::getApiData(), false); ex.getExtensionHeader()->authors[0] != "Tetex7"s)
                 {
                     extension_manager.unload(str);
                     std::println("no good header for {}", str);
-                    l61::toLogger(LogLevel::ERROR, "Cannot find well formed {}", str);
+                    l61::toLogger(nullptr, LogLevel::ERROR, "Cannot find well formed {}", str);
                 }
                 else
                 {
@@ -70,7 +70,7 @@ struct BaseEntryPoint : l61::ExtensionSystem::AbstractExtensionEntryPoint
             }
             catch (std::exception& exception)
             {
-                l61::toLogger(LogLevel::ERROR, "{}", exception.what());
+                l61::toLogger(nullptr, LogLevel::ERROR, "{}", exception.what());
             }
         }
 
