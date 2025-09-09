@@ -34,3 +34,22 @@ Think of it as a foundation you can shape into whatever workflow you need, with 
 ## Status
 
 Work in progress — expect breaking changes, missing features, and rough edges. Contributions, ideas, and experiments are welcome.
+
+## Getting Started
+```bash
+git clone https://github.com/tetex7/l61.git # Clone the project to your local machine
+cd ./l61 # Changes your current working directory to the project
+
+./dev_setup.sh # Initializes the Cmake environment
+./dev_setup.sh mk # Builds the project
+./package.sh # Packages the project into a portable usable File structure
+
+./l61-deployment-package/bin/l61 --help
+```
+
+## Why λ61?
+
+λ61 isn’t just another Lua wrapper or build system.  
+It’s designed to be hyper-extensible, letting you mold it into the workflow you want  
+from scripting and building to prototyping complex systems  
+all while staying lightweight and maintainable.
