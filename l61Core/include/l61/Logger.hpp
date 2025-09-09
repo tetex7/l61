@@ -40,6 +40,7 @@ enum class LogLevel : std::uint8_t
 /**
  *
  * @tparam Ty Types of arguments passed to be logged
+ * @param mstat A pointer to the main status structure
  * @param level The logging output level e.g \ref l61::LogLevel::WARN
  * @param fmt The format string using modern C++23 std::format
  * @param args Values to be logged
@@ -47,9 +48,10 @@ enum class LogLevel : std::uint8_t
 template<typename... Ty>
 constexpr void toLogger(l61_stat* mstat, LogLevel level, std::format_string<Ty...> fmt, Ty&&... args)
 {
-    if (mstat == nullptr) {}
-    else if (!mstat->procStat.verbose && ((level == LogLevel::WARN) || (level == LogLevel::INFO))) return;
-    std::string le;
+    if (mstat != nullptr)
+        if (!mstat->procStat.verbose && ((level == LogLevel::WARN) || (level == LogLevel::INFO))) return;
+
+    std::string_view le;
     switch (level)
     {
         case LogLevel::INFO:

@@ -68,13 +68,21 @@ function build()
     cmake -G "$CMAKE_GEN" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DL61_CONFIG_DEBUG=ON $@  .
 }
 
-function clean()
+function make_cmd()
 {
     if [[ -f "./Makefile" ]]; then
-        make clean
+        make $@
+    elif [[ -f "./build.ninja" ]]; then
+        ninja $@
+    fi
+}
+
+function clean()
+{
+    make_cmd clean
+    if [[ -f "./Makefile" ]]; then
         rm -fv ./Makefile
     elif [[ -f "./build.ninja" ]]; then
-        ninja clean
         rm -fv ./build.ninja
     fi
     rm -frv ./build
@@ -97,15 +105,6 @@ function clean()
     find "." -maxdepth 20 -type f -name "*\[*\]_test.cmake" -exec rm -vf {} +
 
     return 0
-}
-
-function make_cmd()
-{
-    if [[ -f "./Makefile" ]]; then
-        make $@
-    elif [[ -f "./build.ninja" ]]; then
-        ninja $@
-    fi
 }
 
 function make_package()
