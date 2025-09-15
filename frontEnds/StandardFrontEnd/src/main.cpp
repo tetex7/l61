@@ -42,6 +42,9 @@
 #include "l61/ScriptEngine/AbstractScriptDebugger.hpp"
 #include "l61/ScriptEngine/IBasicScriptEngine.hpp"
 
+#include "l61/RosettaSystem/EnvironmentVariable.hpp"
+#include "l61/RosettaSystem/getExecutablePath.hpp"
+
 
 namespace po = boost::program_options;
 
@@ -54,12 +57,12 @@ namespace l61
     l61_stat mstat = {
         fs::current_path().string(),
         fs::current_path().string() + "/build.l61",
-        fs::read_symlink("/proc/self/exe"),
-        std::getenv("USER"),
-        std::getenv("HOME"),
+        RosettaSystem::getExecutablePath(),
+        RosettaSystem::EnvironmentVariable("USER").getValue(),
+        RosettaSystem::EnvironmentVariable("HOME").getValue(),
         std::vector {
-            (fs::read_symlink("/proc/self/exe").parent_path().parent_path().string() + "/lib"),
-            (std::string(std::getenv("HOME")) + "/.l61_lib"),
+            (RosettaSystem::getExecutablePath().parent_path().parent_path().string() + "/lib"),
+            (RosettaSystem::EnvironmentVariable("HOME").getValue() + "/.l61_lib"),
             (fs::current_path().string() + "/scripts")
         },
         L61_CONFIG_STR_VERSION,
