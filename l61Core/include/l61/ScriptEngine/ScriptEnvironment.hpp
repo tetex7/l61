@@ -51,12 +51,7 @@ protected:
 
     const std::string& getScriptFilePath() const;
 
-    virtual int run(const std::vector<std::string>& args) = 0;
-    virtual void scriptPreInit() = 0;
-
     explicit ScriptEnvironment(const std::string& scriptFilePath, l61_stat& scriptCtx);
-
-    int standardMainEntryPoint(const std::vector<std::string>& args);
 
     static sol::table lua_mountLib(sol::this_state state, const std::string& libraryName);
 
@@ -95,7 +90,7 @@ public:
 
     sol::table makeTable(const std::string& name);
 
-    virtual int scriptRun(const std::vector<std::string>& args);
+
 
     [[nodiscard]] std::string toString() const override;
 

@@ -22,11 +22,11 @@
 #ifndef L61_BUILDSCRIPT_HPP
 #define L61_BUILDSCRIPT_HPP
 
-#include "l61/ScriptEngine/ScriptEnvironment.hpp"
+#include "l61/ScriptEngine/RunnableScriptEnvironment.hpp"
 namespace l61::ScriptEngine
 {
 
-class BuildScript : public ScriptEnvironment
+class BuildScript : public RunnableScriptEnvironment
 {
 protected:
     int run(const std::vector<std::string>& args) override;

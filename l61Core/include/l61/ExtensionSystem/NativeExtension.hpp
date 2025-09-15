@@ -120,6 +120,8 @@ public:
      */
     std::string toString() const override;
 
+    void unload();
+
     /**
      * @brief A relatively safe way to look up symbols within an extension
      * @tparam T The type of the symbol you are looking up

@@ -24,7 +24,7 @@ namespace l61::ScriptEngine
 {
 
 BuildScript::BuildScript(const std::string& scriptFilePath, l61_stat& scriptCtx)
-: ScriptEnvironment(scriptFilePath, scriptCtx)
+: RunnableScriptEnvironment(scriptFilePath, scriptCtx)
 {
 }
 

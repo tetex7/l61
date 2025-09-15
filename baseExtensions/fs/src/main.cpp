@@ -16,7 +16,7 @@
  */
 
 #include "l61/defs.hpp"
-#include "l61/ScriptEngine/ScriptEnvironment.hpp"
+#include "l61/ScriptEngine/RunnableScriptEnvironment.hpp"
 #include "sol/sol.hpp"
 #include "lex61rt.hpp"
 #include "l61/ExtensionSystem/ExtensionManager.hpp"

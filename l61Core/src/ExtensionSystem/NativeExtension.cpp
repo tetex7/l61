@@ -24,46 +24,8 @@
 #include <string>
 #include "l61/defs.hpp"
 #include "l61/Logger.hpp"
+#include "l61/RosettaSystem/loadSharedLibrary.h"
 
-#ifdef _WIN32
-#include <windows.h>
-#undef ERROR
-
-#define RTLD_LAZY   0
-#define RTLD_NOW    0
-#define RTLD_GLOBAL 0
-#define RTLD_LOCAL  0
-
-static inline void* dlopen(const char* file, int mode)
-{
-    (void)mode; // unused
-    HMODULE handle = LoadLibraryA(file);
-    return (void*)handle;
-}
-
-static inline void* dlsym(void* handle, const char* symbol)
-{
-    return (void*)GetProcAddress((HMODULE)handle, symbol);
-}
-
-static inline int dlclose(void* handle)
-{
-    return FreeLibrary((HMODULE)handle) ? 0 : -1;
-}
-
-static inline const char* dlerror(void)
-{
-    static char buffer[256];
-    FormatMessageA(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-                   NULL, GetLastError(),
-                   MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                   buffer, sizeof(buffer), NULL);
-    return buffer;
-}
-
-#else
-#include <dlfcn.h>
-#endif
 
 #define setup_lock() std::lock_guard<std::mutex> lock(soMutex)
 
@@ -99,10 +61,10 @@ std::expected<NativeExtension, std::string> NativeExtension::extensionLookUp(con
 void* NativeExtension::blindSymbolLookup(const std::string& symStr) const
 {
     setup_lock();
-    dlerror();
-    void* ptr = dlsym(soHandle, symStr.c_str());
+    l61_rosetta_getSharedLibraryLoaderError();
+    void* ptr =  l61_rosetta_getSharedLibrarySymbol(soHandle, symStr.c_str());
 
-    const char* error = dlerror();
+    const char* error = l61_rosetta_getSharedLibraryLoaderError();
     if (error != NULL)
     {
         throw std::runtime_error(std::string(error));
@@ -125,13 +87,13 @@ bool NativeExtension::isValid() const
 }
 
 NativeExtension::NativeExtension(const std::string& path)
-: extensionPath(path), soHandle(dlopen(extensionPath.c_str(), RTLD_LAZY))
+: extensionPath(path), soHandle(l61_rosetta_loadSharedLibrary(extensionPath.c_str()))
 {
     if (!soHandle)
     {
-        throw std::runtime_error(std::string(dlerror()));
+        throw std::runtime_error(std::string(l61_rosetta_getSharedLibraryLoaderError()));
     }
-    dlerror();
+    l61_rosetta_getSharedLibraryLoaderError();
 
     this->extensionEntryPointCall = reinterpret_cast<ExtensionEntryPointPtr_t>(blindSymbolLookup(entryPointSymbolName));
     //toLogger(, LogLevel::INFO, "loaded NativeExtension on path: \"{}\"", path);
@@ -168,12 +130,18 @@ std::string NativeExtension::toString() const
     return this->getExtensionPath();
 }
 
+void NativeExtension::unload()
+{
+    if (soHandle != nullptr)
+    {
+        l61_rosetta_unloadSharedLibrary(soHandle);
+        soHandle = nullptr;
+    }
+}
+
 NativeExtension::~NativeExtension()
 {
-    if (soHandle != NULL)
-    {
-        dlclose(soHandle);
-    }
+    unload();
 }
 
 NativeExtension::NativeExtension(NativeExtension&& nativeExtension) noexcept

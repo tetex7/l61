@@ -16,7 +16,7 @@
 #
 
 cmake_minimum_required(VERSION 3.24.0)
-project(lambda61 LANGUAGES CXX)
+project(lambda61 LANGUAGES C CXX)
 
 find_package(PkgConfig REQUIRED)
 find_package(GTest REQUIRED)

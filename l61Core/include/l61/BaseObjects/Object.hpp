@@ -57,4 +57,14 @@ struct std::formatter<T> : formatter<std::string> {
     }
 };
 
+template <l61::meta::l61Obj T>
+struct std::hash<T>
+{
+    std::size_t operator()(const T& obj) const noexcept
+    {
+        return obj.hashCode();
+    }
+};
+
+
 #endif //L61_OBJECT_HPP

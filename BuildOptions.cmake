@@ -24,7 +24,9 @@ set(BIN_DIR ${CMAKE_SOURCE_DIR}/build)
 
 
 
-set(L61_TOPLEVEL_COMPILE_ARGS -Wall -Wextra -Werror -Wpedantic -fno-strict-aliasing -DSOL_ALL_SAFETIES_ON -include ${CMAKE_SOURCE_DIR}/l61Core/include/l61/PseudoKeywords.hpp)
+set(L61_TOPLEVEL_CPP_COMPILE_ARGS -Wall -Wextra -Werror -Wpedantic -fno-strict-aliasing -DSOL_ALL_SAFETIES_ON -include ${CMAKE_SOURCE_DIR}/l61Core/include/l61/PseudoKeywords.hpp)
+
+set(L61_TOPLEVEL_C_COMPILE_ARGS -Wall -Wextra -Werror -fno-strict-aliasing)
 
 set(CMAKE_OBJCOPY "${PLATFORM_TRIPLE}-objcopy" CACHE STRING "Compiler's object copy")
 

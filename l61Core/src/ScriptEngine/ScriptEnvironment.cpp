@@ -82,56 +82,46 @@ void standard_lua_debugger_hook(lua_State* L, lua_Debug* D)
 ScriptEnvironment::ScriptEnvironment(const std::string& scriptFilePath, l61_stat& scriptCtx)
     : scriptFilePath(scriptFilePath), scriptCtx(scriptCtx), luaCtx(sol::state()), script_debugger_(nullptr)
 {
-    addValue("spaths"s, scriptCtx.spaths);
-    setValue("__l61_trs_environment_script_this__", reinterpret_cast<uintptr_t>(this));
+    addValue("spaths"s, std::cref(scriptCtx.spaths));
+    setValue("__l61_trs_environment_script_this__"s, reinterpret_cast<uintptr_t>(this));
     lua_State* L = this->ScriptEnvironment::getLuaCtx().lua_state();
     lua_sethook(L, standard_lua_debugger_hook, LUA_MASKCOUNT, 1);
-}
-
-int ScriptEnvironment::standardMainEntryPoint(const std::vector<std::string>& args)
-{
-    addValue("mountLib"s, lua_mountLib);
-    getLuaCtx().do_file(getScriptFilePath());
-    if (getLuaCtx()["main"].is<sol::function>())
-    {
-        const sol::function sh_main = getLuaCtx()["main"];
-        return  sh_main(args.size(), args).get<int>();
-    }
-    return 1;
 }
 
 sol::table ScriptEnvironment::lua_mountLib(sol::this_state state, const std::string& libraryName)
 {
     sol::state_view view = {state};
+
+    if (!view["spaths"].valid())
+    {
+        toLogger(nullptr, LogLevel::ERROR, "No spaths defined in Lua state");
+        return sol::nil;
+    }
+
     for (const std::string& path : view["spaths"].get<std::vector<std::string>>())
     {
-        if (fs::exists(path + '/' + libraryName + ".lua"))
-        {
-            auto lib_ret = view.do_file(path + '/' + libraryName + ".lua");
-            if ((lib_ret.return_count() == 1) && (lib_ret[0].is<sol::table>()))
-            {
-                return lib_ret[0].as<sol::table>();
+        fs::path file = fs::path(path) / (libraryName + ".lua");
+        if (!fs::exists(file))
+            continue;
+
+        try {
+            auto lib_ret = view.do_file(file.string());
+            if (lib_ret.valid() && lib_ret.return_count() == 1 && lib_ret[0].is<sol::table>()) {
+                return lib_ret[0];
             }
-            else
-            {
-                toLogger(nullptr, LogLevel::ERROR, "Library mountain miss on {}", libraryName);
-                return sol::nil;
-            }
+            toLogger(nullptr, LogLevel::ERROR, "Library '{}' did not return a valid table (file: {})", libraryName, file.string());
+        } catch (const sol::error& e) {
+            toLogger(nullptr, LogLevel::ERROR, "Error loading library '{}': {}", libraryName, e.what());
         }
+        return sol::nil;
     }
+    toLogger(nullptr, LogLevel::ERROR, "mount miss on {}", libraryName);
     return sol::nil;
 }
 
 sol::table ScriptEnvironment::makeTable(const std::string& name)
 {
     return getLuaCtx().create_named_table(name);
-}
-
-int ScriptEnvironment::scriptRun(const std::vector<std::string>& args)
-{
-    lib61_setup();
-    this->scriptPreInit();
-    return this->run(args);
 }
 
 std::string ScriptEnvironment::toString() const

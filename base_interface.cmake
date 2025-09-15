@@ -17,4 +17,9 @@
 include_guard(GLOBAL)
 
 add_library(base_interface INTERFACE)
-target_compile_options(base_interface INTERFACE ${L61_TOPLEVEL_COMPILE_ARGS} -std=c++23)
+target_compile_features(base_interface INTERFACE
+        c_std_99
+        cxx_std_23
+)
+target_compile_options(base_interface INTERFACE "$<$<COMPILE_LANGUAGE:CXX>:${L61_TOPLEVEL_CPP_COMPILE_ARGS}>")
+target_compile_options(base_interface INTERFACE "$<$<COMPILE_LANGUAGE:C>:${L61_TOPLEVEL_C_COMPILE_ARGS}>")

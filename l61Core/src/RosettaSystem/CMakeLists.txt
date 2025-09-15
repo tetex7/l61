@@ -14,21 +14,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
-
-file(GLOB L61_RT_CPP_FILES "${CMAKE_SOURCE_DIR}/extensionRuntime/rt_main.cpp")
-add_library(l61_lex61_rt STATIC ${L61_RT_CPP_FILES})
-
 set(CMAKE_SKIP_INSTALL_RULES ON)
+file(GLOB L61_CORE_ROSETTA_SYSTEM_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
+file(GLOB L61_CORE_ROSETTA_SYSTEM_C_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.c")
 
-set_target_properties(l61_lex61_rt PROPERTIES
-        OUTPUT_NAME "l61_lex61_rt"
-        #LIBRARY_OUTPUT_DIRECTORY ${BIN_DIR}
+add_submodule(l61_core_rosetta_system l61_core SRCS ${L61_CORE_ROSETTA_SYSTEM_CPP_FILES} ${L61_CORE_ROSETTA_SYSTEM_C_FILES})
+
+target_compile_options(l61_core_rosetta_system PRIVATE
+        ${L61_CORE_DEBUG_FLAG}
 )
-
-set_target_output(l61_lex61_rt ${BIN_DIR})
-
-target_include_directories(l61_lex61_rt PUBLIC ${CMAKE_SOURCE_DIR}/extensionRuntime)
-target_link_libraries(l61_lex61_rt PUBLIC l61_core)
-target_link_libraries(l61_lex61_rt PRIVATE base_interface)
-target_compile_options(l61_lex61_rt PRIVATE -fPIC)
-target_compile_definitions(l61_lex61_rt PRIVATE L61_RT_BUILDING)

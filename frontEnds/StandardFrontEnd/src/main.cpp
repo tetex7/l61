@@ -47,7 +47,7 @@ namespace po = boost::program_options;
 
 namespace l61
 {
-    std::unique_ptr<ScriptEngine::ScriptEnvironment> shEnv;
+    std::unique_ptr<ScriptEngine::RunnableScriptEnvironment> shEnv;
     std::unique_ptr<ScriptEngine::AbstractScriptDebugger> luaDugger;
 
 

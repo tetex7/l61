@@ -18,7 +18,6 @@
 //
 // Created by tete on 05/08/2025.
 //
-
 #include "l61/ExtensionSystem/ExtensionManager.hpp"
 namespace l61::ExtensionSystem
 {

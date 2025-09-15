@@ -3,23 +3,24 @@ function main(argc, argv)
     print(type(s))
     print(s)
 
-   if mountLib("test").test() == "test" then
+    if mountLib("test").test() == "test" then
         print(mountLib("test").test())
-   end
+    end
 
-   for _, value in pairs(argv) do
-       print(value.."\n")
-   end
+    for _, value in pairs(argv) do
+        print(value .. "\n")
+    end
 
-   for _, value in pairs(spaths) do
-          print(value.."\n")
-   end
-   --print(bash.."\n")
-   --while true do
-   --end
-   l61.pushEventBus()
-   l61.fs.exists("/bin")
-   return 1
+    for _, value in pairs(spaths) do
+        print(value .. "\n")
+    end
+    --print(bash.."\n")
+    --while true do
+    --end
+    l61.pushEventBus("test")
+    l61.fs.exists("/bin")
+    l61.getPwd()
+    return 1
 end
 
 --return 0
