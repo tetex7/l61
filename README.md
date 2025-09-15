@@ -49,7 +49,7 @@ cd ./l61 # Changes your current working directory to the project
 
 ## Why λ61?
 
-λ61 isn’t just another Lua wrapper or build system.  
+λ61 isn’t just another Lua wrapper or a Runtime.  
 It’s designed to be hyper-extensible, letting you mold it into the workflow you want  
 from scripting and building to prototyping complex systems  
 all while staying lightweight and maintainable.
