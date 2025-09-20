@@ -85,7 +85,7 @@ namespace l61
         /**
          * @brief Returns RTTI type information object.
          *
-         * This returns a reference to `\ref std::type_info` for the
+         * This returns a reference to \ref std::type_info for the
          * actual dynamic type of the object, enabling type-safe
          * runtime comparisons.
          *
