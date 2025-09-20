@@ -40,7 +40,7 @@ namespace l61
         concept l61Obj = std::derived_from<T, Object>;
 
         template<class T>
-        concept l61ObjPtr = std::is_base_of_v<Object, std::remove_pointer_t<T>>;
+        concept l61ObjPtr = std::derived_from<Object, std::remove_pointer_t<T>>;
     }
 
     class Object
