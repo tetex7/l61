@@ -21,6 +21,7 @@
 
 
 #include <boost/program_options.hpp>
+#include <absl/strings/str_split.h>
 #include <cstdlib>
 #include <filesystem>
 #include <memory>
@@ -48,6 +49,8 @@
 
 namespace po = boost::program_options;
 
+l61::RosettaSystem::EnvironmentVariable l61_spaths = l61::RosettaSystem::getEnv("L61_SPATHS");
+
 namespace l61
 {
     std::unique_ptr<ScriptEngine::RunnableScriptEnvironment> shEnv;
@@ -61,7 +64,7 @@ using namespace l61::literals;
         "USER"_env.getValue(),
         "HOME"_env.getValue(),
         std::vector {
-            (RosettaSystem::getExecutablePath().parent_path().parent_path().string() + "/lib"),
+            (RosettaSystem::getExecutablePath().parent_path().parent_path() / "lib").string(),
             ("HOME"_env.getValue() + "/.l61_lib"),
             (fs::current_path().string() + "/scripts")
         },
@@ -128,6 +131,22 @@ int l61_main(int argc, const char* argv[])
     if (vm.contains("verbose"s))
     {
         l61::mstat.procStat.verbose = 1;
+    }
+
+    if (l61_spaths.exists())
+    {
+        std::vector<std::string> var_spaths = absl::StrSplit(l61_spaths.getValue(), ':', absl::SkipEmpty());
+        for (const std::string& path : var_spaths)
+        {
+            if (fs::exists(path) && fs::is_directory(path))
+            {
+                l61::mstat.spaths.push_back(fs::absolute(path));
+            }
+            else
+            {
+                l61::toLogger(&l61::mstat, l61::LogLevel::WARN, "'{}' Is not a valid directory for spaths", path);
+            }
+        }
     }
 
     if (vm.contains("help"s))

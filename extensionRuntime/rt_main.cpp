@@ -43,7 +43,7 @@ namespace lex61rt
     }
 }
 
-__attribute__((constructor))
+[[gnu::constructor]]
 void lex61rt_pre_init()
 {
     if (__lex61_header_ExtensionEntryPoint__ != nullptr)
@@ -52,7 +52,7 @@ void lex61rt_pre_init()
     }
 }
 
-__attribute__((destructor))
+[[gnu::destructor]]
 void lex61rt_cleanup()
 {
     if (__lex61_header_ExtensionEntryPoint__ != nullptr)
@@ -61,7 +61,8 @@ void lex61rt_cleanup()
     }
 }
 
-__attribute__((weak)) int l61_extension_init() { return 0; }
+[[gnu::weak]]
+int l61_extension_init() { return 0; }
 
 C_CALL int __l61_rt_ex_init__(ExtensionSystem::l61_api_extension_t* api) // NOLINT(*-reserved-identifier)
 {

@@ -53,7 +53,7 @@ namespace l61
     template<typename FunctionSignature, typename Lambda>
     std::add_pointer_t<FunctionSignature> lambdaToFunPtr(const Lambda& lambda)
     {
-        static_assert(std::is_convertible_v<Lambda, std::add_pointer_t<FunctionSignature>>, "Lambda must be non-capturing and convertible to a function pointer.");
+        static_assert(std::is_convertible_v<Lambda, std::add_pointer_t<std::type_identity_t<FunctionSignature>>>, "Lambda must be non-capturing and convertible to a function pointer.");
         return static_cast<std::add_pointer_t<FunctionSignature>>(lambda);
     }
 
@@ -88,7 +88,7 @@ namespace l61
     template<typename T>
     std::size_t getHash(T&& v)
     {
-        return std::hash<T>{}(std::forward<T>(v));
+        return std::hash<std::decay_t<T>>()(std::forward<T>(v));
     }
 }
 
