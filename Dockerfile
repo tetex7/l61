@@ -23,7 +23,7 @@ ARG GROUP_ID=1000
 
 RUN pacman -Syu --noconfirm
 RUN pacman -S --noconfirm --needed \
-    base-devel cmake gcc ninja git lua readline boost boost-libs gtest doxygen
+    base-devel cmake gcc ninja git lua readline boost boost-libs gtest doxygen abseil-cpp
 RUN pacman -Scc --noconfirm
 
 # Create non-root user
