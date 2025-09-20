@@ -45,18 +45,78 @@ namespace l61
 
     class Object
     {
-    protected:
-
     public:
         virtual ~Object() = default;
 
+        /**
+         * @brief Returns a human-readable string representation of the object.
+         *
+         * Derived classes should override this to provide a meaningful textual
+         * description of their internal state. Default implementation may just
+         * return the type name or placeholder text.
+         *
+         * @return \ref std::string textual representation of the object.
+         */
         virtual std::string toString() const;
+
+        /**
+         * @brief Returns a hash code for the object.
+         *
+         * This is useful for putting objects into unordered containers
+         * (e.g., `std::unordered_map`, `std::unordered_set`) or for
+         * comparisons by value. Derived classes should override this
+         * to compute a stable hash of their data.
+         *
+         * @return \ref std::size_t computed hash value.
+         */
         virtual std::size_t hashCode() const;
+
+        /**
+         * @brief Returns the demangled name of the type.
+         *
+         * Provides the runtime name of the object’s dynamic type.
+         * Typically uses RTTI (`typeid`) internally and may
+         * demangle compiler-specific output.
+         *
+         * @return \ref std::string name of the dynamic type.
+         */
         std::string typeName() const;
+
+        /**
+         * @brief Returns RTTI type information object.
+         *
+         * This returns a reference to `std::type_info` for the
+         * actual dynamic type of the object, enabling type-safe
+         * runtime comparisons.
+         *
+         * @return const std::type_info& reference to RTTI info.
+         */
         const std::type_info& typeInfo() const;
 
+        /**
+         * @brief Serializes the object into JSON form.
+         *
+         * Intended for persistence, logging, or communication.
+         * Derived classes should override this to produce
+         * structured JSON output representing their state.
+         *
+         * @return \ref nlohmann::json JSON representation of the object.
+         */
         virtual nlohmann::json toJsonValue() const;
 
+        /**
+         * @brief Explicit conversion operator to std::string.
+         *
+         * Enables syntax like:
+         * @code
+         * Object* obj = ...;
+         * std::string text = static_cast<std::string>(*obj);
+         * @endcode
+         *
+         * By default, this should delegate to `toString()`.
+         *
+         * @return \ref std::string representation of the object.
+         */
         explicit operator std::string() const;
     };
 
