@@ -19,9 +19,17 @@ file(GLOB L61_CORE_CPP_FILES "${CMAKE_SOURCE_DIR}/l61Core/src/*.cpp")
 
 pkg_check_modules(LIB_LUA lua REQUIRED)
 
+
+
 add_library(l61_core_interface INTERFACE)
 target_link_libraries(l61_core_interface INTERFACE base_interface)
 target_link_libraries(l61_core_interface INTERFACE ${LIB_LUA_LIBRARIES})
+target_link_libraries(l61_core_interface
+        INTERFACE
+        absl::strings
+        absl::str_format
+        absl::time
+)
 target_compile_options(l61_core_interface INTERFACE -fPIC -g)
 target_include_directories(l61_core_interface INTERFACE ${CMAKE_SOURCE_DIR}/l61Core/include)
 target_compile_definitions(l61_core_interface INTERFACE

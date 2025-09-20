@@ -26,7 +26,10 @@
 #include <string>
 #include <type_traits>
 #include <utility>
+#include <typeinfo>
 #include <format>
+#include "json.hpp"
+
 namespace l61
 {
     class Object;
@@ -35,19 +38,58 @@ namespace l61
     {
         template<class T>
         concept l61Obj = std::is_base_of_v<Object, T>;
+
+        template<class T>
+        concept l61ObjPtr = std::is_base_of_v<Object, std::remove_pointer_t<T>>;
     }
 
     class Object
     {
+    protected:
+
     public:
-        virtual ~Object();
+        virtual ~Object() = default;
 
         virtual std::string toString() const;
         virtual std::size_t hashCode() const;
         std::string typeName() const;
+        const std::type_info& typeInfo() const;
+
+        virtual nlohmann::json toJsonValue() const;
+
         explicit operator std::string() const;
     };
+
+    namespace meta
+    {
+        template<l61Obj T, l61Obj Ty>
+        bool instanceof(const Ty& value)
+        {
+            return dynamic_cast<const T*>(&value) != nullptr;
+        }
+
+        template<l61Obj T, l61Obj Ty>
+        bool exact_instanceof(const Ty& value)
+        {
+            return typeid(T) == value.typeInfo();
+        }
+    }
 }
+
+template <>
+struct nlohmann::adl_serializer<l61::Object*>
+{
+    static void to_json(json& j, const l61::Object* obj) {
+        if (obj)
+        {
+            j = obj->toJsonValue();
+        }
+        else
+        {
+            j = nullptr;
+        }
+    }
+};
 
 template <l61::meta::l61Obj T>
 struct std::formatter<T> : formatter<std::string> {

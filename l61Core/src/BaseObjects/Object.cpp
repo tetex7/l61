@@ -47,11 +47,9 @@ namespace l61
         return {demangled.get()};
     }
 
-    Object::~Object() = default;
-
     std::string Object::toString() const
     {
-        return  std::format("'{}'@{}", this->typeName(), toAddressStrings(this));
+        return  std::format("'{}'@{}", this->typeName(), toAddressString(this));
     }
 
     std::size_t Object::hashCode() const
@@ -62,6 +60,16 @@ namespace l61
     std::string Object::typeName() const
     {
         return demangle(typeid(*this).name());
+    }
+
+    const std::type_info& Object::typeInfo() const
+    {
+        return typeid(*this);
+    }
+
+    nlohmann::json Object::toJsonValue() const
+    {
+        return this->toString();
     }
 
     Object::operator std::string() const

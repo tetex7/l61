@@ -78,7 +78,7 @@ namespace l61
     }
 
     template<typename T>
-    std::string toAddressStrings(const T* ptr)
+    std::string toAddressString(const T* ptr)
     {
         std::stringstream ss;
         ss << std::hex << reinterpret_cast<const void*>(ptr);

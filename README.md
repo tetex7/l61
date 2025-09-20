@@ -13,9 +13,10 @@ Think of it as a foundation you can shape into whatever workflow you need, with 
 ## Dependencies
 
 - **Runtime**
-    - GCC(New enough to compile C++23)
-    - Boost.Program_options
-    - liblua
+    - [GCC](https://gcc.gnu.org/) (New enough to compile C++23)
+    - [Boost.Program_options](https://boost.org) (For The Standard Front End)
+    - [Google's Abseil](https://github.com/abseil/abseil-cpp)
+    - [liblua](https://lua.org)
     - readline
 
 
@@ -24,7 +25,7 @@ Think of it as a foundation you can shape into whatever workflow you need, with 
     - Ninja *or* Make
     - Bash
     - pkgconfig *aka* pkgconf
-    - GoogleTest (for testing)
+    - [GoogleTest](https://github.com/google/googletest) (for testing)
 
 
 - **Bundled Libraries**

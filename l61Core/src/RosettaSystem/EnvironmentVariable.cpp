@@ -22,10 +22,11 @@
 #include <cstdlib>
 #include <format>
 #include <stdexcept>
+#include "l61/utils.hpp"
 
 namespace l61::RosettaSystem
 {
-    EnvironmentVariable::EnvironmentVariable(const std::string &name): name_(name) {}
+    EnvironmentVariable::EnvironmentVariable(const std::string& name): name_(name) {}
 
     std::string EnvironmentVariable::getValue() const
     {
@@ -47,7 +48,7 @@ namespace l61::RosettaSystem
         return std::getenv(name_.c_str()) != nullptr;
     }
 
-    const std::string & EnvironmentVariable::getKey() const
+    const std::string& EnvironmentVariable::getKey() const
     {
         return name_;
     }
@@ -59,11 +60,27 @@ namespace l61::RosettaSystem
 
     std::size_t EnvironmentVariable::hashCode() const
     {
-        return std::hash<std::string>{}(this->getKey());
+        return getHash(this->getKey());
     }
 
-    bool EnvironmentVariable::operator==(const EnvironmentVariable &other) const
+    nlohmann::json EnvironmentVariable::toJsonValue() const
+    {
+        return {
+            { "key", this->getKey() },
+            { "value", this->getValue() }
+        };
+    }
+
+    bool EnvironmentVariable::operator==(const EnvironmentVariable& other) const
     {
         return this->getKey() == other.getKey();
+    }
+}
+
+namespace l61::literals
+{
+    RosettaSystem::EnvironmentVariable operator ""_env(const char* raw_str, const std::size_t len)
+    {
+        return RosettaSystem::EnvironmentVariable(std::string(raw_str, len));
     }
 }

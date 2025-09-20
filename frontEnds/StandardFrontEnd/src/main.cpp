@@ -52,17 +52,17 @@ namespace l61
 {
     std::unique_ptr<ScriptEngine::RunnableScriptEnvironment> shEnv;
     std::unique_ptr<ScriptEngine::AbstractScriptDebugger> luaDugger;
-
+using namespace l61::literals;
 
     l61_stat mstat = {
         fs::current_path().string(),
         fs::current_path().string() + "/build.l61",
         RosettaSystem::getExecutablePath(),
-        RosettaSystem::EnvironmentVariable("USER").getValue(),
-        RosettaSystem::EnvironmentVariable("HOME").getValue(),
+        "USER"_env.getValue(),
+        "HOME"_env.getValue(),
         std::vector {
             (RosettaSystem::getExecutablePath().parent_path().parent_path().string() + "/lib"),
-            (RosettaSystem::EnvironmentVariable("HOME").getValue() + "/.l61_lib"),
+            ("HOME"_env.getValue() + "/.l61_lib"),
             (fs::current_path().string() + "/scripts")
         },
         L61_CONFIG_STR_VERSION,

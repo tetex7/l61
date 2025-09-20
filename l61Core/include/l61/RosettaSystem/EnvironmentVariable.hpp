@@ -35,15 +35,16 @@ namespace l61::RosettaSystem
     * environment variables. It does not modify or set environment variables,
     * only reads them.
     */
-    class EnvironmentVariable : public Object
+    class EnvironmentVariable final : public Object
     {
+    private:
         std::string name_;
     public:
         /**
          * @brief Constructs an EnvironmentVariable object with the given name.
          * @param name The name of the environment variable.
          */
-        EnvironmentVariable(const std::string& name);
+        explicit EnvironmentVariable(const std::string& name);
 
         /**
         * @brief Retrieves the value of the environment variable.
@@ -108,9 +109,9 @@ namespace l61::RosettaSystem
         * @brief Computes a hash code for this environment variable.
         *
         * The hash is derived from the variable's name, making it suitable for
-        * use in hash-based containers (e.g., std::unordered_map).
+        * use in hash-based containers (e.g., \ref std::unordered_map).
         *
-        * @return A std::size_t value representing the hash code of the variable.
+        * @return A \ref std::size_t value representing the hash code of the variable.
         *
         * Example:
         * @code
@@ -119,6 +120,9 @@ namespace l61::RosettaSystem
         * @endcode
         */
         std::size_t hashCode() const override;
+
+
+        nlohmann::json toJsonValue() const override;
 
 
         /**
@@ -143,6 +147,16 @@ namespace l61::RosettaSystem
 
         ~EnvironmentVariable() override = default;
     };
+
+    inline EnvironmentVariable getEnv(const std::string& name)
+    {
+        return EnvironmentVariable(name);
+    }
+}
+
+namespace l61::literals
+{
+    RosettaSystem::EnvironmentVariable operator ""_env(const char* raw_str, std::size_t len);
 }
 
 #endif //ENVIRONMENTVARIABLE_HPP
