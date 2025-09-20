@@ -37,7 +37,7 @@ namespace l61
     namespace meta
     {
         template<class T>
-        concept l61Obj = std::is_base_of_v<Object, T>;
+        concept l61Obj = std::derived_from<T, Object>;
 
         template<class T>
         concept l61ObjPtr = std::is_base_of_v<Object, std::remove_pointer_t<T>>;
@@ -136,13 +136,13 @@ namespace l61
     }
 }
 
-template <>
-struct nlohmann::adl_serializer<l61::Object*>
+template <l61::meta::l61Obj T>
+struct nlohmann::adl_serializer<T>
 {
-    static void to_json(json& j, const l61::Object* obj) {
+    static void to_json(json& j, const T& obj) {
         if (obj)
         {
-            j = obj->toJsonValue();
+            j = obj.toJsonValue();
         }
         else
         {
