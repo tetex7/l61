@@ -118,6 +118,15 @@ namespace l61
          * @return \ref std::string representation of the object.
          */
         explicit operator std::string() const;
+
+        /**
+         * @brief Explicit conversion operator to nlohmann::json.
+         *
+         * Delegates to toJsonValue().
+         *
+         * @return nlohmann::json JSON representation of the object.
+         */
+        explicit operator nlohmann::json() const;
     };
 
     namespace meta

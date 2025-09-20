@@ -77,4 +77,9 @@ namespace l61
         return this->toString();
     }
 
+    Object::operator nlohmann::json() const
+    {
+        return this->toJsonValue();
+    }
+
 }
