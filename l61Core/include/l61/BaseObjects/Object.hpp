@@ -131,16 +131,63 @@ namespace l61
 
     namespace meta
     {
+        /**
+         * @brief Checks if a value is an instance of type T (or derived from T).
+         *
+         * Uses `dynamic_cast` to determine whether the provided object
+         * can be safely cast to type T, meaning it is either of type T
+         * or derived from T.
+         *
+         * @tparam T The target type to check against.
+         * @tparam Ty The type of the object being tested.
+         * @param value The object to check.
+         * @return true if value is an instance of T or derived from T, false otherwise.
+         *
+         * @note Requires RTTI to be enabled.
+         */
         template<l61Obj T, l61Obj Ty>
         bool instanceof(const Ty& value)
         {
             return dynamic_cast<const T*>(&value) != nullptr;
         }
 
+        /**
+         * @brief Checks if a value is exactly of type T.
+         *
+         * Compares the runtime type of the object with T using `typeid`.
+         * Returns true only if the object is exactly of type T, not a derived type.
+         *
+         * @tparam T The type to check against.
+         * @tparam Ty The type of the object being tested.
+         * @param value The object to check.
+         * @return true if value is exactly of type T, false otherwise.
+         *
+         * @note Requires RTTI to be enabled.
+         */
         template<l61Obj T, l61Obj Ty>
         bool exact_instanceof(const Ty& value)
         {
             return typeid(T) == value.typeInfo();
+        }
+
+
+        /**
+        * @brief Checks if a value is an instance of type T (or derived from T) at compile-time.
+        *
+        * Uses the `std::derived_from` concept to check inheritance relationships
+        * between Ty and T at compile-time. This is a `constexpr` check and does
+        * not require RTTI.
+        *
+        * @tparam T The target type to check against.
+        * @tparam Ty The type of the object being tested.
+        * @return true if Ty is derived from T (or is T itself), false otherwise.
+        *
+        * @note Evaluated at compile-time. Does not inspect the dynamic type.
+        */
+        template<l61Obj T, l61Obj Ty>
+        constexpr bool static_instanceof(const Ty&)
+        {
+            return std::derived_from<Ty, std::type_identity_t<T>>;
         }
     }
 }
@@ -176,6 +223,5 @@ struct std::hash<T>
         return obj.hashCode();
     }
 };
-
 
 #endif //L61_OBJECT_HPP
