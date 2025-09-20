@@ -6,6 +6,7 @@ Contributions are extremely welcome
 2. It must be scoped to a certain subsystem e.g ExtensionSystem or FrontEnds
 3. All code must pass valgrind checks For memory safety
 4. There must be Auto testing via gtest !!NOTE: This is currently not enforced
+5. If a header contains only C declarations and calls or mixed with C++ It must be within a `*.h` header file
 
 ## How to contribute code
 If you want to add something new to this Project.
