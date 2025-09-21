@@ -94,7 +94,7 @@ sol::table ScriptEnvironment::lua_mountLib(sol::this_state state, const std::str
 
     if (!view["spaths"].valid())
     {
-        toLogger(nullptr, LogLevel::ERROR, "No spaths defined in Lua state");
+        toLogger(LogLevel::ERROR, "No spaths defined in Lua state");
         return sol::nil;
     }
 
@@ -109,13 +109,13 @@ sol::table ScriptEnvironment::lua_mountLib(sol::this_state state, const std::str
             if (lib_ret.valid() && lib_ret.return_count() == 1 && lib_ret[0].is<sol::table>()) {
                 return lib_ret[0];
             }
-            toLogger(nullptr, LogLevel::ERROR, "Library '{}' did not return a valid table (file: {})", libraryName, file.string());
+            toLogger(LogLevel::ERROR, "Library '{}' did not return a valid table (file: {})", libraryName, file.string());
         } catch (const sol::error& e) {
-            toLogger(nullptr, LogLevel::ERROR, "Error loading library '{}': {}", libraryName, e.what());
+            toLogger(LogLevel::ERROR, "Error loading library '{}': {}", libraryName, e.what());
         }
         return sol::nil;
     }
-    toLogger(nullptr, LogLevel::ERROR, "mount miss on {}", libraryName);
+    toLogger(LogLevel::ERROR, "mount miss on {}", libraryName);
     return sol::nil;
 }
 

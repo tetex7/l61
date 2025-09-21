@@ -132,37 +132,29 @@ namespace l61
         (std::cout << ... << vals);
     }
 
-    struct ConfigRecord final
-    {
-        std::vector<std::string> forceMount;
-        std::vector<std::string> extension;
-        __inline ConfigRecord(){}
-        __inline ConfigRecord(std::vector<std::string>&& forceMount, std::vector<std::string>&& extension)
-        : forceMount(std::forward<std::vector<std::string>>(forceMount)), extension(std::forward<std::vector<std::string>>(extension)){}
-    };
     namespace ExtensionSystem
     {
         class ExtensionManager;
     }
 
-    struct config_t
+    struct ConfigRecord final
     {
-        std::vector<std::string> spaths;
-        std::vector<std::string> plugins;
-        NLOHMANN_DEFINE_TYPE_INTRUSIVE(config_t, spaths, plugins);
+        std::vector<std::string> spaths; // Search path to be appended to built-in
+        std::vector<std::string> extension; // Native (*.lex61) Extensions to be autoloaded
+        NLOHMANN_DEFINE_TYPE_INTRUSIVE(ConfigRecord, spaths, extension);
     };
 
-    struct ProgramStatus
+    struct ProgramStatus final
     {
         ScriptMode runMode;
         std::unique_ptr<ExtensionSystem::ExtensionManager> extension_manager;
-        config_t config;
+        ConfigRecord config;
         flag_t verbose;
         SignalQueue_t signalQueue;
         EventSystem::EventBus eventBus;
     };
 
-    struct l61_stat
+    struct l61_stat final
     {
         std::string work_path;
         std::string make_file_path;
@@ -177,15 +169,13 @@ namespace l61
         {
             return this;
         }
-
     };
     namespace ScriptEngine
     {
         l61_abstract_class AbstractScriptDebugger;
     }
-    // Must be defined by the front end
-    //extern l61_stat mstat;
-    // End of must be been
+
+    extern l61_stat mstat;
 }
 
 template <>

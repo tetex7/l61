@@ -34,6 +34,6 @@ namespace l61
 }
 TEST(ObjectTests, BasicAssertions) {
     l61::Object object;
-    l61::toLogger(nullptr, l61::LogLevel::ERROR, "test");
+    l61::toLogger(l61::LogLevel::ERROR, "test");
     EXPECT_STREQ(object.typeName().c_str(), "l61::Object");
 }

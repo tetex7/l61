@@ -32,7 +32,7 @@ int main(int argc, const char** argv)
     }
     catch (std::exception& e)
     {
-        l61::toLogger(nullptr, l61::LogLevel::FATAL, "Unhandled exception: {}", e.what());
+        l61::toLogger(l61::LogLevel::FATAL, "Unhandled exception: {}", e.what());
         std::exit(1);
     }
 }

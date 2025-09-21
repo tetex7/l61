@@ -22,6 +22,7 @@
 
 #include <boost/program_options.hpp>
 #include <absl/strings/str_split.h>
+#include <absl/strings/ascii.h>
 #include <cstdlib>
 #include <filesystem>
 #include <memory>
@@ -80,16 +81,6 @@ using namespace l61::literals;
     };
 }
 
-//using namespace l61;
-
-l61::config_t mkConfig()
-{
-    return {
-        {},
-        {}
-    };
-}
-
 
 
 #define REP_BUG_TEXT "Copyright (C) 2025  Tetex7.\nFor Docs and bug reporting\nplease see: <https://github.com/tetex7/l61>."
@@ -144,7 +135,7 @@ int l61_main(int argc, const char* argv[])
             }
             else
             {
-                l61::toLogger(&l61::mstat, l61::LogLevel::WARN, "'{}' Is not a valid directory for spaths", path);
+                l61::toLogger(l61::LogLevel::WARN, "'{}' Is not a valid directory for spaths", path);
             }
         }
     }
@@ -206,7 +197,7 @@ int l61_main(int argc, const char* argv[])
     l61::mstat.procStat.eventBus.push(l61::EventSystem::PreDefineEvents::PRE_LOAD);
 
     l61::mstat.procStat.eventBus.addEvent(SIGINT, 0, []() -> void {
-        std::string input = l61::get_input("\nexit(y/n):");
+        std::string input =  absl::AsciiStrToLower(l61::get_input("\nexit(y/n):"));
         if (input == "yes" || input == "y") std::exit(0);
         if (input == "d" || input == "debugger" || input == "debug")
         {
@@ -235,7 +226,7 @@ int l61_main(int argc, const char* argv[])
         break;
     }
 
-    l61::toLogger(&l61::mstat, l61::LogLevel::INFO, "loaded file {} in {}", *l61::shEnv, l61::mstat.procStat.runMode);
+    l61::toLogger(l61::LogLevel::INFO, "loaded file {} in {}", *l61::shEnv, l61::mstat.procStat.runMode);
 
     std::vector<std::string> lua_arg_vector = l61::meta::null;
 
@@ -254,7 +245,7 @@ int l61_main(int argc, const char* argv[])
 
     l61::shEnv->specialRun([](const sol::state& lua) {
         lua_State* L = lua.lua_state();
-        lua_sethook(L, l61::lambdaToFunPtr<std::remove_pointer_t<lua_Hook>>([](l61_unused lua_State* L, l61_unused lua_Debug* D) -> void {
+        lua_sethook(L, l61::lambdaToFunPtr<std::remove_pointer_t<lua_Hook>>([](lua_State* L, lua_Debug* D) -> void {
             //This event handler and message pump is work in progress
             //why is it hooked into the lua environment you might ask
             //Because when Lua Code is running I do not have control over the environment

@@ -37,7 +37,7 @@ int NativeExtension::safeExtensionLoad(const std::expected<NativeExtension, std:
     {
         if (!required)
         {
-            toLogger(nullptr, LogLevel::ERROR, "{}", extension.error());
+            toLogger(LogLevel::ERROR, "{}", extension.error());
             return 1;
         }
         throw std::runtime_error(extension.error());
