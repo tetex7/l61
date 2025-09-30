@@ -28,6 +28,7 @@
 #include <type_traits>
 
 #include "l61/defs.hpp"
+#include "l61/RosettaSystem/loadSharedLibraryTypes.h"
 #include "l61/BaseObjects/Object.hpp"
 #include "l61/ExtensionSystem/ExtensionHeaders.hpp"
 
@@ -59,7 +60,7 @@ private:
      * @brief an OS dependent handle to a shared library
      * @note Praise be to Linux dynamic linker
      */
-    void* soHandle;
+    l61_rosetta_SharedLibrary_handle_t soHandle;
     ExtensionEntryPointCall_t extensionEntryPointCall;
 
     /**
@@ -70,9 +71,9 @@ private:
     /**
      * @brief Horrifically unsafe and that's why it's private
      * @param symStr The name of the symbol
-     * @return Returns a raw void pointer to that symbol
+     * @return Returns a raw pointer to that symbol
      */
-    [[nodiscard]] void* blindSymbolLookup(const std::string& symStr) const;
+    [[nodiscard]] l61_rosetta_SharedLibrary_symbol_t blindSymbolLookup(const std::string& symStr) const;
 
     void isGoodExtension() const;
 public:

@@ -16,9 +16,11 @@
 #
 
 set -e  # Exit on error
+command -v docker >/dev/null 2>&1 || { echo "Docker is required but not installed"; exit 1; }
 
 IMAGE_NAME="l61-dev-env"
 PROJECT_DIR="$(pwd)"
+CONTAINER_WORKDIR="/home/builder/project"
 
 HOST_UID=$(id -u)
 HOST_GID=$(id -g)
@@ -28,13 +30,14 @@ docker build \
     --build-arg USER_ID=$HOST_UID \
     --build-arg GROUP_ID=$HOST_GID \
     -t "$IMAGE_NAME" .
-#-it
+
 echo "Running container from $IMAGE_NAME"
 docker run --rm -i \
-  --user builder \
+  -u "$HOST_UID:$HOST_GID" \
   --network none \
   -e "TRS_TOOL_CHECK_OVERRIDE=$TRS_TOOL_CHECK_OVERRIDE" \
-  -u $(id -u):$(id -g) \
-  -v "$PROJECT_DIR":/home/builder/project \
-  -w /home/builder/project \
-  "$IMAGE_NAME" /home/builder/project/dev_setup.sh "$@"
+  -v "$PROJECT_DIR:$CONTAINER_WORKDIR" \
+  -w "$CONTAINER_WORKDIR" \
+  "$IMAGE_NAME" "$CONTAINER_WORKDIR/dev_setup.sh" "$@"
+
+#--it

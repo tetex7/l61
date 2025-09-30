@@ -58,11 +58,11 @@ std::expected<NativeExtension, std::string> NativeExtension::extensionLookUp(con
     }
     return std::unexpected(std::format("Extension '{}' does not exist", exName));
 }
-void* NativeExtension::blindSymbolLookup(const std::string& symStr) const
+l61_rosetta_SharedLibrary_symbol_t NativeExtension::blindSymbolLookup(const std::string& symStr) const
 {
     setup_lock();
     l61_rosetta_getSharedLibraryLoaderError();
-    void* ptr =  l61_rosetta_getSharedLibrarySymbol(soHandle, symStr.c_str());
+    l61_rosetta_SharedLibrary_symbol_t ptr =  l61_rosetta_getSharedLibrarySymbol(soHandle, symStr.c_str());
 
     const char* error = l61_rosetta_getSharedLibraryLoaderError();
     if (error != NULL)
@@ -95,8 +95,8 @@ NativeExtension::NativeExtension(const std::string& path)
     }
     l61_rosetta_getSharedLibraryLoaderError();
 
-    this->extensionEntryPointCall = reinterpret_cast<ExtensionEntryPointPtr_t>(blindSymbolLookup(entryPointSymbolName));
-    //toLogger(, LogLevel::INFO, "loaded NativeExtension on path: \"{}\"", path);
+    this->extensionEntryPointCall = RosettaSystem::shared_callable_symbol_cast<ExtensionEntryPoint_t>(blindSymbolLookup(entryPointSymbolName));
+    toLogger(LogLevel::INFO, "loaded NativeExtension on path: \"{}\"", path);
 }
 
 const NativeExtension::ExtensionEntryPointCall_t& NativeExtension::getExtensionEntryPointCall() const

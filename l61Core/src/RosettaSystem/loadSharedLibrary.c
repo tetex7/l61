@@ -21,34 +21,37 @@
 
 #include "l61/RosettaSystem/loadSharedLibrary.h"
 
-
+#include <stdio.h>
 #ifdef _WIN32
 #include <windows.h>
 #else
 #include <dlfcn.h>
 #endif
 
-void* l61_rosetta_loadSharedLibrary(const char* file)
+l61_rosetta_SharedLibrary_handle_t l61_rosetta_loadSharedLibrary(const char *file)
 {
+    if (!file) return NULL;
 #ifdef _WIN32
     HMODULE handle = LoadLibraryA(file);
-    return (void*)handle;
+    return (l61_rosetta_SharedLibrary_handle_t)handle;
 #else
-    return dlopen(file, RTLD_LAZY);
+    return (l61_rosetta_SharedLibrary_handle_t)dlopen(file, RTLD_LAZY);
 #endif
 }
 
-void* l61_rosetta_getSharedLibrarySymbol(void* handle, const char* symbol)
+l61_rosetta_SharedLibrary_symbol_t l61_rosetta_getSharedLibrarySymbol(l61_rosetta_SharedLibrary_handle_t handle, const char* symbol)
 {
+    if (!handle || !symbol) return NULL;
 #ifdef _WIN32
-    return (void*)GetProcAddress((HMODULE)handle, symbol);
+    return (l61_rosetta_SharedLibrary_symbol_t)GetProcAddress((HMODULE)handle, symbol);
 #else
-    return dlsym(handle, symbol);
+    return (l61_rosetta_SharedLibrary_symbol_t)dlsym(handle, symbol);
 #endif
 }
 
-int l61_rosetta_unloadSharedLibrary(void* handle)
+int l61_rosetta_unloadSharedLibrary(l61_rosetta_SharedLibrary_handle_t handle)
 {
+    if (!handle) return -1;
 #ifdef _WIN32
     return FreeLibrary((HMODULE)handle) ? 0 : -1;
 #else
