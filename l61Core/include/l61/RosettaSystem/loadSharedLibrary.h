@@ -22,7 +22,7 @@
 
 /**
  * @file loadSharedLibrary.h
- * @example
+ * @code
  * // Load a library in C99
  * void* handle = l61_rosetta_loadSharedLibrary("./mylib.so");
  * if (!handle) {
@@ -41,6 +41,7 @@
  *     int result = my_func(42);
  * }
  * l61_rosetta_unloadSharedLibrary(handle);
+ * @endcode
  */
 
 #ifndef L61_RS_LOADSHAREDLIBRARY_H
