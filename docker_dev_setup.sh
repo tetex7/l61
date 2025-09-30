@@ -36,4 +36,4 @@ docker run --rm -i \
   -u $(id -u):$(id -g) \
   -v "$PROJECT_DIR":/home/builder/project \
   -w /home/builder/project \
-  "$IMAGE_NAME" /home/builder/project/dev_setup.sh "$@"
+  "$IMAGE_NAME" "sh -c TRS_TOOL_CHECK_OVERRIDE=$TRS_TOOL_CHECK_OVERRIDE /home/builder/project/dev_setup.sh" "$@"
