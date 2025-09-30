@@ -30,7 +30,6 @@
 #include <readline/readline.h>
 #include <csignal>
 #include <string>
-#include <stacktrace>
 
 #include "l61/ScriptEngine/BuildScript.hpp"
 //#include "l61/ShellScript.hpp"
