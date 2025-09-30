@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/usr/bin/env bash
 #
 # Copyright (C) 2025 Tetex7
 #
@@ -173,6 +173,7 @@ function check_for_commands()
 
 function check_tools()
 {
+    [[ -n $TRS_TOOL_CHECK_OVERRIDE ]] && { echo "Tool check is disabled"; } && return 1
     check_for_commands >/dev/null || { check_for_commands; exit 1; }
     if command -v ninja >/dev/null; then
         CMAKE_GEN="Ninja"

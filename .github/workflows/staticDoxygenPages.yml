@@ -41,7 +41,7 @@ jobs:
 
 
       - run: sudo systemctl start docker
-      - run: ./docker_dev_setup.sh --doxygen
+      - run: TRS_TOOL_CHECK_OVERRIDE=1 ./docker_dev_setup.sh --doxygen
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
