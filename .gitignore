@@ -63,7 +63,7 @@ vgcore.*
 
 
 *.pkg.tar.zst
-/pkg
+pkg/
 compile_commands.json
 
 # Clangd junk
@@ -83,3 +83,6 @@ l61-deployment-package
 *\[*\]_tests.cmake
 Testing/Temporary
 docs/
+l61-deployment-package.zip
+l61-deployment-package.*
+*.zip

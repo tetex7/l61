@@ -48,7 +48,7 @@ enum class LogLevel : std::uint8_t
 template<typename... Ty>
 constexpr void toLogger(LogLevel level, std::format_string<Ty...> fmt, Ty&&... args)
 {
-    if (!mstat.procStat.verbose && ((level == LogLevel::WARN) || (level == LogLevel::INFO))) return;
+    if (!getCentralStatusObject().procStat.verbose && ((level == LogLevel::WARN) || (level == LogLevel::INFO))) return;
 
     std::string_view le;
     switch (level)

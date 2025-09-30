@@ -54,31 +54,9 @@ l61::RosettaSystem::EnvironmentVariable l61_spaths = l61::RosettaSystem::getEnv(
 
 namespace l61
 {
-    std::unique_ptr<ScriptEngine::RunnableScriptEnvironment> shEnv;
-    std::unique_ptr<ScriptEngine::AbstractScriptDebugger> luaDugger;
+std::unique_ptr<ScriptEngine::RunnableScriptEnvironment> shEnv;
+std::unique_ptr<ScriptEngine::AbstractScriptDebugger> luaDugger;
 using namespace l61::literals;
-
-    l61_stat mstat = {
-        fs::current_path().string(),
-        fs::current_path().string() + "/build.l61",
-        RosettaSystem::getExecutablePath(),
-        "USER"_env.getValue(),
-        "HOME"_env.getValue(),
-        std::vector {
-            (RosettaSystem::getExecutablePath().parent_path().parent_path() / "lib").string(),
-            ("HOME"_env.getValue() + "/.l61_lib"),
-            (fs::current_path().string() + "/scripts")
-        },
-        L61_CONFIG_STR_VERSION,
-        ProgramStatus {
-            ScriptMode::UndefMode,
-            std::make_unique<ExtensionSystem::ExtensionManager>(),
-            {},
-            0,
-            {},
-            EventSystem::EventBus()
-        }
-    };
 }
 
 
@@ -89,18 +67,18 @@ static void help(po::options_description& desc)
     l61::cout_print("Usage: l61 [options] [PATH_TO_FILE]\n");
     l61::cout_print(desc);
     l61::cout_print("\n\n");
-    l61::cout_print("version: ", l61::mstat.version, '\n');
+    l61::cout_print("version: ", l61::getCentralStatusObject().version, '\n');
     l61::cout_print(REP_BUG_TEXT, '\n');
 }
 
 l61::ExtensionSystem::l61_api_extension_t exdata = {
-    l61::mstat,
+    l61::getCentralStatusObject(),
     l61::shEnv
 };
 
 static void sighandler_f(int sig)
 {
-    l61::mstat.procStat.signalQueue.push(sig);
+    l61::getCentralStatusObject().procStat.signalQueue.push(sig);
 }
 
 int l61_main(int argc, const char* argv[])
@@ -121,7 +99,7 @@ int l61_main(int argc, const char* argv[])
 
     if (vm.contains("verbose"s))
     {
-        l61::mstat.procStat.verbose = 1;
+        l61::getCentralStatusObject().procStat.verbose = 1;
     }
 
     if (l61_spaths.exists())
@@ -131,7 +109,7 @@ int l61_main(int argc, const char* argv[])
         {
             if (fs::exists(path) && fs::is_directory(path))
             {
-                l61::mstat.spaths.push_back(fs::absolute(path));
+                l61::getCentralStatusObject().spaths.push_back(fs::absolute(path));
             }
             else
             {
@@ -150,83 +128,83 @@ int l61_main(int argc, const char* argv[])
     {
         for (const std::string& path : vm["add-to-spaths"s].as<std::vector<std::string>>())
         {
-            l61::mstat.spaths.push_back(path);
+            l61::getCentralStatusObject().spaths.push_back(path);
         }
     }
 
     if (vm.contains("cd"s))
     {
-        l61::mstat.work_path = vm["cd"s].as<std::string>();
-        l61::mstat.make_file_path = l61::mstat.work_path + "/build.l61";
-        l61::mstat.spaths[3] = l61::mstat.work_path + "/scripts";
+        l61::getCentralStatusObject().work_path = vm["cd"s].as<std::string>();
+        l61::getCentralStatusObject().make_file_path = l61::getCentralStatusObject().work_path + "/build.l61";
+        l61::getCentralStatusObject().spaths[3] = l61::getCentralStatusObject().work_path + "/scripts";
     }
 
     if (vm.contains("mode"s))
     {
-        l61::mstat.procStat.runMode = l61::toScriptMode(vm["mode"s].as<std::string>());
+        l61::getCentralStatusObject().procStat.runMode = l61::toScriptMode(vm["mode"s].as<std::string>());
     }
     else
     {
-        l61::mstat.procStat.runMode = l61::ScriptMode::BuildScriptMode;
+        l61::getCentralStatusObject().procStat.runMode = l61::ScriptMode::BuildScriptMode;
     }
 
     if (vm.contains("spaths"s))
     {
-        for (std::size_t i = 0; i < l61::mstat.spaths.size(); i++)
+        for (std::size_t i = 0; i < l61::getCentralStatusObject().spaths.size(); i++)
         {
-            l61::cout_print("[", i, "] = \"", l61::mstat.spaths[i] + "\"\n");
+            l61::cout_print("[", i, "] = \"", l61::getCentralStatusObject().spaths[i] + "\"\n");
         }
         return 0;
     }
 
     if (vm.contains("script"s))
     {
-        l61::mstat.make_file_path = vm["script"s].as<std::string>();
+        l61::getCentralStatusObject().make_file_path = vm["script"s].as<std::string>();
     }
 
     std::signal(SIGINT, &sighandler_f);
     std::signal(SIGTERM, &sighandler_f);
 
-    if (!fs::exists(l61::mstat.make_file_path))
+    if (!fs::exists(l61::getCentralStatusObject().make_file_path))
     {
-        std::println(std::cerr, "file {} Doesn't exists", l61::mstat.make_file_path);
+        std::println(std::cerr, "file {} Doesn't exists", l61::getCentralStatusObject().make_file_path);
         help(desc);
         return 1;
     }
 
-    l61::mstat.procStat.eventBus.push(l61::EventSystem::PreDefineEvents::PRE_LOAD);
+    l61::getCentralStatusObject().procStat.eventBus.push(l61::EventSystem::PreDefineEvents::PRE_LOAD);
 
-    l61::mstat.procStat.eventBus.addEvent(SIGINT, 0, []() -> void {
+    l61::getCentralStatusObject().procStat.eventBus.addEvent(SIGINT, 0, []() -> void {
         std::string input =  absl::AsciiStrToLower(l61::get_input("\nexit(y/n):"));
         if (input == "yes" || input == "y") std::exit(0);
         if (input == "d" || input == "debugger" || input == "debug")
         {
             if (l61::shEnv)
             {
-                l61::mstat.procStat.eventBus.push("com.trs.l61.debugger_initialization");
+                l61::getCentralStatusObject().procStat.eventBus.push("com.trs.l61.debugger_initialization");
                 l61::shEnv->attachDebugger(l61::luaDugger.get());
             }
         }
     });
 
-    l61::mstat.procStat.eventBus.addEvent("com.trs.l61.debugger_initialization", -4, [](){});
+    l61::getCentralStatusObject().procStat.eventBus.addEvent("com.trs.l61.debugger_initialization", -4, [](){});
 
-    switch (l61::mstat.procStat.runMode)
+    switch (l61::getCentralStatusObject().procStat.runMode)
     {
     case l61::ScriptMode::BuildScriptMode:
-        l61::shEnv = std::make_unique<l61::ScriptEngine::BuildScript>(l61::mstat.make_file_path, l61::mstat);
-        l61::ExtensionSystem::NativeExtension::safeExtensionLoad(l61::ExtensionSystem::NativeExtension::extensionLookUp(l61::mstat.spaths, "build.lex61"s), &exdata, false);
+        l61::shEnv = std::make_unique<l61::ScriptEngine::BuildScript>(l61::getCentralStatusObject().make_file_path, l61::getCentralStatusObject());
+        l61::ExtensionSystem::NativeExtension::safeExtensionLoad(l61::ExtensionSystem::NativeExtension::extensionLookUp(l61::getCentralStatusObject().spaths, "build.lex61"s), &exdata, false);
         break;
     /*case l61::ScriptMode::ShellScriptMode:
-        l61::shEnv = std::make_unique<l61::ShellScript>(l61::mstat.make_file_path, l61::mstat);
+        l61::shEnv = std::make_unique<l61::ShellScript>(l61::getCentralStatusObject().make_file_path, l61::getCentralStatusObject());
         l61::NativeExtension::safeExtensionLoad(l61::NativeExtension::extensionLookUp("script.lex61"s), &exdata, false);
         break;*/
     default:
-        l61::shEnv = std::make_unique<l61::ScriptEngine::BuildScript>(l61::mstat.make_file_path, l61::mstat);
+        l61::shEnv = std::make_unique<l61::ScriptEngine::BuildScript>(l61::getCentralStatusObject().make_file_path, l61::getCentralStatusObject());
         break;
     }
 
-    l61::toLogger(l61::LogLevel::INFO, "loaded file {} in {}", *l61::shEnv, l61::mstat.procStat.runMode);
+    l61::toLogger(l61::LogLevel::INFO, "loaded file {} in {}", *l61::shEnv, l61::getCentralStatusObject().procStat.runMode);
 
     std::vector<std::string> lua_arg_vector = l61::meta::null;
 
@@ -236,12 +214,12 @@ int l61_main(int argc, const char* argv[])
     }
 
     //NativeExtension::safeExtensionLoad(NativeExtension::extensionLookUp("base.lex61"s), &exdata, false);
-    auto& base_ex = l61::mstat.procStat.extension_manager->lookupAndLoadExtension(l61::mstat.spaths, "base.lex61", l61::meta::null, false);
+    auto& base_ex = l61::getCentralStatusObject().procStat.extension_manager->lookupAndLoadExtension(l61::getCentralStatusObject().spaths, "base.lex61", l61::meta::null, false);
 
     if (int base_ret = base_ex.getExtensionEntryPointCall()(&exdata)) throw std::runtime_error(std::format("Entry point for extension base.lex16 Returned A value of {}", base_ret));
 
-    l61::mstat.procStat.eventBus.push("com.trs.l61.PreLuaBoot");
-    l61::mstat.procStat.eventBus.pumpIt();
+    l61::getCentralStatusObject().procStat.eventBus.push("com.trs.l61.PreLuaBoot");
+    l61::getCentralStatusObject().procStat.eventBus.pumpIt();
 
     l61::shEnv->specialRun([](const sol::state& lua) {
         lua_State* L = lua.lua_state();
@@ -255,7 +233,7 @@ int l61_main(int argc, const char* argv[])
 
             (void)L; // This is done to appease the compiler(-Werror)
             (void)D; // Learn this trick from NASA Documentation of all places
-            l61::EventSystem::runEventBus(l61::mstat.procStat.eventBus, l61::mstat.procStat.signalQueue);
+            l61::EventSystem::runEventBus(l61::getCentralStatusObject().procStat.eventBus, l61::getCentralStatusObject().procStat.signalQueue);
         }), LUA_MASKCOUNT, 1);
     });
 

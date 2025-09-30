@@ -31,30 +31,34 @@
 
 #include "l61/RosettaSystem/EnvironmentVariable.hpp"
 #include "l61/RosettaSystem/getExecutablePath.hpp"
+#include "l61/getCentralStatusObject.hpp"
 
 namespace l61
 {
 using namespace l61::literals;
-
-l61_stat mstat = {
-    fs::current_path().string(),
-    fs::current_path().string() + "/build.l61",
-    RosettaSystem::getExecutablePath(),
-    "USER"_env.getValue(),
-    "HOME"_env.getValue(),
-    std::vector {
-        ((RosettaSystem::getExecutablePath().parent_path().parent_path() / "lib").string()),
-        ("HOME"_env.getValue() + "/.l61_lib"),
-        (fs::current_path().string() + "/scripts")
-    },
-    L61_CONFIG_STR_VERSION,
-    ProgramStatus {
-        ScriptMode::UndefMode,
-        std::make_unique<ExtensionSystem::ExtensionManager>(),
-        {},
-        0,
-        {},
-        EventSystem::EventBus()
+    l61_stat& getCentralStatusObject()
+    {
+        static l61_stat mstat = {
+            fs::current_path().string(),
+            fs::current_path().string() + "/build.l61",
+            RosettaSystem::getExecutablePath(),
+            "USER"_env.getValue(),
+            "HOME"_env.getValue(),
+            std::vector {
+                ((RosettaSystem::getExecutablePath().parent_path().parent_path() / "lib").string()),
+                ("HOME"_env.getValue() + "/.l61_lib"),
+                (fs::current_path().string() + "/scripts")
+            },
+            L61_CONFIG_STR_VERSION,
+            ProgramStatus {
+                ScriptMode::UndefMode,
+                std::make_unique<ExtensionSystem::ExtensionManager>(),
+                {},
+                0,
+                {},
+                EventSystem::EventBus()
+            }
+        };
+        return mstat;
     }
-};
 }

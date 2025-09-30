@@ -21,25 +21,30 @@ set -o pipefail
 
 [[ "$TRS_DEV_SETUP_VERBOSE" == "1" ]] && set -x
 
+readonly dev_tools=(gcc g++ zip cmake ninja make makepkg git)
+
 #if [[ -z "${CMAKE_GEN}" ]]; then
 #    CMAKE_GEN="Ninja"
 #fi
 
 function help() {
     echo -e "Dev Setup Script"
-    echo "Usage: $0 [clean|(rebuild|rb)|(help|h)|(doxygen|doc)|gtest|make|<cmake-args>]"
+    echo "Usage: $0 [clean|release-package|release-package-zip|(check|chk)|(rebuild|rb)|(help|h)|(doxygen|doc)|(arch-package|arch-pkg)|gtest|make|<cmake-args>]"
     echo
-    echo "  [--]clean              Cleans the cmake environment"
-    echo "  [--]rebuild | [-]rb    Clean and reconfigure the cmake environment"
-    echo "  [--]help    | [-]h     Show this help message"
-    echo "  [--]make    | [-]mk    Run the build with detected system"
-    echo "  [--]package | [-]pkg   Makes a package using makepkg(Arch)"
-    echo "  [--]build   | [-]b     Build the cmake environment"
-    echo "  [--]doxygen | [-]doc   runs doxygen"
-    echo "  [--]gtest              runs gtests"
-    echo "  <cmake args>           Pass-through arguments to cmake"
+    echo "  [--]clean                        Cleans the cmake environment"
+    echo "  [--]rebuild | [-]rb              Clean and reconfigure the cmake environment"
+    echo "  [--]help    | [-]h               Show this help message"
+    echo "  [--]make    | [-]mk              Run the build with detected system"
+    echo "  [--]arch-package | [-]arch-pkg   Makes a package using makepkg(Arch)"
+    echo "  [--]release-package              Produces a release/testing package"
+    echo "  [--]release-package-zip          Produces a release/testing package in a zip"
+    echo "  [--]check   |  [-]chk            Checks and output tools availability"
+    echo "  [--]build   | [-]b               Build the cmake environment"
+    echo "  [--]doxygen | [-]doc             runs doxygen"
+    echo "  [--]gtest                        runs gtests"
+    echo "  <cmake args>                     Pass-through arguments to cmake"
     echo
-    echo "\$CMAKE_GEN = 'Ninja' | 'Unix Makefiles'"
+    echo "\$CMAKE_GEN is $CMAKE_GEN" # = 'Ninja' | 'Unix Makefiles'"
     exit 0
 }
 
@@ -65,15 +70,15 @@ function build()
 {
     #CC=/usr/bin/gcc
     #Ninja
-    cmake -G "$CMAKE_GEN" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DL61_CONFIG_DEBUG=ON $@  .
+    cmake -G "$CMAKE_GEN" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON -DL61_CONFIG_DEBUG=ON "$@"  .
 }
 
 function make_cmd()
 {
     if [[ -f "./Makefile" ]]; then
-        make $@
+        make "$@"
     elif [[ -f "./build.ninja" ]]; then
-        ninja $@
+        ninja "$@"
     fi
 }
 
@@ -95,6 +100,7 @@ function clean()
     rm -rfv ./l61-deployment-package
     rm -rfv ./Testing/Temporary
     rm -rfv ./docs
+    rm -v ./l61-deployment-package.zip
 
     find "." -maxdepth 20 -type d -name "CMakeFiles" -exec rm -vrf {} +
 
@@ -107,14 +113,67 @@ function clean()
     return 0
 }
 
-function make_package()
+function make_arch_package()
 {
-    makepkg -f $@
+    makepkg -f "$@"
+}
+
+function release_package()
+{
+    ./package.sh
+    return $?
+}
+
+function release_package_zip()
+{
+    release_package || return 1
+
+    local folder="l61-deployment-package"
+    local zipfile="${folder}.zip"
+
+    if [ -d "$folder" ]; then
+        rm -f "$zipfile"
+        (cd "$folder" && zip -r "../$zipfile" .)
+        echo "Created $zipfile"
+    else
+        echo "Error: folder '$folder' not found."
+        return 1
+    fi
+    return 0
+}
+
+function check_for_commands()
+{
+    local NFOUND=0
+
+    # figure out max tool name length
+    local maxlen=0
+    for tool in "${dev_tools[@]}"; do
+        (( ${#tool} > maxlen )) && maxlen=${#tool}
+    done
+
+    # print aligned results
+    for tool in "${dev_tools[@]}"; do
+        printf "%-${maxlen}s : " "$tool"
+        if command -v "$tool" >/dev/null 2>&1; then
+            echo "$(command -v "$tool")"
+        else
+            echo "not found"
+            NFOUND=1
+        fi
+    done
+
+    if [[ $NFOUND -eq 1 ]]; then
+        echo "One or more tools required for compilation could not be found"
+        return 1
+    fi
+
+    return 0
 }
 
 function check_tools()
 {
-    command -v cmake >/dev/null || { echo "cmake not found"; exit 1; }
+    check_for_commands >/dev/null || { check_for_commands; exit 1; }
     if command -v ninja >/dev/null; then
         CMAKE_GEN="Ninja"
     elif command -v make >/dev/null; then
@@ -142,14 +201,17 @@ case "$1" in
         make_cmd "${@:2}"
         ;;
     check|chk | --check|-chk)
-        echo "cmake   : $(command -v cmake || echo not found)"
-        echo "ninja   : $(command -v ninja || echo not found)"
-        echo "make    : $(command -v make || echo not found)"
-        echo "makepkg : $(command -v makepkg || echo not found)"
-        echo "git     : $(command -v git || echo not found)"
+        check_for_commands
+        exit $?
         ;;
-    package|pkg | --package|-pkg )
-        make_package "${@:2}"
+    arch-package|arch-pkg | --arch-package|-arch-pkg )
+        make_arch_package "${@:2}"
+        ;;
+    release-package | --release-package )
+        release_package
+        ;;
+    release-package-zip | --release-package-zip )
+        release_package_zip
         ;;
     doxygen|doc | --doxygen|-doc)
         doxygen_cmd "${@:2}"

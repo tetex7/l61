@@ -39,8 +39,9 @@
 
 #include "sol/sol.hpp"
 #include "json.hpp"
-#include "EventSystem/EventBus.hpp"
+#include "l61/EventSystem/EventBus.hpp"
 #include "l61/baseTypes.hpp"
+#include "l61/getCentralStatusObject.hpp"
 
 //Works on clang and GCC Though that's everybody important
 //But poor Microsoft the farthest from being standard
@@ -68,7 +69,8 @@ typename Tx = std::conditional_t<std::is_pointer_v<Rp>, Rp, std::add_pointer_t<R
 
 #define l61_no_copy(type)        \
 type(const type&) = delete; \
-type& operator=(const type&) = delete
+type(type&&) = delete/*; \
+type& operator=(const type&) = delete*/
 
 
 namespace l61
@@ -174,8 +176,6 @@ namespace l61
     {
         l61_abstract_class AbstractScriptDebugger;
     }
-
-    extern l61_stat mstat;
 }
 
 template <>

@@ -80,9 +80,9 @@ namespace l61::RosettaSystem
         size_t len = sizeof(buf);
 
         mib[0] = CTL_KERN;
-        mib[1] = KERN_PROC_PATHNAME;
-        mib[2] = -1;
-        mib[3] = 0; // some systems use 0 for the pid argument
+        mib[1] = KERN_PROC;
+        mib[2] = KERN_PROC_PATHNAME;
+        mib[3] = getpid();
 
         if (sysctl(mib, 4, buf, &len, nullptr, 0) == 0)
         {
