@@ -33,7 +33,8 @@ echo "Running container from $IMAGE_NAME"
 docker run --rm -i \
   --user builder \
   --network none \
+  -e "TRS_TOOL_CHECK_OVERRIDE=$TRS_TOOL_CHECK_OVERRIDE" \
   -u $(id -u):$(id -g) \
   -v "$PROJECT_DIR":/home/builder/project \
   -w /home/builder/project \
-  "$IMAGE_NAME" "/usr/bin/sh -c TRS_TOOL_CHECK_OVERRIDE=$TRS_TOOL_CHECK_OVERRIDE /home/builder/project/dev_setup.sh" "$@"
+  "$IMAGE_NAME" /home/builder/project/dev_setup.sh "$@"
