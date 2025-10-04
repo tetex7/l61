@@ -38,12 +38,12 @@ TEST(EnvironmentVariableTests, BasicAssertions)
     EXPECT_NO_THROW(PATH.getKey());
     EXPECT_NO_THROW(PATH.getValue());
     EXPECT_EQ(PATH.get("fallback"), PATH.getValue());
-    EXPECT_STREQ(PATH.getValue().c_str(), std::getenv("PATH"));
+    EXPECT_EQ(PATH.getValue(), std::getenv("PATH"));
 
 
     EXPECT_ANY_THROW(know_bad.getValue());
     EXPECT_FALSE(know_bad.exists());
     EXPECT_NO_THROW(
-        EXPECT_STREQ(know_bad.get("test").c_str(), "test")
+        EXPECT_EQ(know_bad.get("fallback"), "fallback")
     );
 }

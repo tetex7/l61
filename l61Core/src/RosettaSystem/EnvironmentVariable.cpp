@@ -34,7 +34,7 @@ namespace l61::RosettaSystem
 
         if (!val) throw std::runtime_error(std::format("Environment variable {} does not exist", this->getKey()));
 
-        return std::string(val);
+        return {val};
     }
 
     std::string EnvironmentVariable::get(const std::string& defaultValue) const
@@ -66,7 +66,7 @@ namespace l61::RosettaSystem
     nlohmann::json EnvironmentVariable::toJsonValue() const
     {
         return {
-            { "key", this->getKey() },
+            { "key",   this->getKey()   },
             { "value", this->getValue() }
         };
     }
@@ -75,6 +75,12 @@ namespace l61::RosettaSystem
     {
         return this->getKey() == other.getKey();
     }
+
+    EnvironmentVariable::EnvironmentVariable(const EnvironmentVariable& environment_variable)
+    : name_(environment_variable.name_) {}
+
+    EnvironmentVariable::EnvironmentVariable(EnvironmentVariable&& environment_variable) noexcept
+    : name_(std::move(environment_variable.name_)) {}
 }
 
 namespace l61::literals

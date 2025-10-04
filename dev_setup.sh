@@ -63,7 +63,7 @@ function doxygen_cmd()
 function gtest_run()
 {
     "$0" mk
-    "$0" mk test
+    ctest --stop-on-failure "$@"
 }
 
 function build()
@@ -221,7 +221,7 @@ case "$1" in
         build "${@:2}"
         ;;
     gtest | --gtest)
-        gtest_run
+        gtest_run "${@:2}"
         ;;
     *)
         build "$@"

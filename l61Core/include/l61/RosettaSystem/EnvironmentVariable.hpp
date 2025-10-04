@@ -40,6 +40,12 @@ namespace l61::RosettaSystem
     private:
         std::string name_;
     public:
+
+        static EnvironmentVariable of(const std::string& name)
+        {
+            return EnvironmentVariable(name);
+        }
+
         /**
          * @brief Constructs an EnvironmentVariable object with the given name.
          * @param name The name of the environment variable.
@@ -145,12 +151,16 @@ namespace l61::RosettaSystem
         */
         bool operator==(const EnvironmentVariable& other) const;
 
+
+        EnvironmentVariable(const EnvironmentVariable& environment_variable);
+        EnvironmentVariable(EnvironmentVariable&& environment_variable) noexcept;
+
         ~EnvironmentVariable() override = default;
     };
 
     inline EnvironmentVariable getEnv(const std::string& name)
     {
-        return EnvironmentVariable(name);
+        return EnvironmentVariable::of(name);
     }
 }
 
