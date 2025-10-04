@@ -103,7 +103,13 @@ int l61_main(int argc, const char* argv[])
 
     if (l61_spaths.exists())
     {
-        std::vector<std::string> var_spaths = absl::StrSplit(l61_spaths.getValue(), ':', absl::SkipEmpty());
+        std::vector<std::string> var_spaths;
+
+        for (std::string_view sv : absl::StrSplit(l61_spaths.getValue(), ':', absl::SkipEmpty())) {
+            sv = absl::StripAsciiWhitespace(sv);
+            if (!sv.empty()) var_spaths.emplace_back(sv);
+        }
+
         for (const std::string& path : var_spaths)
         {
             if (fs::exists(path) && fs::is_directory(path))

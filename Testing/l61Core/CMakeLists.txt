@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
-file(GLOB L61_CORE_TEST_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
+file(GLOB L61_CORE_TEST_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/**/*.cpp")
 add_executable(l61_core_test ${L61_CORE_TEST_CPP_FILES})
 
 set_target_output(l61_core_test ${BIN_DIR}/testing)

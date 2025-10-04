@@ -90,6 +90,11 @@ namespace l61::EventSystem
         }
     }
 
+    void EventBus::operator[](const bus_frequency_t &frequency)
+    {
+        this->push(frequency);
+    }
+
 
     void runEventBus(EventBus& bus, SignalQueue_t& signals)
     {

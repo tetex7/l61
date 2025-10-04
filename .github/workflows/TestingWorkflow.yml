@@ -22,11 +22,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-        #This application is a complete local application with no form of authentication tokens so this is extremely fine
-        #This is a throwaway environment too
-      - run: chmod -R 777 .
-
-
       - run: sudo systemctl start docker
       - run: ./docker_dev_setup.sh
       - run: ./docker_dev_setup.sh mk

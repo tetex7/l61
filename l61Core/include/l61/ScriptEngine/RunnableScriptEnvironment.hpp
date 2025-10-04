@@ -23,11 +23,11 @@
 #ifndef L61_RUNNABLESCRIPTENVIRONMENT_HPP
 #define L61_RUNNABLESCRIPTENVIRONMENT_HPP
 
-#include "l61/ScriptEngine/ScriptEnvironment.hpp"
+#include "l61/ScriptEngine/FileBackedScriptEnvironment.hpp"
 
 namespace l61::ScriptEngine
 {
-    class RunnableScriptEnvironment : public ScriptEnvironment
+    class RunnableScriptEnvironment : public FileBackedScriptEnvironment
     {
     protected:
         virtual int run(const std::vector<std::string>& args) = 0;

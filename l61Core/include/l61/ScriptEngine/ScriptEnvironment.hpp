@@ -35,10 +35,9 @@
 namespace l61::ScriptEngine
 {
 
-l61_abstract_class ScriptEnvironment : public Object, public IBasicScriptEngine
+class ScriptEnvironment : public Object, public IBasicScriptEngine
 {
 private:
-    const std::string scriptFilePath;
     l61_stat& scriptCtx;
     sol::state luaCtx;
 
@@ -49,9 +48,7 @@ protected:
     sol::state& getLuaCtx() override;
     l61_stat& getScriptCtx();
 
-    const std::string& getScriptFilePath() const;
-
-    explicit ScriptEnvironment(const std::string& scriptFilePath, l61_stat& scriptCtx);
+    explicit ScriptEnvironment(l61_stat& scriptCtx);
 
     static sol::table lua_mountLib(sol::this_state state, const std::string& libraryName);
 
@@ -89,10 +86,6 @@ public:
     bool has(const std::string& key);
 
     sol::table makeTable(const std::string& name);
-
-
-
-    [[nodiscard]] std::string toString() const override;
 
     ScriptEnvironment(const ScriptEnvironment&) = delete;
     ScriptEnvironment(ScriptEnvironment&&) = delete;

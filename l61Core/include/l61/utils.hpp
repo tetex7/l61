@@ -23,7 +23,7 @@
 #include <type_traits>
 #include <vector>
 #include <memory>
-#include <sstream>
+#include <format>
 
 namespace l61
 {
@@ -72,7 +72,7 @@ namespace l61
     }
 
     template<typename T>
-    T runLambda(const std::function<T()>& lambda)
+    constexpr T runLambda(const std::function<T()>& lambda)
     {
         return std::forward<T>(lambda());
     }
@@ -80,15 +80,13 @@ namespace l61
     template<typename T>
     std::string toAddressString(const T* ptr)
     {
-        std::stringstream ss;
-        ss << std::hex << reinterpret_cast<const void*>(ptr);
-        return ss.str();
+        return std::format("{:p}", static_cast<const void*>(ptr));
     }
 
     template<typename T>
-    std::size_t getHash(T&& v)
+    std::size_t getHash(const T& v)
     {
-        return std::hash<std::decay_t<T>>()(std::forward<T>(v));
+        return std::hash<T>{}(v);
     }
 }
 

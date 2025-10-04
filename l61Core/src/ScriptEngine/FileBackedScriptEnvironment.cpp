@@ -16,13 +16,25 @@
  */
 
 //
-// Created by tete on 07/21/2025.
+// Created by tete on 10/04/2025.
 //
-#include <gtest/gtest.h>
+#include "l61/ScriptEngine/FileBackedScriptEnvironment.hpp"
 
-TEST(HelloTest, BasicAssertions) {
-    // Expect two strings not to be equal.
-    EXPECT_STRNE("hello", "world");
-    // Expect equality.
-    EXPECT_EQ(7 * 6, 42);
+namespace l61::ScriptEngine
+{
+
+    const std::string & FileBackedScriptEnvironment::getScriptFilePath() const
+    {
+        return this->scriptFilePath;
+    }
+
+    std::string FileBackedScriptEnvironment::toString() const
+    {
+        return getScriptFilePath();
+    }
+
+    FileBackedScriptEnvironment::FileBackedScriptEnvironment(const std::string& scriptFilePath, l61_stat& scriptCtx)
+    : ScriptEnvironment(scriptCtx), scriptFilePath(scriptFilePath)
+    {
+    }
 }

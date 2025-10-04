@@ -37,7 +37,7 @@ namespace l61
     namespace meta
     {
         template<class T>
-        concept l61Obj = std::derived_from<T, Object>;
+        concept l61Obj = std::derived_from<std::remove_cvref_t<T>, Object>;
 
         template<class T>
         concept l61ObjPtr = std::derived_from<Object, std::remove_pointer_t<T>>;
@@ -210,8 +210,10 @@ struct nlohmann::adl_serializer<T>
 template <l61::meta::l61Obj T>
 struct std::formatter<T> : formatter<std::string> {
     auto format(const T& obj, std::format_context& ctx) const {
-        const std::string result = static_cast<const l61::Object&>(obj).toString();
-        return std::formatter<std::string>::format(result, ctx);
+        return std::formatter<std::string>::format(
+            static_cast<const l61::Object&>(obj).toString(),
+            ctx
+        );
     }
 };
 

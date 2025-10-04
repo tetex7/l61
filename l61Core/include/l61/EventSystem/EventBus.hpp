@@ -73,6 +73,8 @@ namespace l61::EventSystem
         explicit EventBus() = default;
         ~EventBus() override = default;
 
+        void operator[](const bus_frequency_t &frequency);
+
         EventBus(EventBus&&) = delete;
         EventBus(EventBus&) = delete;
         EventBus(const EventBus&) = delete;
@@ -82,8 +84,6 @@ namespace l61::EventSystem
 
     void runEventBus(EventBus& bus, SignalQueue_t& signals);
 }
-    //std::ostream& operator<<(std::ostream& stream, s)
-// l61
 
 
 

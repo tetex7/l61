@@ -166,12 +166,8 @@ namespace l61
         std::vector<std::string> spaths;
         const std::string version;
         ProgramStatus procStat;
-
-        operator l61_stat*() // NOLINT(*-explicit-constructor)
-        {
-            return this;
-        }
     };
+
     namespace ScriptEngine
     {
         l61_abstract_class AbstractScriptDebugger;

@@ -65,11 +65,6 @@ sol::state& ScriptEnvironment::getLuaCtx()
     return this->luaCtx;
 }
 
-const std::string& ScriptEnvironment::getScriptFilePath() const
-{
-    return this->scriptFilePath;
-}
-
 void standard_lua_debugger_hook(lua_State* L, lua_Debug* D)
 {
     sol::state_view sL{L};
@@ -79,8 +74,8 @@ void standard_lua_debugger_hook(lua_State* L, lua_Debug* D)
         debugger->run(L, D);
 }
 
-ScriptEnvironment::ScriptEnvironment(const std::string& scriptFilePath, l61_stat& scriptCtx)
-    : scriptFilePath(scriptFilePath), scriptCtx(scriptCtx), luaCtx(sol::state()), script_debugger_(nullptr)
+ScriptEnvironment::ScriptEnvironment(l61_stat& scriptCtx)
+    : scriptCtx(scriptCtx), luaCtx(sol::state()), script_debugger_(nullptr)
 {
     addValue("spaths"s, std::cref(scriptCtx.spaths));
     setValue("__l61_trs_environment_script_this__"s, reinterpret_cast<uintptr_t>(this));
@@ -122,11 +117,6 @@ sol::table ScriptEnvironment::lua_mountLib(sol::this_state state, const std::str
 sol::table ScriptEnvironment::makeTable(const std::string& name)
 {
     return getLuaCtx().create_named_table(name);
-}
-
-std::string ScriptEnvironment::toString() const
-{
-    return this->getScriptFilePath();
 }
 
 bool ScriptEnvironment::has(const std::string& key)

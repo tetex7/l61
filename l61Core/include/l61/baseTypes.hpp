@@ -27,6 +27,12 @@ namespace l61
     using c_signal_t = int;
 
     using SignalQueue_t = std::queue<c_signal_t>;
+
+    enum
+    {
+        FLAG_SET,
+        FLAG_UNSET
+    };
 }
 
 #endif // L61_BASETYPES_HPP

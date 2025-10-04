@@ -65,6 +65,14 @@ namespace l61::meta
     template<typename T>
     concept castToZeroCompatible = requires { (void)static_cast<T>(0); };
 
+    template<typename T, typename C>
+    concept canStoreBytesOf = sizeof(T) <= sizeof(C) && (alignof(C) % alignof(T) == 0);
+
+    template<typename T, typename C>
+    concept safeCanStoreBytesOf =
+    canStoreBytesOf<T, C> &&
+    std::is_trivially_copyable_v<T>;
+
     /*template<typename T>
     concept stdHashCompatible = requires(T x) { {std::hash(x)} -> std::convertible_to<std::size_t>; };*/
 

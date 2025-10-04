@@ -16,22 +16,30 @@
  */
 
 //
-// Created by tete on 8/7/25.
+// Created by tete on 10/04/2025.
 //
+#pragma once
 
-#include "l61/Logger.hpp"
-#include "l61/ExtensionSystem/ExtensionManager.hpp"
-#include "l61/l61_config.h"
+#ifndef L61_FILEBACKEDSCRIPTENVIRONMENT_HPP
+#define L61_FILEBACKEDSCRIPTENVIRONMENT_HPP
+#include "l61/ScriptEngine/ScriptEnvironment.hpp"
 
-#include <gtest/gtest.h>
-#include <l61/BaseObjects/Object.hpp>
-#include <l61/defs.hpp>
-#include <typeinfo>
-
-
-TEST(ObjectTests, BasicAssertions)
+namespace l61::ScriptEngine
 {
-    l61::Object object;
-    EXPECT_STREQ(object.typeName().c_str(), "l61::Object");
-    EXPECT_EQ(object.typeInfo(), typeid(l61::Object));
+    class FileBackedScriptEnvironment : public ScriptEnvironment
+    {
+    private:
+        const std::string scriptFilePath;
+    public:
+        const std::string& getScriptFilePath() const;
+
+        std::string toString() const override;
+
+        explicit FileBackedScriptEnvironment(const std::string& scriptFilePath, l61_stat& scriptCtx);
+
+        ~FileBackedScriptEnvironment() override = default;
+    };
 }
+
+
+#endif //FILEBACKEDSCRIPTENVIRONMENT_HPP

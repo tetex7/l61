@@ -24,10 +24,9 @@
 
 namespace l61::ScriptEngine
 {
-
     RunnableScriptEnvironment::RunnableScriptEnvironment(
         const std::string& scriptFilePath, l61_stat& scriptCtx)
-    : ScriptEnvironment(scriptFilePath, scriptCtx)
+    : FileBackedScriptEnvironment(scriptFilePath, scriptCtx)
     {
     }
 
