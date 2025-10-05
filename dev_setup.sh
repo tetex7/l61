@@ -58,7 +58,7 @@ function help() {
     echo "  [--]arch-package | [-]arch-pkg   Makes a package using makepkg(Arch)"
     echo "  [--]release-package              Produces a release/testing package"
     echo "  [--]release-package-zip          Produces a release/testing package in a zip"
-    echo "  [--]check   |  [-]chk            Checks and output tools availability"
+    echo "  [--]check   | [-]chk             Checks and output tools availability"
     echo "  [--]build   | [-]b               Build the cmake environment"
     echo "  [--]doxygen | [-]doc             runs doxygen"
     echo "  [--]gtest                        runs gtests"

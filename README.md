@@ -47,13 +47,12 @@ cd ./l61 # Changes your current working directory to the project
 
 ./l61-deployment-package/bin/l61 --help
 ```
-### FreeBSD is a little different  
-You have to override the tool list because some tools are just not available on Freebsd  
-I normally set the only tool in the list to just be Ninja  
-And since freeBSD packages Lua with its version name I use `-DL61_CONFIG_LUA_PACKAGE_NAME="lua-X.X"`
+### FreeBSD is a little different
+And since freeBSD packages Lua with its version name I use `-DL61_CONFIG_LUA_PACKAGE_NAME="lua-X.X"`   
+One small note clang is used on FreeBSD  
 ```bash
-TRS_TOOL_LIST_OVERRIDE="ninja" ./dev_setup.sh -DL61_CONFIG_LUA_PACKAGE_NAME="lua-5.4"
-TRS_TOOL_LIST_OVERRIDE="ninja" ./dev_setup.sh mk 
+./dev_setup.sh -DL61_CONFIG_LUA_PACKAGE_NAME="lua-5.4"
+./dev_setup.sh mk 
 
 ./package.sh # Packages the project into a portable usable File structure
 
