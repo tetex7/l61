@@ -47,8 +47,20 @@ cd ./l61 # Changes your current working directory to the project
 
 ./l61-deployment-package/bin/l61 --help
 ```
+### FreeBSD is a little different  
+You have to override the tool list because some tools are just not available on Freebsd  
+I normally set the only tool in the list to just be Ninja  
+And since freeBSD packages Lua with its version name I use `-DL61_CONFIG_LUA_PACKAGE_NAME="lua-X.X"`
+```bash
+TRS_TOOL_LIST_OVERRIDE="ninja" ./dev_setup.sh -DL61_CONFIG_LUA_PACKAGE_NAME="lua-5.4"
+TRS_TOOL_LIST_OVERRIDE="ninja" ./dev_setup.sh mk 
 
-## Why λ61?
+./package.sh # Packages the project into a portable usable File structure
+
+./l61-deployment-package/bin/l61 --help
+```
+I have not tested it on OpenBSD yet 
+# Why λ61?
 
 λ61 isn’t just another Lua wrapper or a Runtime.  
 It’s designed to be hyper-extensible, letting you mold it into the workflow you want  
