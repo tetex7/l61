@@ -26,7 +26,7 @@ readonly detected_os=$(uname)
 
 if [[ "$detected_os" == "Linux" ]]; then
     readonly DEFAULT_TOOLS=(gcc g++ zip cmake ninja makepkg git)
-elif [[ "$detected_os" == "FreeBSD" || "$detected_os" == "OpenBSD" ]]; then
+elif [[ "$detected_os" == "FreeBSD" || "$detected_os" == "OpenBSD" || "$detected_os" == "DragonFly" ]]; then
     readonly DEFAULT_TOOLS=(clang clang++ zip cmake ninja git)
 else
     readonly DEFAULT_TOOLS=(gcc g++ zip cmake ninja git)
