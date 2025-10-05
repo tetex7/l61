@@ -22,14 +22,17 @@ set -o pipefail
 [[ "$TRS_DEV_SETUP_VERBOSE" == "1" ]] && set -x
 
 # shellcheck disable=SC2155
-readonly detected_os=$(uname)
+readonly detected_os=$(uname | tr '[:upper:]' '[:lower:]')
 
-if [[ "$detected_os" == "Linux" ]]; then
-    readonly DEFAULT_TOOLS=(gcc g++ zip cmake ninja makepkg git)
-elif [[ "$detected_os" == "FreeBSD" || "$detected_os" == "OpenBSD" || "$detected_os" == "DragonFly" ]]; then
-    readonly DEFAULT_TOOLS=(clang clang++ zip cmake ninja git)
+if [[ "$detected_os" == "linux" ]]; then
+    # The tools for the liunx
+    readonly DEFAULT_TOOLS=(gcc g++ zip cmake ctest ninja git)
+elif [[ "$detected_os" == *bsd || "$detected_os" == "dragonfly" || "$detected_os" == "darwin" ]]; then
+    # The tools for the BSD-likes
+    readonly DEFAULT_TOOLS=(clang clang++ zip cmake ctest ninja git)
 else
-    readonly DEFAULT_TOOLS=(gcc g++ zip cmake ninja git)
+    # The tools that should be on an generic system
+    readonly DEFAULT_TOOLS=(gcc g++ zip cmake ctest ninja git)
 fi
 
 # If override exists, split it into an array; otherwise use default

@@ -51,6 +51,9 @@ cd ./l61 # Changes your current working directory to the project
 And since freeBSD packages Lua with its version name I use `-DL61_CONFIG_LUA_PACKAGE_NAME="lua-X.X"`   
 One small note clang is used on FreeBSD  
 ```bash
+git clone https://github.com/tetex7/l61.git # Clone the project to your local machine
+cd ./l61 # Changes your current working directory to the project
+
 ./dev_setup.sh -DL61_CONFIG_LUA_PACKAGE_NAME="lua-5.4"
 ./dev_setup.sh mk 
 
