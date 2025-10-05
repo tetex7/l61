@@ -21,7 +21,18 @@ set -o pipefail
 
 [[ "$TRS_DEV_SETUP_VERBOSE" == "1" ]] && set -x
 
-readonly DEFAULT_TOOLS=(gcc g++ zip cmake ninja make makepkg git)
+# shellcheck disable=SC2155
+readonly detected_os=$(uname)
+
+if [[ "$detected_os" == "Linux" ]]; then
+    readonly DEFAULT_TOOLS=(gcc g++ zip cmake ninja make makepkg git)
+elif [[ "$detected_os" == "FreeBSD" ]]; then
+    readonly DEFAULT_TOOLS=(clang clang++ zip cmake ninja git)
+elif [[ "$detected_os" == "OpenBSD" ]]; then
+    readonly DEFAULT_TOOLS=(clang clang++ zip cmake ninja git)
+else
+    readonly DEFAULT_TOOLS=(gcc g++ zip cmake ninja git)
+fi
 
 # If override exists, split it into an array; otherwise use default
 if [[ -n "$TRS_TOOL_LIST_OVERRIDE" ]]; then
@@ -59,6 +70,7 @@ function help() {
     echo "\$TRS_TOOL_LIST_OVERRIDE  : Overrides the built in tool list Example TRS_TOOL_LIST_OVERRIDE=\"clang:git\""
     echo
     echo "\$CMAKE_GEN is \"$CMAKE_GEN\" Should be 'Ninja' or 'Unix Makefiles'"
+    echo "Detected OS is \"$detected_os\""
     exit 0
 }
 
