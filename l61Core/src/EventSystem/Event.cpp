@@ -31,6 +31,11 @@ namespace l61::EventSystem
         fun = callback_t();
     }
 
+    bool Event::valid() const
+    {
+        return static_cast<bool>(fun);
+    }
+
     void Event::set(const callback_t& function)
     {
         fun = function;
@@ -48,9 +53,8 @@ namespace l61::EventSystem
     : fun(event.fun){}
 
 
-
     Event::operator bool() const
     {
-        return static_cast<bool>(fun);
+        return valid();
     }
 } // l61

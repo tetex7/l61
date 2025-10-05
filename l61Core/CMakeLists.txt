@@ -17,7 +17,7 @@
 set(CMAKE_SKIP_INSTALL_RULES ON)
 file(GLOB L61_CORE_CPP_FILES "${CMAKE_SOURCE_DIR}/l61Core/src/*.cpp")
 
-pkg_check_modules(LIB_LUA lua REQUIRED)
+pkg_check_modules(LIB_LUA ${L61_CONFIG_LUA_PACKAGE_NAME} REQUIRED)
 
 add_library(l61_core_interface INTERFACE)
 target_link_libraries(l61_core_interface INTERFACE base_interface)

@@ -20,20 +20,33 @@
 //
 #include "l61/Logger.hpp"
 #include "l61/EventSystem/Event.hpp"
-#include "l61/l61_config.h"
-
 #include <gtest/gtest.h>
 #include <l61/defs.hpp>
 #include <typeinfo>
 
+static bool test_value = false;
+l61::EventSystem::Event test_event = [] -> void {
+    test_value = true;
+};
 
-TEST(EventTests, BasicAssertions)
+TEST(EventTests, TypeAssertions)
 {
-    bool test_value = false;
-    const l61::EventSystem::Event test_event = [&]{
-        test_value = true;
-    };
+    EXPECT_TRUE((std::same_as<l61::EventSystem::Event::raw_callback_t, void()>));
+    EXPECT_TRUE((std::same_as<l61::EventSystem::Event::callback_t, std::function<void()>>));
+}
 
+TEST(EventTests, ValidLifecycle)
+{
+    EXPECT_TRUE(test_event.valid());
+    EXPECT_TRUE(static_cast<bool>(test_event));
     EXPECT_NO_THROW(test_event.call());
     EXPECT_TRUE(test_value);
+}
+
+TEST(EventTests, InvalidLifecycle)
+{
+    EXPECT_NO_THROW(test_event.reset());
+    EXPECT_FALSE(test_event.valid());
+    EXPECT_FALSE(static_cast<bool>(test_event));
+    EXPECT_ANY_THROW(test_event.call());
 }

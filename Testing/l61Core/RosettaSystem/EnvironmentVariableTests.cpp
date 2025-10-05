@@ -19,18 +19,15 @@
 // Created by tete on 10/04/2025.
 //
 #include "l61/Logger.hpp"
-#include "l61/l61_config.h"
-
 #include <gtest/gtest.h>
 #include "l61/RosettaSystem/EnvironmentVariable.hpp"
 #include <l61/defs.hpp>
 #include <typeinfo>
 
 
-TEST(EnvironmentVariableTests, BasicAssertions)
+TEST(EnvironmentVariableTests, ValidEnvironmentVariable)
 {
     l61::RosettaSystem::EnvironmentVariable PATH = l61::RosettaSystem::getEnv("PATH");
-    l61::RosettaSystem::EnvironmentVariable know_bad = l61::RosettaSystem::EnvironmentVariable("dsfgdfsdfg");
 
     EXPECT_TRUE(PATH.exists());
     EXPECT_EQ(PATH.getKey(), "PATH");
@@ -38,8 +35,11 @@ TEST(EnvironmentVariableTests, BasicAssertions)
     EXPECT_NO_THROW(PATH.getValue());
     EXPECT_EQ(PATH.get("fallback"), PATH.getValue());
     EXPECT_EQ(PATH.getValue(), std::getenv("PATH"));
+}
 
-
+TEST(EnvironmentVariableTests, NonValidEnvironmentVariable)
+{
+    l61::RosettaSystem::EnvironmentVariable know_bad = l61::RosettaSystem::EnvironmentVariable("dsfgdfsdfg");
     EXPECT_ANY_THROW(know_bad.getValue());
     EXPECT_FALSE(know_bad.exists());
     EXPECT_NO_THROW(

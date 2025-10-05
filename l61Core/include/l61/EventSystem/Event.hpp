@@ -31,7 +31,8 @@ namespace l61::EventSystem
     class Event
     {
     public:
-        using callback_t = std::function<void()>;
+        using raw_callback_t = void();
+        using callback_t = std::function<raw_callback_t>;
     private:
         callback_t fun;
     public:
@@ -39,10 +40,11 @@ namespace l61::EventSystem
         explicit Event(const callback_t& function);
 
         // ReSharper disable once CppNonExplicitConvertingConstructor
-        template<typename Lambda>
+        template<typename Lambda> requires std::is_constructible_v<callback_t, Lambda>
         Event(const Lambda& lambda) : fun(lambda){}// NOLINT(*-explicit-constructor)
 
         void reset();
+        bool valid() const;
         void set(const callback_t& function);
 
         void call() const;

@@ -18,6 +18,8 @@
 cmake_minimum_required(VERSION 3.24.0)
 project(lambda61 LANGUAGES C CXX)
 
+set(L61_CONFIG_LUA_PACKAGE_NAME "lua" CACHE STRING "Some systems package their Lua weirdly adding version name this is a way to Mitigate that")
+
 find_package(PkgConfig REQUIRED)
 find_package(GTest REQUIRED)
 find_package(absl REQUIRED)

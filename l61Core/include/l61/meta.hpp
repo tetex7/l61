@@ -23,6 +23,7 @@
 #define L61_META_HPP
 #include <concepts>
 #include <type_traits>
+#include <functional>
 
 namespace l61
 {
@@ -57,10 +58,24 @@ namespace l61::meta
         return nullptr;
     }
 
-    namespace nulling {struct null_t;}
+    namespace nulling
+    {
+        struct null_t;
+        class NullableMark
+        {
+        private:
+            const bool is_null_;
+        protected:
+            explicit NullableMark(bool is_null) : is_null_(is_null){}
+        public:
+            [[nodiscard]] bool isNull() const { return is_null_; }
+            virtual ~NullableMark() = default;
+        };
+    }
+
 
     template<typename T>
-    concept isNullableType = std::default_initializable<T> || std::is_constructible_v<T, nulling::null_t>;
+    concept isNullableType = !std::same_as<T, nulling::null_t> && (std::default_initializable<T> || std::derived_from<T, nulling::NullableMark>);
 
     template<typename T>
     concept castToZeroCompatible = requires { (void)static_cast<T>(0); };
@@ -73,19 +88,15 @@ namespace l61::meta
     canStoreBytesOf<T, C> &&
     std::is_trivially_copyable_v<T>;
 
-    /*template<typename T>
-    concept stdHashCompatible = requires(T x) { {std::hash(x)} -> std::convertible_to<std::size_t>; };*/
+    template<typename T>
+    concept stdHashCompatible = requires { {std::hash<T>()(std::declval<T>())} -> std::convertible_to<std::size_t>; };
 
     namespace nulling
     {
-
         struct null_t final
         {
-            //I don't know why I add this, but it might come in handy
-            template<isNullableType T>
-            constexpr null_t(T){} // NOLINT(*-explicit-constructor)
-
             constexpr null_t() = default;
+            constexpr null_t(const null_t&) = default;
 
             template<isNullableType T>
             constexpr operator T() const // NOLINT(*-explicit-constructor)
@@ -101,8 +112,8 @@ namespace l61::meta
                 return T(null_t());
             }
 
-            template<isNullableType T>
-            consteval void operator=(T){} // NOLINT(*-unconventional-assign-operator)
+            template<typename T>
+            void operator=(T&&) const {}
         };
     }
 
@@ -114,6 +125,7 @@ namespace l61::meta
 
     inline constexpr nulling::null_t null;
     using nulling::null_t;
+    using nulling::NullableMark;
 }
 
 namespace l61
