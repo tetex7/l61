@@ -1,4 +1,4 @@
-name: TestingWorkflow.yml
+name: Runs the gtest suite
 
 on:
   # Runs on pushes targeting the default branch

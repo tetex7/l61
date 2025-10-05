@@ -31,6 +31,7 @@ l61::EventSystem::Event test_event = [] -> void {
 
 TEST(EventTests, TypeAssertions)
 {
+    //These are useless sanity checks I consider them Sanity compiler checks
     EXPECT_TRUE((std::same_as<l61::EventSystem::Event::raw_callback_t, void()>));
     EXPECT_TRUE((std::same_as<l61::EventSystem::Event::callback_t, std::function<void()>>));
 }

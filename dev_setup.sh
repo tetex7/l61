@@ -21,7 +21,16 @@ set -o pipefail
 
 [[ "$TRS_DEV_SETUP_VERBOSE" == "1" ]] && set -x
 
-readonly dev_tools=(gcc g++ zip cmake ninja make makepkg git)
+readonly DEFAULT_TOOLS=(gcc g++ zip cmake ninja make makepkg git)
+
+# If override exists, split it into an array; otherwise use default
+if [[ -n "$TRS_TOOL_LIST_OVERRIDE" ]]; then
+    # Remove trailing colon if any, then split by colon into array
+    IFS=':' read -r -a dev_tools <<< "${TRS_TOOL_LIST_OVERRIDE%:}"
+else
+    dev_tools=("${DEFAULT_TOOLS[@]}")
+fi
+
 
 #if [[ -z "${CMAKE_GEN}" ]]; then
 #    CMAKE_GEN="Ninja"
@@ -44,7 +53,12 @@ function help() {
     echo "  [--]gtest                        runs gtests"
     echo "  <cmake args>                     Pass-through arguments to cmake"
     echo
-    echo "\$CMAKE_GEN is $CMAKE_GEN" # = 'Ninja' | 'Unix Makefiles'"
+    echo "\$TRS_TOOL_CHECK_OVERRIDE : If set to any value but an empty string will Turn off the built in tool checks"
+    echo "Unintended side effects is you will have to set \$CMAKE_GEN By hand"
+    echo
+    echo "\$TRS_TOOL_LIST_OVERRIDE  : Overrides the built in tool list Example TRS_TOOL_LIST_OVERRIDE=\"clang:git\""
+    echo
+    echo "\$CMAKE_GEN is \"$CMAKE_GEN\" Should be 'Ninja' or 'Unix Makefiles'"
     exit 0
 }
 
@@ -173,16 +187,20 @@ function check_for_commands()
 
 function check_tools()
 {
-    [[ -n $TRS_TOOL_CHECK_OVERRIDE ]] && { echo "Tool check is disabled"; } && return 0
+    [[ -n $TRS_TOOL_CHECK_OVERRIDE ]] && { echo -e "Tool check is disabled\ntool based safeguards have been removed\n"; } && return 0
     check_for_commands >/dev/null || { check_for_commands; exit 1; }
-    if command -v ninja >/dev/null; then
-        CMAKE_GEN="Ninja"
-    elif command -v make >/dev/null; then
-        echo "No ninja found, falling back to Unix Makefiles"
-        CMAKE_GEN="Unix Makefiles"
+    if [[ -z $CMAKE_GEN ]]; then
+        if command -v ninja >/dev/null; then
+            CMAKE_GEN="Ninja"
+        elif command -v make >/dev/null; then
+            echo "No ninja found, falling back to Unix Makefiles"
+            CMAKE_GEN="Unix Makefiles"
+        else
+            echo "Neither ninja nor make found"
+            exit 1
+        fi
     else
-        echo "Neither ninja nor make found"
-        exit 1
+        echo "Warning: hand selected cmake generator can error out"
     fi
 }
 
