@@ -20,7 +20,6 @@
 //
 
 #include "l61/Logger.hpp"
-#include "l61/ExtensionSystem/ExtensionManager.hpp"
 #include "l61/l61_config.h"
 
 #include <gtest/gtest.h>
@@ -31,7 +30,7 @@
 
 TEST(ObjectTests, BasicAssertions)
 {
-    l61::Object object;
-    EXPECT_STREQ(object.typeName().c_str(), "l61::Object");
+    const l61::Object object;
+    EXPECT_EQ(object.typeName(), "l61::Object");
     EXPECT_EQ(object.typeInfo(), typeid(l61::Object));
 }

@@ -19,30 +19,21 @@
 // Created by tete on 10/04/2025.
 //
 #include "l61/Logger.hpp"
+#include "l61/EventSystem/Event.hpp"
 #include "l61/l61_config.h"
 
 #include <gtest/gtest.h>
-#include "l61/RosettaSystem/EnvironmentVariable.hpp"
 #include <l61/defs.hpp>
 #include <typeinfo>
 
 
-TEST(EnvironmentVariableTests, BasicAssertions)
+TEST(EventTests, BasicAssertions)
 {
-    l61::RosettaSystem::EnvironmentVariable PATH = l61::RosettaSystem::getEnv("PATH");
-    l61::RosettaSystem::EnvironmentVariable know_bad = l61::RosettaSystem::EnvironmentVariable("dsfgdfsdfg");
+    bool test_value = false;
+    const l61::EventSystem::Event test_event = [&]{
+        test_value = true;
+    };
 
-    EXPECT_TRUE(PATH.exists());
-    EXPECT_EQ(PATH.getKey(), "PATH");
-    EXPECT_NO_THROW(PATH.getKey());
-    EXPECT_NO_THROW(PATH.getValue());
-    EXPECT_EQ(PATH.get("fallback"), PATH.getValue());
-    EXPECT_EQ(PATH.getValue(), std::getenv("PATH"));
-
-
-    EXPECT_ANY_THROW(know_bad.getValue());
-    EXPECT_FALSE(know_bad.exists());
-    EXPECT_NO_THROW(
-        EXPECT_EQ(know_bad.get("fallback"), "fallback")
-    );
+    EXPECT_NO_THROW(test_event.call());
+    EXPECT_TRUE(test_value);
 }
