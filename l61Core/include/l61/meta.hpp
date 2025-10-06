@@ -24,6 +24,7 @@
 #include <concepts>
 #include <type_traits>
 #include <functional>
+#include <stdexcept>
 
 namespace l61
 {
@@ -61,12 +62,29 @@ namespace l61::meta
     namespace nulling
     {
         struct null_t;
+
+        class NullAccessException final : public std::runtime_error
+        {
+        public:
+            NullAccessException() : std::runtime_error("Attempted Access to a Nullable Object"){}
+            ~NullAccessException() override = default;
+        };
+
         class NullableMark
         {
         private:
             const bool is_null_;
         protected:
             explicit NullableMark(bool is_null) : is_null_(is_null){}
+
+            /**
+             * @throw l61::meta::nulling::NullAccessException
+             */
+            void throwIfNull() const noexcept(false)
+            {
+                if (isNull())
+                    throw NullAccessException();
+            }
         public:
             [[nodiscard]] bool isNull() const { return is_null_; }
             virtual ~NullableMark() = default;
