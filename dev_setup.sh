@@ -21,6 +21,19 @@ set -o pipefail
 
 [[ "$TRS_DEV_SETUP_VERBOSE" == "1" ]] && set -x
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+if [[ "$SCRIPT_DIR" != "$PWD" ]]; then
+        cat <<EOF
+You are running the script *not* within its project folder.
+Script dir: $SCRIPT_DIR
+CWD:        $PWD
+
+This can have extreme unintended consequences.
+EOF
+        exit 1
+fi
+
 # shellcheck disable=SC2155
 readonly detected_os=$(uname | tr '[:upper:]' '[:lower:]')
 
@@ -72,6 +85,7 @@ function help() {
     echo
     echo "\$CMAKE_GEN is \"$CMAKE_GEN\" Should be 'Ninja' or 'Unix Makefiles'"
     echo "Detected OS is \"$detected_os\""
+    echo "Script is in: $SCRIPT_DIR"
     exit 0
 }
 
@@ -127,9 +141,11 @@ function clean()
     rm -rfv ./l61-deployment-package
     rm -rfv ./Testing/Temporary
     rm -rfv ./docs
-    rm -v ./l61-deployment-package.zip
+    rm -fv ./l61-deployment-package.zip
 
     find "." -maxdepth 20 -type d -name "CMakeFiles" -exec rm -vrf {} +
+
+    find "." -maxdepth 20 -type f -name "Makefile" -exec rm -vrf {} +
 
     find "." -maxdepth 20 -type f -name "CTestTestfile.cmake" -exec rm -vf {} +
 

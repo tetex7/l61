@@ -13,7 +13,7 @@ Think of it as a foundation you can shape into whatever workflow you need, with 
 ## Dependencies
 
 - **Runtime**
-    - [GCC](https://gcc.gnu.org/) (New enough to compile C++23)
+    - [GCC](https://gcc.gnu.org/) or [Clang](https://clang.llvm.org/) (New enough to compile C++23)
     - [Boost.Program_options](https://boost.org) (For The Standard Front End)
     - [Google's Abseil](https://github.com/abseil/abseil-cpp)
     - [liblua](https://lua.org)
