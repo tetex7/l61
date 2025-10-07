@@ -19,6 +19,7 @@
 #include "l61/ScriptEngine/RunnableScriptEnvironment.hpp"
 #include "sol/sol.hpp"
 #include "lex61rt.hpp"
+#include <fstream>
 #include "l61/ExtensionSystem/ExtensionManager.hpp"
 #include <filesystem>
 
@@ -40,6 +41,11 @@ struct FsEntryPoint : l61::ExtensionSystem::AbstractExtensionEntryPoint
 
         fs.set_function("exists", [](const std::string path) -> bool {
             return fs::exists(path);
+        });
+
+        fs.set_function("read", [](const std::string& path) -> std::string {
+            std::ifstream file(path);
+            return file ? std::string((std::istreambuf_iterator<char>(file)), {}) : "";
         });
 
         return 0;

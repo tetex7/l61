@@ -16,34 +16,16 @@
  */
 
 //
-// Created by tete on 8/24/25.
+// Created by tete on 10/06/2025.
 //
 #pragma once
 
-#ifndef L61_ITIMER_HPP
-#define L61_ITIMER_HPP
-#include "l61/BaseObjects/Object.hpp"
+#ifndef FS_GETFILTEREDFILEPATH_HPP
+#define FS_GETFILTEREDFILEPATH_HPP
+#include <filesystem>
 
-#include <cstdint>
-namespace l61::EventSystem::Timing
-{
-    class AbstractTimer : public Object
-    {
-    public:
-        enum class Mode : bool { SECONDS, MILLISECONDS };
-    private:
-        const Mode m_mode;
-    public:
-        explicit AbstractTimer(Mode mode = Mode::MILLISECONDS);
+namespace fs = std::filesystem;
 
-        virtual void start(std::uint32_t duration) = 0;
-        virtual bool isFinished() const = 0;
-        virtual void reset() = 0;
+C_CALL std::string getFilteredFilePath(const fs::path &path);
 
-        operator bool() const;
-        Mode getMode() const;
-
-        virtual ~AbstractTimer() = default;
-    };
-}
-#endif // L61_ITIMER_HPP
+#endif //GETFILTEREDFILEPATH_HPP

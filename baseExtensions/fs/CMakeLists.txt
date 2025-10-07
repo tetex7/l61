@@ -18,3 +18,4 @@
 file(GLOB FS_LEX61_CPP_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp" "${CMAKE_CURRENT_SOURCE_DIR}/src/**/*.cpp")
 
 add_l61_lex61_target(fs_lex61 fs SRCS ${FS_LEX61_CPP_FILES})
+#target_include_directories(fs_lex61 PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/include")

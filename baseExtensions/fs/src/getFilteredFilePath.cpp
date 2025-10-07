@@ -16,34 +16,20 @@
  */
 
 //
-// Created by tete on 8/24/25.
+// Created by tete on 10/06/2025.
 //
-#pragma once
 
-#ifndef L61_ITIMER_HPP
-#define L61_ITIMER_HPP
-#include "l61/BaseObjects/Object.hpp"
+#include "getFilteredFilePath.hpp"
+#include "l61/defs.hpp"
 
-#include <cstdint>
-namespace l61::EventSystem::Timing
+C_CALL std::string getFilteredFilePath(const fs::path &path)
 {
-    class AbstractTimer : public Object
-    {
-    public:
-        enum class Mode : bool { SECONDS, MILLISECONDS };
-    private:
-        const Mode m_mode;
-    public:
-        explicit AbstractTimer(Mode mode = Mode::MILLISECONDS);
+    const fs::path pwd = fs::canonical(l61::getCentralStatusObject().work_path);
+    const fs::path resolved = fs::weakly_canonical(pwd / path);
 
-        virtual void start(std::uint32_t duration) = 0;
-        virtual bool isFinished() const = 0;
-        virtual void reset() = 0;
+    // Ensure the resolved path is inside the working directory
+    if (std::mismatch(pwd.begin(), pwd.end(), resolved.begin()).first != pwd.end())
+        return {}; // or throw if you prefer
 
-        operator bool() const;
-        Mode getMode() const;
-
-        virtual ~AbstractTimer() = default;
-    };
+    return resolved.string();
 }
-#endif // L61_ITIMER_HPP
