@@ -22,9 +22,7 @@
 
 #ifndef FS_GETFILTEREDFILEPATH_HPP
 #define FS_GETFILTEREDFILEPATH_HPP
-#include <filesystem>
-
-namespace fs = std::filesystem;
+#include "l61/defs.hpp"
 
 C_CALL std::string getFilteredFilePath(const fs::path &path);
 
