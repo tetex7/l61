@@ -3,7 +3,14 @@ function main(argc, argv)
     print(type(s))
     print(s)
 
-    if mountLib("test").test() == "test" then
+    test_lib = mountLib("test")
+
+    if test_lib == nil then
+        print("fail to load test")
+        return 1
+    end
+
+    if test_lib.test() == "test" then
         print(mountLib("test").test())
     end
 

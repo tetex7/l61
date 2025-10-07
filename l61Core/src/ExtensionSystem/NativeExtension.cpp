@@ -50,7 +50,9 @@ std::expected<NativeExtension, std::string> NativeExtension::extensionLookUp(con
     for (const std::string& _path : spaths)
     {
         //if (_path == mstat.spaths[2]) continue;
-        std::string path = (fs::path(_path) / "native" / exName).string();
+        const fs::path native_ext_path = (fs::path(_path) / "native" / exName);
+        const fs::path alt_ext_path = (fs::path(_path) / exName);
+        std::string path = fs::exists(native_ext_path) ? native_ext_path.string() : alt_ext_path.string();
         if (fs::exists(path))
         {
             return NativeExtension(path);
