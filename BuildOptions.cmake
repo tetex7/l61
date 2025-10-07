@@ -22,9 +22,16 @@ execute_process(
 )
 set(BIN_DIR ${CMAKE_SOURCE_DIR}/build)
 
+set(L61_COMMON_COMPILER_SPECIFIC_FLAGS "")
+set(L61_CPP_COMPILER_SPECIFIC_FLAGS "${L61_COMMON_COMPILER_SPECIFIC_FLAGS}")
+set(L61_C_COMPILER_SPECIFIC_FLAGS "${L61_COMMON_COMPILER_SPECIFIC_FLAGS}")
 
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    message(STATUS "Disabling Clang's return-type-c-linkage warning")
+    set(L61_CPP_COMPILER_SPECIFIC_FLAGS "${L61_CPP_COMPILER_SPECIFIC_FLAGS} -Wno-return-type-c-linkage")
+endif()
 
-set(L61_TOPLEVEL_CPP_COMPILE_ARGS -Wall -Wextra -Werror -Wpedantic -fno-strict-aliasing -DSOL_ALL_SAFETIES_ON -include ${CMAKE_SOURCE_DIR}/l61Core/include/l61/PseudoKeywords.hpp)
+set(L61_TOPLEVEL_CPP_COMPILE_ARGS ${L61_CPP_COMPILER_SPECIFIC_FLAGS} -Wall -Wextra -Werror -Wpedantic -fno-strict-aliasing -DSOL_ALL_SAFETIES_ON -include ${CMAKE_SOURCE_DIR}/l61Core/include/l61/PseudoKeywords.hpp)
 
 set(L61_TOPLEVEL_C_COMPILE_ARGS -Wall -Wextra -Werror -fno-strict-aliasing)
 
