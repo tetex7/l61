@@ -85,7 +85,8 @@ l61_rosetta_SharedLibrary_handle_t l61_rosetta_loadSharedLibrary(const char *fil
 /**
  * Gets a symbol from a shared library.
  * @param handle Handle to the loaded library.
- * @param symbol Name of the symbol to retrieve. (!!Do mind C++ symbol mangling!!)
+ * @param symbol Name of the symbol to retrieve.
+ * @warning Do mind C++ symbol mangling
  * @return Pointer to the requested symbol, or NULL if the symbol is not found.
  */
 l61_rosetta_SharedLibrary_symbol_t l61_rosetta_getSharedLibrarySymbol(l61_rosetta_SharedLibrary_handle_t handle, const char* symbol);

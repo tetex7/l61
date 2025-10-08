@@ -32,13 +32,14 @@ options=('!strip' 'docs' 'libtool' 'staticlibs' 'emptydirs' 'zipman' '!purge' '!
 prepare() {
     cd ..
     echo $PWD
-    ./full_build.sh clean
+    ./dev_setup.sh mk clean
 }
 
 build () {
     cd ..
     echo $PWD
-    DEBUG=${PK_DEBUG} RVER=${pkgver} ./full_build.sh
+    #DEBUG=${PK_DEBUG} RVER=${pkgver} ./full_build.sh
+    ./dev_setup.sh clean
 }
 
 package() {
